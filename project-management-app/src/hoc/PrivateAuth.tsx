@@ -1,11 +1,13 @@
 import { Navigate } from 'react-router-dom';
+import { useAppSelector } from '../hook';
 
 type PrivateAuthProps = {
   children: JSX.Element,
-  auth: boolean,
 }
 
-export function PrivateAuth( { children, auth }: PrivateAuthProps ){
+export function PrivateAuth( { children }: PrivateAuthProps ){
+  const auth = useAppSelector((state) => state.auth.auth)
+
   if (!auth) {
     return <Navigate to={'/'} />
   }
