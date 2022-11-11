@@ -4,13 +4,14 @@ import { useAppSelector } from '../../hook';
 import { EditProfile } from '../../pages/editProfile/editProfile';
 import { SignIn } from '../../pages/signIn/SignIn';
 import { SignUp } from '../../pages/signUp/SignUp';
+import { Welcome } from '../../pages/Welcome/Welcome';
 
 export const Router = () => {
   const auth = useAppSelector((state) => state.auth.auth);
 
   return (
     <Routes>
-      <Route path='/' element={<h1>Welcome page</h1>}></Route>
+      <Route path='/' element={<Welcome />}></Route>
       <Route
         path='/main'
         element={
