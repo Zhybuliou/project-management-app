@@ -1,31 +1,61 @@
+import { Box, Button, TextField } from '@mui/material';
 import { FieldValues, useForm } from 'react-hook-form';
-import TextField from '@mui/material/TextField';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import { useAppDispatch } from '../../hook';
-import { fetchSignUpData } from '../../store/authSlice';
+import { useAppDispatch, useAppSelector } from '../../hook';
+import {
+  fetchAllUsers,
+  fetchDeleteUser,
+  fetchGetUser,
+  fetchUpdateUser,
+} from '../../store/userSlice';
 
-export const SignUp = () => {
+export const EditProfile = () => {
   const dispatch = useAppDispatch();
+  const { token, id, name, login, password } = useAppSelector((state) => state.auth);
+  console.log({ token, id, name, login, password });
+
   const {
     register,
     formState: { errors },
     handleSubmit,
   } = useForm({
     defaultValues: {
-      name: '',
-      login: '',
-      password: '',
+      name: name as string,
+      login: login as string,
+      password: password as string,
     },
   });
 
   function handleRegistration(data: FieldValues) {
-    dispatch(fetchSignUpData({ name: data.name, login: data.login, password: data.password }));
+    if (token) {
+      dispatch(
+        fetchUpdateUser({
+          id,
+          token,
+          body: { name: data.name, login: data.login, password: data.password },
+        }),
+      );
+      localStorage.setItem('name', data.name);
+    }
+  }
+
+  function getUsers() {
+    dispatch(fetchAllUsers(token as string));
+  }
+
+  function getUser() {
+    if (token) {
+      dispatch(fetchGetUser({ id, token }));
+    }
+  }
+  function deleteUser() {
+    if (token) {
+      dispatch(fetchDeleteUser({ id, token }));
+    }
   }
 
   return (
-    <>
-      <h1>Sign Up</h1>
+    <div>
+      <h1>Edit profile</h1>
       <Box
         sx={{
           width: 500,
@@ -35,6 +65,7 @@ export const SignUp = () => {
       >
         <form className='form-signIn' onSubmit={handleSubmit(handleRegistration)}>
           <TextField
+            defaultValue={name}
             id='outlined-basic'
             label='name'
             variant='outlined'
@@ -54,9 +85,10 @@ export const SignUp = () => {
               borderRadius: 1,
             }}
           />
-          <div style={{ color: ' red' }}>{errors.name ? errors.name.message : ''}</div>
+          <div style={{ color: 'red' }}>{errors.name ? errors.name.message : ''}</div>
           <TextField
             id='outlined-basic'
+            defaultValue={login}
             label='login'
             variant='outlined'
             {...register('login', {
@@ -73,6 +105,7 @@ export const SignUp = () => {
           />
           <div style={{ color: ' red' }}>{errors.login ? errors.login.message : ''}</div>
           <TextField
+            defaultValue={password}
             id='outlined-password-input'
             label='password'
             type='password'
@@ -98,10 +131,13 @@ export const SignUp = () => {
               borderRadius: 1,
             }}
           >
-            SIGN UP
+            Update
           </Button>
         </form>
       </Box>
-    </>
+      <button onClick={getUsers}>Get all users</button>
+      <button onClick={getUser}>Get user by id</button>
+      <button onClick={deleteUser}>Delete user by id</button>
+    </div>
   );
 };
