@@ -21,7 +21,9 @@ export const SignIn = () => {
   });
 
   function handleRegistration(data: FieldValues) {
-    dispatch(fetchSignInData({ login: data.login, password: data.password }));
+    console.log({ login: data.login, password: data.password as string });
+    dispatch(fetchSignInData({ login: data.login, password: data.password as string }));
+    // dispatch(fetchSignInData({ login: body.login, password: body.password as string }));
     dispatch(changePassword(data.password as string));
     console.log(data.password);
   }

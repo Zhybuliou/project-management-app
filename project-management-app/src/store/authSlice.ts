@@ -86,7 +86,7 @@ export const fetchSignUpData = createAsyncThunk<UserData, UserData, { rejectValu
       }
       return rejectWithValue('Some error');
     }
-
+    console.log(body);
     dispatch(fetchSignInData({ login: body.login, password: body.password as string }));
     dispatch(changeNameUser(body.name as string));
 
@@ -137,6 +137,7 @@ const authSlice = createSlice({
   reducers: {
     changeStatusAuth(state, action: PayloadAction<boolean>) {
       state.auth = action.payload;
+      localStorage.setItem('auth', JSON.stringify(action.payload));
     },
     changePassword(state, action: PayloadAction<string>) {
       state.password = action.payload;
@@ -168,11 +169,11 @@ const authSlice = createSlice({
         state.login = action.payload.login;
         state.exp = action.payload.exp;
         localStorage.setItem('auth', JSON.stringify(state.auth));
-        localStorage.setItem('login', JSON.stringify(state.login));
-        localStorage.setItem('id', JSON.stringify(state.id));
+        localStorage.setItem('login', state.login);
+        localStorage.setItem('id', state.id);
         localStorage.setItem('token', JSON.stringify(state.token));
         localStorage.setItem('exp', JSON.stringify(state.exp));
-        localStorage.setItem('password', JSON.stringify(state.password));
+        localStorage.setItem('password', state.password as string);
       })
       .addCase(fetchSignInData.rejected, (state, action) => {
         state.error = action.payload as string;
