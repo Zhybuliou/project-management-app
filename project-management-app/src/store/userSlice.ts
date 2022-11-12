@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import { changeStatusAuth, UserData } from './authSlice';
+import { changeNameUser, changeStatusAuth, UserData } from './authSlice';
 
 type UserState = {
   error: null | string;
@@ -75,6 +75,7 @@ export const fetchDeleteUser = createAsyncThunk<UserData, FetchUserProps, { reje
         Authorization: 'Bearer ' + `${token}`,
       },
     });
+
     const data = await response.json();
     if (response.status !== 200) {
       if (response.status === 404) {
@@ -95,7 +96,7 @@ export const fetchDeleteUser = createAsyncThunk<UserData, FetchUserProps, { reje
 
 export const fetchUpdateUser = createAsyncThunk<UserData, FetchUserProps, { rejectValue: string }>(
   'users/fetchUpdateUser',
-  async function ({ body, token, id }, { rejectWithValue }) {
+  async function ({ body, token, id }, { rejectWithValue, dispatch }) {
     const response = await fetch(`${BASE_PATH}users/${id}`, {
       method: 'PUT',
       headers: {
@@ -118,6 +119,11 @@ export const fetchUpdateUser = createAsyncThunk<UserData, FetchUserProps, { reje
         return rejectWithValue('Validation failed (uuid  is expected)');
       }
     }
+    if (body) {
+      dispatch(changeNameUser(body.name as string));
+    }
+    console.log(data);
+
     return data;
   },
 );

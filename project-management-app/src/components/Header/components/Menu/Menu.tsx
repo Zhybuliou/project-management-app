@@ -8,11 +8,22 @@ import HomeIcon from '@mui/icons-material/Home';
 import DashboardCustomizeIcon from '@mui/icons-material/DashboardCustomize';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { NavLink, useLocation } from 'react-router-dom';
-import { useAppSelector } from '../../../../hook';
+import { useAppDispatch, useAppSelector } from '../../../../hook';
+import { changeStatusAuth } from '../../../../store/authSlice';
 
 export const Menu = () => {
   const auth = useAppSelector((state) => state.auth.auth);
   const location = useLocation().pathname;
+  const dispatch = useAppDispatch();
+
+  function logOut() {
+    dispatch(changeStatusAuth(false));
+    localStorage.removeItem('token');
+    localStorage.removeItem('id');
+    localStorage.removeItem('login');
+    localStorage.removeItem('exp');
+    localStorage.removeItem('password');
+  }
 
   return (
     <Stack className='nav-menu' direction='row' spacing={1}>
@@ -56,7 +67,7 @@ export const Menu = () => {
               edit profile
             </Button>
           </NavLink>
-          <Button variant='contained' endIcon={<LogoutIcon />}>
+          <Button onClick={logOut} variant='contained' endIcon={<LogoutIcon />}>
             sign out
           </Button>
         </>

@@ -11,7 +11,6 @@ import {
 export const EditProfile = () => {
   const dispatch = useAppDispatch();
   const { token, id, name, login, password } = useAppSelector((state) => state.auth);
-  console.log({ token, id, name, login, password });
 
   const {
     register,
@@ -34,6 +33,7 @@ export const EditProfile = () => {
           body: { name: data.name, login: data.login, password: data.password },
         }),
       );
+      console.log(data);
       localStorage.setItem('name', data.name);
     }
   }
