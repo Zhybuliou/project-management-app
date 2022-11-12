@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import { PrivateAuth } from '../../hoc/PrivateAuth';
 import { useAppSelector } from '../../hook';
 import { EditProfile } from '../../pages/editProfile/editProfile';
+import { Main } from '../../pages/Main/Main';
 import { SignIn } from '../../pages/signIn/SignIn';
 import { SignUp } from '../../pages/signUp/SignUp';
 import { Welcome } from '../../pages/Welcome/Welcome';
@@ -16,7 +17,7 @@ export const Router = () => {
         path='/main'
         element={
           <PrivateAuth>
-            <h1>Main page</h1>
+            <Main />
           </PrivateAuth>
         }
       ></Route>

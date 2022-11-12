@@ -22,6 +22,11 @@ export const theme = createTheme({
     },
   },
   components: {
+    MuiContainer: {
+      styleOverrides: {
+        maxWidthXl: 1440,
+      },
+    },
     MuiButton: {
       styleOverrides: {
         root: {
