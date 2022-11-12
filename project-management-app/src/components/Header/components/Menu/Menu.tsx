@@ -13,7 +13,7 @@ import { changeStatusAuth } from '../../../../store/authSlice';
 
 export const Menu = () => {
   const auth = useAppSelector((state) => state.auth.auth);
-  const location = useLocation().pathname;
+  const location = useLocation().pathname.split('/')[1];
   const dispatch = useAppDispatch();
 
   function logOut() {
@@ -31,10 +31,10 @@ export const Menu = () => {
         <MenuItem value='en'>en</MenuItem>
         <MenuItem value='ru'>ru</MenuItem>
       </Select>
-      {!auth && location !== '/main' ? (
+      {!auth && location !== 'main' ? (
         <>
           <NavLink to='/login'>
-            <Button variant='contained' endIcon={<LoginIcon />} disabled={!(location !== '/login')}>
+            <Button variant='contained' endIcon={<LoginIcon />} disabled={!(location !== 'login')}>
               sign in
             </Button>
           </NavLink>
@@ -42,14 +42,14 @@ export const Menu = () => {
             <Button
               variant='contained'
               endIcon={<AppRegistrationIcon />}
-              disabled={!(location !== '/register')}
+              disabled={!(location !== 'register')}
             >
               sign up
             </Button>
           </NavLink>
         </>
       ) : null}
-      {auth && location === '/' ? (
+      {auth && !location ? (
         <NavLink to='/main'>
           <Button variant='contained' endIcon={<HomeIcon />}>
             go to main page
@@ -57,7 +57,7 @@ export const Menu = () => {
         </NavLink>
       ) : null}
 
-      {auth && (location === '/main' || location === '/profile') ? (
+      {auth && (location === 'main' || location === 'profile' || location === 'board') ? (
         <>
           <Button variant='contained' endIcon={<DashboardCustomizeIcon />}>
             create new board

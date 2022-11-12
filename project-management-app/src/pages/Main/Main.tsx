@@ -16,7 +16,9 @@ export const Main = () => {
 
   return (
     <Container className='boards' component='section' maxWidth='xl'>
-      <Typography variant='h2'>Your Boards</Typography>
+      <Typography className='main-title' variant='h2'>
+        Your Boards
+      </Typography>
       <Grid container columns={{ xs: 1, sm: 2, md: 4 }}>
         {allBoards.length ? (
           allBoards.map((el, index) => (

@@ -1,13 +1,5 @@
 @import '../../scss/style.scss';
 
-.boards {
-  h2 {
-    color: $whiteColor;
-    padding: 45px 0 20px;
-    text-align: center;
-  }
-}
-
 .board {
   display: flex;
   flex-direction: column;
@@ -16,7 +8,7 @@
   cursor: pointer;
   transition: 0.3s;
 
-  .board__title {
+  &__title {
     background-color: $pinkColor;
     color: $whiteColor;
     text-align: center;
@@ -28,7 +20,7 @@
     }
   }
 
-  .board__description {
+  &__description {
     min-height: 50px;
     padding: 5px 10px;
     color: $blueColor;
