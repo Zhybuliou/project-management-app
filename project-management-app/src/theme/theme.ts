@@ -52,14 +52,6 @@ export const theme = createTheme({
         },
       },
     },
-    MuiSvgIcon: {
-      styleOverrides: {
-        root: {
-          fill: '#4d628b',
-          width: '20px',
-        },
-      },
-    },
     MuiMenuItem: {
       styleOverrides: {
         root: {
