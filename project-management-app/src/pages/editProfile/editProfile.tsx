@@ -33,7 +33,6 @@ export const EditProfile = () => {
           body: { name: data.name, login: data.login, password: data.password },
         }),
       );
-      console.log(data);
       localStorage.setItem('name', data.name);
     }
   }

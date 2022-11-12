@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import { changeNameUser, changeStatusAuth, UserData } from './authSlice';
+import { changeLoaderStatus, changeNameUser, changeStatusAuth, UserData } from './authSlice';
 
 type UserState = {
   error: null | string;
@@ -23,7 +23,8 @@ const BASE_PATH = 'https://kanbanapi.adaptable.app/';
 
 export const fetchAllUsers = createAsyncThunk<FetchAllUsers, string, { rejectValue: string }>(
   'users/fetchAllUsers',
-  async function (token: string, { rejectWithValue }) {
+  async function (token: string, { rejectWithValue, dispatch }) {
+    dispatch(changeLoaderStatus(true));
     const response = await fetch(`${BASE_PATH}users`, {
       method: 'GET',
       headers: {
@@ -38,15 +39,17 @@ export const fetchAllUsers = createAsyncThunk<FetchAllUsers, string, { rejectVal
       if (response.status === 401) {
         return rejectWithValue('Unauthorized');
       }
+      dispatch(changeLoaderStatus(false));
     }
-
+    dispatch(changeLoaderStatus(false));
     return data;
   },
 );
 
 export const fetchGetUser = createAsyncThunk<UserData, FetchUserProps, { rejectValue: string }>(
   'users/fetchGetUser',
-  async function ({ id, token }, { rejectWithValue }) {
+  async function ({ id, token }, { rejectWithValue, dispatch }) {
+    dispatch(changeLoaderStatus(true));
     const response = await fetch(`${BASE_PATH}users/${id}`, {
       method: 'GET',
       headers: {
@@ -54,13 +57,15 @@ export const fetchGetUser = createAsyncThunk<UserData, FetchUserProps, { rejectV
         Authorization: 'Bearer ' + `${token}`,
       },
     });
+
     const data = await response.json();
     if (response.status !== 200) {
       if (response.status === 401) {
         return rejectWithValue('Unauthorized');
       }
+      dispatch(changeLoaderStatus(false));
     }
-
+    dispatch(changeLoaderStatus(false));
     return data;
   },
 );
@@ -68,6 +73,7 @@ export const fetchGetUser = createAsyncThunk<UserData, FetchUserProps, { rejectV
 export const fetchDeleteUser = createAsyncThunk<UserData, FetchUserProps, { rejectValue: string }>(
   'users/fetchDeleteUser',
   async function ({ id, token }, { rejectWithValue, dispatch }) {
+    dispatch(changeLoaderStatus(true));
     const response = await fetch(`${BASE_PATH}users/${id}`, {
       method: 'DELETE',
       headers: {
@@ -87,9 +93,11 @@ export const fetchDeleteUser = createAsyncThunk<UserData, FetchUserProps, { reje
       if (response.status === 502) {
         return rejectWithValue('Bad Gateway');
       }
+      dispatch(changeLoaderStatus(false));
     }
 
     dispatch(changeStatusAuth(false));
+    dispatch(changeLoaderStatus(false));
     return data;
   },
 );
@@ -97,6 +105,7 @@ export const fetchDeleteUser = createAsyncThunk<UserData, FetchUserProps, { reje
 export const fetchUpdateUser = createAsyncThunk<UserData, FetchUserProps, { rejectValue: string }>(
   'users/fetchUpdateUser',
   async function ({ body, token, id }, { rejectWithValue, dispatch }) {
+    dispatch(changeLoaderStatus(true));
     const response = await fetch(`${BASE_PATH}users/${id}`, {
       method: 'PUT',
       headers: {
@@ -118,12 +127,13 @@ export const fetchUpdateUser = createAsyncThunk<UserData, FetchUserProps, { reje
       if (response.status === 400) {
         return rejectWithValue('Validation failed (uuid  is expected)');
       }
+      dispatch(changeLoaderStatus(false));
     }
     if (body) {
       dispatch(changeNameUser(body.name as string));
     }
-    console.log(data);
 
+    dispatch(changeLoaderStatus(false));
     return data;
   },
 );
