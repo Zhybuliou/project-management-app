@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { PrivateAuth } from '../../hoc/PrivateAuth';
 import { useAppSelector } from '../../hook';
+import { Board } from '../../pages/Board/Board';
 import { EditProfile } from '../../pages/editProfile/editProfile';
 import { Main } from '../../pages/Main/Main';
 import { SignIn } from '../../pages/signIn/SignIn';
@@ -35,7 +36,7 @@ export const Router = () => {
         path='/board/:id'
         element={
           <PrivateAuth>
-            <h1>Board page</h1>
+            <Board />
           </PrivateAuth>
         }
       ></Route>
