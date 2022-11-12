@@ -25,6 +25,7 @@ type AuthState = {
   token: null | string;
   exp: number | null;
   password: string | undefined;
+  isLoaded: boolean;
 };
 
 type DecodedToken = {
@@ -61,6 +62,7 @@ const initialState: AuthState = {
       .trim() || '',
   exp: expTokenTime ? +expTokenTime : null,
   password: localStorage.getItem('password' as string) || undefined,
+  isLoaded: false,
 };
 
 const BASE_PATH = 'https://kanbanapi.adaptable.app/';
@@ -86,7 +88,7 @@ export const fetchSignUpData = createAsyncThunk<UserData, UserData, { rejectValu
       }
       return rejectWithValue('Some error');
     }
-    console.log(body);
+
     dispatch(fetchSignInData({ login: body.login, password: body.password as string }));
     dispatch(changeNameUser(body.name as string));
 
@@ -147,21 +149,32 @@ const authSlice = createSlice({
       state.name = action.payload;
       localStorage.setItem('name', state.name);
     },
+    changeLoaderStatus(state, action: PayloadAction<boolean>) {
+      state.isLoaded = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
       .addCase(fetchSignUpData.pending, (state) => {
         state.error = null;
+        state.isLoaded = true;
       })
       .addCase(fetchSignUpData.fulfilled, (state, action: PayloadAction<UserData>) => {
+        state.isLoaded = false;
         state.error = null;
         state.name = action.payload.login;
       })
       .addCase(fetchSignUpData.rejected, (state, action) => {
+        state.isLoaded = false;
         state.error = action.payload as string;
         alert(state.error);
       })
+      .addCase(fetchSignInData.pending, (state) => {
+        state.error = null;
+        state.isLoaded = true;
+      })
       .addCase(fetchSignInData.fulfilled, (state, action: PayloadAction<FetchDataSignIn>) => {
+        state.isLoaded = false;
         state.error = null;
         state.auth = true;
         state.token = action.payload.token;
@@ -176,12 +189,14 @@ const authSlice = createSlice({
         localStorage.setItem('password', state.password as string);
       })
       .addCase(fetchSignInData.rejected, (state, action) => {
+        state.isLoaded = false;
         state.error = action.payload as string;
         alert(state.error);
       });
   },
 });
 
-export const { changeStatusAuth, changePassword, changeNameUser } = authSlice.actions;
+export const { changeStatusAuth, changePassword, changeNameUser, changeLoaderStatus } =
+  authSlice.actions;
 
 export default authSlice.reducer;
