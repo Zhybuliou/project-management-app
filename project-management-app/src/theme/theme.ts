@@ -22,11 +22,6 @@ export const theme = createTheme({
     },
   },
   components: {
-    MuiContainer: {
-      styleOverrides: {
-        maxWidthXl: 1440,
-      },
-    },
     MuiButton: {
       styleOverrides: {
         root: {
@@ -54,14 +49,6 @@ export const theme = createTheme({
           ':hover': {
             backgroundColor: '#e1edef',
           },
-        },
-      },
-    },
-    MuiSvgIcon: {
-      styleOverrides: {
-        root: {
-          fill: '#4d628b',
-          width: '20px',
         },
       },
     },

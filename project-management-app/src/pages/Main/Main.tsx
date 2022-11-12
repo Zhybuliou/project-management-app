@@ -1,29 +1,47 @@
-import { Box, Card, CardContent, Container, Grid, Typography } from '@mui/material';
-import React from 'react';
-import { data } from './data';
+import './Main.scss';
+import {
+  Card,
+  CardActions,
+  CardContent,
+  Container,
+  Grid,
+  IconButton,
+  Typography,
+} from '@mui/material';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import { useAppSelector } from '../../hook';
 
 export const Main = () => {
+  const allBoards = useAppSelector((state) => state.board.allBoards);
+
   return (
-    <Container maxWidth='xl'>
-      <Box sx={{ flexGrow: 1 }}>
-        <Typography variant='h2' position='static'>
-          Dashboards
-        </Typography>
-        <Grid container columns={{ xs: 1, sm: 3, md: 4 }}>
-          {data.map((_, index) => (
-            <Grid xs={3} sm={1} md={1} key={index}>
-              <Card sx={{ m: 3 }}>
-                <CardContent>
-                  <Typography variant='h4'>Title</Typography>
+    <Container className='boards' component='section' maxWidth='xl'>
+      <Typography variant='h2'>Your Boards</Typography>
+      <Grid container columns={{ xs: 1, sm: 2, md: 4 }}>
+        {allBoards.length ? (
+          allBoards.map((el, index) => (
+            <Grid item xs={1} key={index}>
+              <Card className='board'>
+                <CardContent className='board__title'>
+                  <Typography variant='h5'>{el.title}</Typography>
                 </CardContent>
-                <CardContent>
+                <CardContent className='board__description'>
                   <Typography variant='body2'>Description</Typography>
                 </CardContent>
+                <CardActions sx={{ ml: 'auto' }}>
+                  <IconButton color='secondary'>
+                    <DeleteForeverIcon />
+                  </IconButton>
+                </CardActions>
               </Card>
             </Grid>
-          ))}
-        </Grid>
-      </Box>
+          ))
+        ) : (
+          <Typography variant='h6' color='white'>
+            No available boards
+          </Typography>
+        )}
+      </Grid>
     </Container>
   );
 };

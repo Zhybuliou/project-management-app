@@ -1,4 +1,9 @@
+$blueColor: #4d628b;
+$pinkColor: #ff6584;
+$whiteColor: #fff;
+
 body {
+  background-color: $blueColor;
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
     'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
