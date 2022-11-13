@@ -10,11 +10,15 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../../hook';
 import { changeStatusAuth } from '../../../../store/authSlice';
+import CreateBoardDialog from '../../../popup/CreateBoardDialog';
+import FormCreateBoard from '../../../forms/FormCreateBoard';
+import { useState } from 'react';
 
 export const Menu = () => {
   const auth = useAppSelector((state) => state.auth.auth);
   const location = useLocation().pathname.split('/')[1];
   const dispatch = useAppDispatch();
+  const [boardDialog, setBoardDialog] = useState(false);
 
   function logOut() {
     dispatch(changeStatusAuth(false));
@@ -59,9 +63,12 @@ export const Menu = () => {
 
       {auth && (location === 'main' || location === 'profile' || location === 'board') ? (
         <>
-          <Button variant='contained' endIcon={<DashboardCustomizeIcon />}>
+          <Button variant='contained' endIcon={<DashboardCustomizeIcon />} onClick={() => setBoardDialog(true)}>
             create new board
           </Button>
+          <CreateBoardDialog title={'Create Board'} openPopup={boardDialog} setOpenPopup={setBoardDialog} >
+            <FormCreateBoard setOpenPopup={setBoardDialog}/>
+          </CreateBoardDialog>
           <NavLink to='/profile'>
             <Button variant='contained' endIcon={<EditIcon />}>
               edit profile
