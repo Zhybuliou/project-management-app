@@ -1,4 +1,4 @@
-import { Box, Button, TextField } from '@mui/material';
+import { Box, Button, TextField, Typography } from '@mui/material';
 import { FieldValues, useForm } from 'react-hook-form';
 import { useAppDispatch, useAppSelector } from '../../hook';
 import {
@@ -53,8 +53,10 @@ export const EditProfile = () => {
   }
 
   return (
-    <div>
-      <h1>Edit profile</h1>
+    <main className='main'>
+      <Typography variant='h2' component='h1' className='section-title'>
+        Edit profile
+      </Typography>
       <Box
         sx={{
           width: 500,
@@ -137,6 +139,6 @@ export const EditProfile = () => {
       <button onClick={getUsers}>Get all users</button>
       <button onClick={getUser}>Get user by id</button>
       <button onClick={deleteUser}>Delete user by id</button>
-    </div>
+    </main>
   );
 };

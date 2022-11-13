@@ -1,9 +1,13 @@
-import { Container } from '@mui/material';
+import { About } from './components/About/About';
+import { Benefits } from './components/Benefits/Benefits';
+import { Team } from './components/Team/Team';
 
 export const Welcome = () => {
   return (
-    <Container className='main' maxWidth='xl' component='main' sx={{ flex: '1 1 auto' }}>
-      <h1>Welcome</h1>
-    </Container>
+    <main className='main'>
+      <About />
+      <Benefits />
+      <Team />
+    </main>
   );
 };

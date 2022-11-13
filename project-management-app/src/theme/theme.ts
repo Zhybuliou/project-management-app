@@ -15,13 +15,8 @@ export const theme = createTheme({
     secondary: {
       main: colors.white,
     },
-    background: {
-      default: colors.blue,
-      paper: colors.white,
-    },
-    text: {
-      primary: colors.white,
-      secondary: colors.blue,
+    info: {
+      main: colors.pink,
     },
     action: {
       hoverOpacity: 0.2,

@@ -1,4 +1,4 @@
-import RSLogo from '../../assets/RSLogo.png';
+import RSLogo from './assets/RSLogo.png';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import { Container, IconButton, Typography } from '@mui/material';
 import { Stack } from '@mui/system';
