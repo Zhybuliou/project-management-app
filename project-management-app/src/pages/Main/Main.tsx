@@ -28,7 +28,7 @@ export const Main = () => {
 
   return (
     <Container className='main' component='main' maxWidth='xl'>
-      <Typography className='main-title' variant='h2'>
+      <Typography className='section-title' variant='h2'>
         Your Boards
       </Typography>
       <Grid container columns={{ xs: 1, sm: 2, md: 4 }}>
