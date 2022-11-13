@@ -43,7 +43,7 @@ export const Board = () => {
   };
 
   return (
-    <Container component='section' maxWidth='xl'>
+    <Container className='main' component='section' maxWidth='xl'>
       <Typography className='main-title' variant='h2'>
         Task name
       </Typography>
@@ -77,7 +77,7 @@ export const Board = () => {
                     <Typography variant='body2'>Description</Typography>
                   </CardContent>
                   <CardActions sx={{ ml: 'auto' }}>
-                    <IconButton color='secondary'>
+                    <IconButton color='info'>
                       <DeleteForeverIcon />
                     </IconButton>
                   </CardActions>

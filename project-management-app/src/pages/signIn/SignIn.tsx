@@ -5,7 +5,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import { useAppDispatch } from '../../hook';
 import { changePassword, fetchSignInData } from '../../store/authSlice';
-import { Container } from '@mui/material';
+import { Container, Typography } from '@mui/material';
 
 export const SignIn = () => {
   const dispatch = useAppDispatch();
@@ -28,7 +28,9 @@ export const SignIn = () => {
 
   return (
     <Container className='main' maxWidth='xl' component='main'>
-      <h1>Sign In</h1>
+      <Typography className='section-title' variant='h2'>
+        sign in
+      </Typography>
       <Box
         sx={{
           width: 500,
