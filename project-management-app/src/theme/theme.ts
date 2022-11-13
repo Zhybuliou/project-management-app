@@ -11,17 +11,16 @@ export const theme = createTheme({
   palette: {
     primary: {
       main: colors.blue,
-      light: colors.white,
     },
     secondary: {
-      main: colors.pink,
+      main: colors.white,
     },
     background: {
       default: colors.blue,
       paper: colors.white,
     },
     text: {
-      primary: colors.blue,
+      primary: colors.white,
       secondary: colors.blue,
     },
     action: {

@@ -5,6 +5,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import { useAppDispatch } from '../../hook';
 import { changePassword, fetchSignInData } from '../../store/authSlice';
+import { Container } from '@mui/material';
 
 export const SignIn = () => {
   const dispatch = useAppDispatch();
@@ -26,7 +27,7 @@ export const SignIn = () => {
   }
 
   return (
-    <>
+    <Container className='main' maxWidth='xl' component='main'>
       <h1>Sign In</h1>
       <Box
         sx={{
@@ -83,6 +84,6 @@ export const SignIn = () => {
           </Button>
         </form>
       </Box>
-    </>
+    </Container>
   );
 };

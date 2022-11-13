@@ -15,7 +15,7 @@ export const Main = () => {
   const allBoards = useAppSelector((state) => state.board.allBoards);
 
   return (
-    <Container className='boards' component='section' maxWidth='xl'>
+    <Container className='main' component='main' maxWidth='xl'>
       <Typography className='main-title' variant='h2'>
         Your Boards
       </Typography>

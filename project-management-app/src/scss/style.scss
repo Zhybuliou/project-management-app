@@ -2,8 +2,12 @@ $blueColor: #4d628b;
 $pinkColor: #ff6584;
 $whiteColor: #fff;
 
+html,
 body {
-  background-color: $blueColor;
+  height: 100%;
+}
+
+body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
     'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
@@ -15,8 +19,23 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
+#root {
+  height: 100%;
+}
+
+.App {
+  background-color: $blueColor;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
 .main-title {
   color: $whiteColor;
   padding: 45px 0 20px;
   text-align: center;
+}
+
+.main {
+  flex: 1 1 auto;
 }
