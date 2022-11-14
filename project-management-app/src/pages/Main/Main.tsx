@@ -14,6 +14,7 @@ import { useAppDispatch, useAppSelector } from '../../hook';
 import { fetchAllBoards, fetchDeleteBoard } from '../../store/boardSlice';
 import { useEffect, useState } from 'react';
 import { signOutByToken } from '../../utils/signOut';
+import { Link } from 'react-router-dom';
 
 export const Main = () => {
   const allBoards = useAppSelector((state) => state.board.allBoards);
@@ -45,12 +46,14 @@ export const Main = () => {
           allBoards.map((el, index) => (
             <Grid item xs={1} key={index}>
               <Card className='board'>
+              <Link to={`/board/${el._id}`} state={{ id:el._id }}>
                 <CardContent className='board__title'>
                   <Typography variant='h5'>{el.title}</Typography>
                 </CardContent>
                 <CardContent className='board__description'>
                   <Typography variant='body2'>{el.owner}</Typography>
                 </CardContent>
+                </Link>
                 <CardActions sx={{ ml: 'auto' }}>
                   <IconButton
                     color='error'

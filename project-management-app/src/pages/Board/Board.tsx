@@ -12,18 +12,30 @@ import {
   Typography,
 } from '@mui/material';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import { useAppSelector } from '../../hook';
+import { useAppDispatch, useAppSelector } from '../../hook';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import AddIcon from '@mui/icons-material/Add';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import CreateBoardDialog from '../../components/popup/CreateBoardDialog';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FieldValues, useForm } from 'react-hook-form';
+import { fetchGetBoard } from '../../store/boardSlice';
 
 export const Board = () => {
-  const allBoards = useAppSelector((state) => state.board.allBoards);
+  const board = useAppSelector((state) => state.board.board);
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const [isOpen, setIsOpen] = useState(false);
+  const location = useLocation();
+
+  useEffect(() => {
+   const id = location.state.id;
+   const getToken = localStorage.getItem('token');
+   if (getToken) {
+     const token = JSON.parse(getToken);
+     dispatch(fetchGetBoard({id, token}));
+   }
+  },[])
 
   const {
     register,
@@ -45,7 +57,7 @@ export const Board = () => {
   return (
     <Container className='main' component='section' maxWidth='xl'>
       <Typography className='main-title' variant='h2'>
-        Task name
+        {board.title}
       </Typography>
       <Stack spacing={3} alignItems='flex-start'>
         <Button
@@ -65,7 +77,7 @@ export const Board = () => {
           add column
         </Button>
       </Stack>
-      <Grid container columns={{ xs: 1, sm: 2, md: 4 }}>
+      {/* <Grid container columns={{ xs: 1, sm: 2, md: 4 }}>
         {allBoards.length
           ? allBoards.map((el, index) => (
               <Grid item xs={1} key={index}>
@@ -85,7 +97,7 @@ export const Board = () => {
               </Grid>
             ))
           : null}
-      </Grid>
+      </Grid> */}
       <CreateBoardDialog
         title='ADD COLUMN'
         openPopup={isOpen}

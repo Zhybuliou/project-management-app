@@ -8,6 +8,7 @@
   cursor: pointer;
   transition: 0.3s;
 
+
   &__title {
     background-color: $pinkColor;
     color: $whiteColor;
@@ -20,10 +21,16 @@
     }
   }
 
+  
+  a {
+    text-decoration: none;
+    color: $blueColor;
+  }
+
   &__description {
     min-height: 50px;
     padding: 5px 10px;
-    color: $blueColor;
+
 
     p {
       font-weight: 700;

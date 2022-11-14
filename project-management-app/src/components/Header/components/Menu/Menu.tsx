@@ -38,7 +38,7 @@ export const Menu = () => {
       <Select
         size='small'
         IconComponent={LanguageIcon}
-        defaultValue={localStorage.getItem('lng') || 'en'}
+        value={localStorage.getItem('lng') || 'en'}
         onChange={(event) => handleChangeLng(event.target.value)}
       >
         <MenuItem value='en'>en</MenuItem>
