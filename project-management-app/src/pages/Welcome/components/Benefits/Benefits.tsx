@@ -1,19 +1,16 @@
 import { Grid, List, ListItem, ListItemIcon, Typography } from '@mui/material';
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
+import { useTranslation } from 'react-i18next';
 
 export const Benefits = () => {
+  const { t } = useTranslation();
   const benefits = {
-    leftBlock: [
-      'real-time project budget management',
-      'balanced resource management',
-      'effective communication',
-      'effortless project planning',
-    ],
+    leftBlock: ['benefitLeftItem1', 'benefitLeftItem2', 'benefitLeftItem3', 'benefitLeftItem4'],
     rightBlock: [
-      'solid up-to-the-minute reporting',
-      'pipeline forecasting',
-      'improved team collaboration',
-      'enhanced customer satisfaction',
+      'benefitRightItem1',
+      'benefitRightItem2',
+      'benefitRightItem3',
+      'benefitRightItem4',
     ],
   };
 
@@ -27,7 +24,7 @@ export const Benefits = () => {
     >
       <Grid item xs={12} justifyContent='center'>
         <Typography variant='h2' component='h1' className='section-title --blueColor'>
-          benefits of using
+          {t('benefitsTitle')}
         </Typography>
       </Grid>
       <Grid item md={4} xs={8}>
@@ -38,7 +35,7 @@ export const Benefits = () => {
                 <TaskAltIcon color='success' />
               </ListItemIcon>
               <Typography variant='h6' className='section-text'>
-                {advantage[0].toUpperCase() + advantage.slice(1)}
+                {t(advantage)}
               </Typography>
             </ListItem>
           ))}
@@ -52,7 +49,7 @@ export const Benefits = () => {
                 <TaskAltIcon color='success' />
               </ListItemIcon>
               <Typography variant='h6' className='section-text'>
-                {advantage[0].toUpperCase() + advantage.slice(1)}
+                {t(advantage)}
               </Typography>
             </ListItem>
           ))}

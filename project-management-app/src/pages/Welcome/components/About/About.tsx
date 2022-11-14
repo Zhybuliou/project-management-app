@@ -1,7 +1,9 @@
 import welcomeLogo from './assets/WelcomeLogo.png';
 import { Grid, Typography } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 export const About = () => {
+  const { t } = useTranslation();
   return (
     <Grid
       container
@@ -15,13 +17,12 @@ export const About = () => {
     >
       <Grid item xs={12}>
         <Typography variant='h2' component='h1' className='section-title'>
-          simplify work and get more done
+          {t('aboutTitle1')}
         </Typography>
       </Grid>
       <Grid item lg={6} md={12}>
         <Typography variant='h4' className='section-subtitle' sx={{ p: '0 5px' }}>
-          plan, track, and manage any type of work with project management that flexes to your
-          team`s needs
+          {t('aboutTitle2')}
         </Typography>
       </Grid>
       <Grid item lg={6} md={12}>
