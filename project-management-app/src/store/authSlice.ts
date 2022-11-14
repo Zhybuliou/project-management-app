@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import jwt from 'jwt-decode';
+import { decodeToken } from 'react-jwt';
 
 export type UserData = {
   name?: string;
@@ -36,9 +36,10 @@ type DecodedToken = {
 };
 
 const expTokenTime = localStorage.getItem('exp' as string);
+const authLocal = localStorage.getItem('exp');
 
 const initialState: AuthState = {
-  auth: !!localStorage.getItem('auth' as string) || false,
+  auth: authLocal ? JSON.parse(authLocal) : false,
   name:
     localStorage
       .getItem('name' as string)
@@ -78,6 +79,7 @@ export const fetchSignUpData = createAsyncThunk<UserData, UserData, { rejectValu
       },
       body: JSON.stringify(body),
     });
+
     const data = await response.json();
     if (response.status !== 200) {
       if (response.status === 409) {
@@ -107,7 +109,6 @@ export const fetchSignInData = createAsyncThunk<FetchDataSignIn, UserData, { rej
       },
       body: JSON.stringify(body),
     });
-
     const data = await response.json();
     if (response.status !== 200) {
       if (response.status === 403) {
@@ -121,14 +122,14 @@ export const fetchSignInData = createAsyncThunk<FetchDataSignIn, UserData, { rej
       }
       return rejectWithValue('Some error');
     }
-    const decoded = jwt<DecodedToken>(data.token);
+    const decodedToken = decodeToken(data.token) as DecodedToken;
 
     return {
       token: data.token,
-      id: decoded.id,
-      login: decoded.login,
-      iat: decoded.iat,
-      exp: decoded.exp,
+      id: decodedToken.id,
+      login: decodedToken.login,
+      iat: decodedToken.iat,
+      exp: decodedToken.exp,
     };
   },
 );
@@ -174,9 +175,9 @@ const authSlice = createSlice({
         state.isLoaded = true;
       })
       .addCase(fetchSignInData.fulfilled, (state, action: PayloadAction<FetchDataSignIn>) => {
+        state.auth = true;
         state.isLoaded = false;
         state.error = null;
-        state.auth = true;
         state.token = action.payload.token;
         state.id = action.payload.id;
         state.login = action.payload.login;

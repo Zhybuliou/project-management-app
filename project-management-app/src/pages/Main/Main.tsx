@@ -25,6 +25,7 @@ export const Main = () => {
       dispatch(fetchAllBoards(token))
     }, []);
   }
+    signOutByToken();
 
   return (
     <Container className='main' component='main' maxWidth='xl'>
