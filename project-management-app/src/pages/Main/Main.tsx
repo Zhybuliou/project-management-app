@@ -8,24 +8,32 @@ import {
   IconButton,
   Typography,
 } from '@mui/material';
-import ConfirmDialog from '../../components/popup/ConfirmDialog'
+import ConfirmDialog from '../../components/popup/ConfirmDialog';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { useAppDispatch, useAppSelector } from '../../hook';
 import { fetchAllBoards, fetchDeleteBoard } from '../../store/boardSlice';
 import { useEffect, useState } from 'react';
+import { signOutByToken } from '../../utils/signOut';
 
 export const Main = () => {
   const allBoards = useAppSelector((state) => state.board.allBoards);
   const dispatch = useAppDispatch();
-  const [confirmDialog, setConfirmDialog] = useState({isOpen: false, title: '', subTitle: '', onConfirm: () => {''}});
-  const getToken = localStorage.getItem('token')
-  if(getToken){
+  const [confirmDialog, setConfirmDialog] = useState({
+    isOpen: false,
+    title: '',
+    subTitle: '',
+    onConfirm: () => {
+      ('');
+    },
+  });
+  const getToken = localStorage.getItem('token');
+  if (getToken) {
     const token = JSON.parse(getToken);
     useEffect(() => {
-      dispatch(fetchAllBoards(token))
+      dispatch(fetchAllBoards(token));
     }, []);
   }
-    signOutByToken();
+  signOutByToken();
 
   return (
     <Container className='main' component='main' maxWidth='xl'>
@@ -44,22 +52,26 @@ export const Main = () => {
                   <Typography variant='body2'>{el.owner}</Typography>
                 </CardContent>
                 <CardActions sx={{ ml: 'auto' }}>
-                  <IconButton color="error" onClick={ async () => {
+                  <IconButton
+                    color='error'
+                    onClick={async () => {
                       setConfirmDialog({
                         isOpen: true,
                         title: 'Are you sure what you want delete this board',
                         subTitle: 'Click button yes',
-                        onConfirm: async () => {                    
-                        const getToken = localStorage.getItem('token');
-                        if(getToken){
-                          const id = el._id;
-                          const token = JSON.parse(getToken);
-                          await dispatch(fetchDeleteBoard({id, token}))
-                          await dispatch(fetchAllBoards(token))
-                          setConfirmDialog({...confirmDialog, isOpen: false})  
-                        }}
-                    })
-                    }}>
+                        onConfirm: async () => {
+                          const getToken = localStorage.getItem('token');
+                          if (getToken) {
+                            const id = el._id;
+                            const token = JSON.parse(getToken);
+                            await dispatch(fetchDeleteBoard({ id, token }));
+                            await dispatch(fetchAllBoards(token));
+                            setConfirmDialog({ ...confirmDialog, isOpen: false });
+                          }
+                        },
+                      });
+                    }}
+                  >
                     <DeleteForeverIcon />
                   </IconButton>
                 </CardActions>
@@ -72,7 +84,7 @@ export const Main = () => {
           </Typography>
         )}
       </Grid>
-      <ConfirmDialog confirmDialog={confirmDialog} setConfirmDialog={setConfirmDialog}  />
+      <ConfirmDialog confirmDialog={confirmDialog} setConfirmDialog={setConfirmDialog} />
     </Container>
   );
 };
