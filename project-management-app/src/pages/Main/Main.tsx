@@ -10,9 +10,11 @@ import {
 } from '@mui/material';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { useAppSelector } from '../../hook';
+import { signOutByToken } from '../../utils/signOut';
 
 export const Main = () => {
   const allBoards = useAppSelector((state) => state.board.allBoards);
+  signOutByToken();
 
   return (
     <Container className='boards' component='section' maxWidth='xl'>

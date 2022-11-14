@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
+import { removeLocalStorage } from '../utils/signOut';
 import { changeLoaderStatus, changeNameUser, changeStatusAuth, UserData } from './authSlice';
 
 type UserState = {
@@ -98,6 +99,7 @@ export const fetchDeleteUser = createAsyncThunk<UserData, FetchUserProps, { reje
 
     dispatch(changeStatusAuth(false));
     dispatch(changeLoaderStatus(false));
+    removeLocalStorage();
     return data;
   },
 );
@@ -173,9 +175,6 @@ const userSlice = createSlice({
       })
       .addCase(fetchDeleteUser.fulfilled, (state) => {
         state.error = null;
-        localStorage.removeItem('token');
-        localStorage.removeItem('auth');
-        localStorage.removeItem('id');
         state.user = {} as UserData;
       })
       .addCase(fetchDeleteUser.rejected, (state, action) => {

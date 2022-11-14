@@ -1,16 +1,29 @@
 import { Box, Button, TextField } from '@mui/material';
+import { useEffect, useState } from 'react';
 import { FieldValues, useForm } from 'react-hook-form';
+import ConfirmDialog from '../../components/popup/ConfirmDialog';
 import { useAppDispatch, useAppSelector } from '../../hook';
+import { changeLoaderStatus, changeStatusAuth } from '../../store/authSlice';
 import {
   fetchAllUsers,
   fetchDeleteUser,
   fetchGetUser,
   fetchUpdateUser,
 } from '../../store/userSlice';
+import { isExpired } from 'react-jwt';
+import { removeLocalStorage } from '../../utils/signOut';
 
 export const EditProfile = () => {
   const dispatch = useAppDispatch();
   const { token, id, name, login, password } = useAppSelector((state) => state.auth);
+  const [confirmDialog, setConfirmDialog] = useState({
+    isOpen: false,
+    title: '',
+    subTitle: '',
+    onConfirm: () => {
+      ('');
+    },
+  });
 
   const {
     register,
@@ -46,11 +59,35 @@ export const EditProfile = () => {
       dispatch(fetchGetUser({ id, token }));
     }
   }
+
   function deleteUser() {
+    dispatch(changeLoaderStatus(true));
     if (token) {
       dispatch(fetchDeleteUser({ id, token }));
+      setConfirmDialog({ ...confirmDialog, isOpen: false });
     }
   }
+
+  function openConfirmDialog() {
+    setConfirmDialog({
+      isOpen: true,
+      title: 'Are you sure? This action is irreversible! ',
+      subTitle: 'Click button yes',
+      onConfirm: () => {
+        deleteUser();
+      },
+    });
+  }
+
+  useEffect(() => {
+    if (token) {
+      const expired = isExpired(token);
+      if (expired) {
+        dispatch(changeStatusAuth(false));
+        removeLocalStorage();
+      }
+    }
+  });
 
   return (
     <div>
@@ -136,7 +173,8 @@ export const EditProfile = () => {
       </Box>
       <button onClick={getUsers}>Get all users</button>
       <button onClick={getUser}>Get user by id</button>
-      <button onClick={deleteUser}>Delete user by id</button>
+      <button onClick={openConfirmDialog}>Delete user by id</button>
+      <ConfirmDialog confirmDialog={confirmDialog} setConfirmDialog={setConfirmDialog} />
     </div>
   );
 };

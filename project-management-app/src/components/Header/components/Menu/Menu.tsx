@@ -10,6 +10,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../../hook';
 import { changeStatusAuth } from '../../../../store/authSlice';
+import { removeLocalStorage } from '../../../../utils/signOut';
 
 export const Menu = () => {
   const auth = useAppSelector((state) => state.auth.auth);
@@ -18,11 +19,7 @@ export const Menu = () => {
 
   function logOut() {
     dispatch(changeStatusAuth(false));
-    localStorage.removeItem('token');
-    localStorage.removeItem('id');
-    localStorage.removeItem('login');
-    localStorage.removeItem('exp');
-    localStorage.removeItem('password');
+    removeLocalStorage();
   }
 
   return (
