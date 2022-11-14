@@ -35,7 +35,7 @@ export const Header = () => {
           <Toolbar component='nav' sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
             <NavLink to='/'>
               <IconButton size='small'>
-                <img src={mainLogo} style={{ width: '70px' }} alt='Project Logo' />
+                <img src={headerLogo} style={{ width: '70px' }} alt='Project Logo' />
               </IconButton>
             </NavLink>
             <Menu />
