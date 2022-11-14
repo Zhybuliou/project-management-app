@@ -2,8 +2,10 @@ import { Grid, Stack, Typography } from '@mui/material';
 import evgenIcon from './assets/evgen.png';
 import kateIcon from './assets/kate.png';
 import vitaliusIcon from './assets/vitalius.png';
+import { useTranslation } from 'react-i18next';
 
 export const Team = () => {
+  const { t } = useTranslation();
   const team = [
     {
       name: 'vitaliy',
@@ -30,7 +32,7 @@ export const Team = () => {
     >
       <Grid item xs={12} justifyContent='center'>
         <Typography variant='h2' component='h1' className='section-title'>
-          our team
+          {t('teamTitle')}
         </Typography>
       </Grid>
       {team.map(({ name, avatar }) => (
@@ -38,7 +40,7 @@ export const Team = () => {
           <Stack justifyContent='center' alignItems='center'>
             <img src={avatar} alt={name} />
             <Typography textTransform='uppercase' variant='h6' fontFamily='Ubuntu'>
-              {name}
+              {t(name)}
             </Typography>
           </Stack>
         </Grid>

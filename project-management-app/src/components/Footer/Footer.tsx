@@ -2,8 +2,10 @@ import RSLogo from './assets/RSLogo.png';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import { Container, IconButton, Typography } from '@mui/material';
 import { Stack } from '@mui/system';
+import { useTranslation } from 'react-i18next';
 
 export const Footer = () => {
+  const { t } = useTranslation();
   const developers = [
     {
       name: 'vitaliy',
@@ -42,7 +44,7 @@ export const Footer = () => {
             sx={{ fontSize: 14 }}
           >
             <GitHubIcon sx={{ mr: 0.5 }} />
-            {name.toUpperCase()}
+            {t(name).toUpperCase()}
           </IconButton>
         ))}
       </Stack>
