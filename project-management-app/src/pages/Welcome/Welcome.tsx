@@ -3,6 +3,9 @@ import { useAppDispatch, useAppSelector } from '../../hook';
 import { changeStatusAuth } from '../../store/authSlice';
 import { removeLocalStorage } from '../../utils/signOut';
 import { isExpired } from 'react-jwt';
+import { About } from './components/About/About';
+import { Benefits } from './components/Benefits/Benefits';
+import { Team } from './components/Team/Team';
 
 export const Welcome = () => {
   const token = useAppSelector((state) => state.auth.token);
@@ -17,6 +20,12 @@ export const Welcome = () => {
       }
     }
   });
-
-  return <h1>Welcome</h1>;
+  
+  return (
+    <main className='main'>
+      <About />
+      <Benefits />
+      <Team />
+    </main>
+  );
 };

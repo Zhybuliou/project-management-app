@@ -11,11 +11,15 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../../hook';
 import { changeStatusAuth } from '../../../../store/authSlice';
 import { removeLocalStorage } from '../../../../utils/signOut';
+import CreateBoardDialog from '../../../popup/CreateBoardDialog';
+import FormCreateBoard from '../../../forms/FormCreateBoard';
+import { useState } from 'react';
 
 export const Menu = () => {
   const auth = useAppSelector((state) => state.auth.auth);
-  const location = useLocation().pathname;
+  const location = useLocation().pathname.split('/')[1];
   const dispatch = useAppDispatch();
+  const [boardDialog, setBoardDialog] = useState(false);
 
   function logOut() {
     dispatch(changeStatusAuth(false));
@@ -28,10 +32,10 @@ export const Menu = () => {
         <MenuItem value='en'>en</MenuItem>
         <MenuItem value='ru'>ru</MenuItem>
       </Select>
-      {!auth && location !== '/main' ? (
+      {!auth && location !== 'main' ? (
         <>
           <NavLink to='/login'>
-            <Button variant='contained' endIcon={<LoginIcon />} disabled={!(location !== '/login')}>
+            <Button variant='contained' endIcon={<LoginIcon />} disabled={!(location !== 'login')}>
               sign in
             </Button>
           </NavLink>
@@ -39,14 +43,14 @@ export const Menu = () => {
             <Button
               variant='contained'
               endIcon={<AppRegistrationIcon />}
-              disabled={!(location !== '/register')}
+              disabled={!(location !== 'register')}
             >
               sign up
             </Button>
           </NavLink>
         </>
       ) : null}
-      {auth && location === '/' ? (
+      {auth && !location ? (
         <NavLink to='/main'>
           <Button variant='contained' endIcon={<HomeIcon />}>
             go to main page
@@ -54,11 +58,14 @@ export const Menu = () => {
         </NavLink>
       ) : null}
 
-      {auth && (location === '/main' || location === '/profile') ? (
+      {auth && (location === 'main' || location === 'profile' || location === 'board') ? (
         <>
-          <Button variant='contained' endIcon={<DashboardCustomizeIcon />}>
+          <Button variant='contained' endIcon={<DashboardCustomizeIcon />} onClick={() => setBoardDialog(true)}>
             create new board
           </Button>
+          <CreateBoardDialog title={'Create Board'} openPopup={boardDialog} setOpenPopup={setBoardDialog} >
+            <FormCreateBoard setOpenPopup={setBoardDialog}/>
+          </CreateBoardDialog>
           <NavLink to='/profile'>
             <Button variant='contained' endIcon={<EditIcon />}>
               edit profile

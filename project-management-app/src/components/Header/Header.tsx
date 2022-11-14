@@ -1,7 +1,7 @@
 import { AppBar, Toolbar, IconButton, Container, useScrollTrigger } from '@mui/material';
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import mainLogo from '../../assets/MainLogo.png';
+import headerLogo from './assets/headerLogo.png';
 import { Menu } from './components/Menu/Menu';
 
 interface Props {

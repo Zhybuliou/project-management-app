@@ -1,5 +1,5 @@
-import { Box, Button, TextField } from '@mui/material';
 import { useEffect, useState } from 'react';
+import { Box, Button, TextField, Typography } from '@mui/material';
 import { FieldValues, useForm } from 'react-hook-form';
 import ConfirmDialog from '../../components/popup/ConfirmDialog';
 import { useAppDispatch, useAppSelector } from '../../hook';
@@ -90,8 +90,10 @@ export const EditProfile = () => {
   });
 
   return (
-    <div>
-      <h1>Edit profile</h1>
+    <main className='main'>
+      <Typography variant='h2' component='h1' className='section-title'>
+        Edit profile
+      </Typography>
       <Box
         sx={{
           width: 500,
@@ -175,6 +177,6 @@ export const EditProfile = () => {
       <button onClick={getUser}>Get user by id</button>
       <button onClick={openConfirmDialog}>Delete user by id</button>
       <ConfirmDialog confirmDialog={confirmDialog} setConfirmDialog={setConfirmDialog} />
-    </div>
+    </main>
   );
 };

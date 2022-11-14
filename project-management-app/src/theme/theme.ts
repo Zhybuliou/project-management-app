@@ -1,20 +1,22 @@
 import { createTheme } from '@mui/material';
 
+const colors = {
+  blue: '#4D628B',
+  pink: '#FF6584',
+  white: '#ffffff',
+  snow: '#e1edef',
+};
+
 export const theme = createTheme({
   palette: {
     primary: {
-      main: '#4D628B',
+      main: colors.blue,
     },
     secondary: {
-      main: '#FF6584',
+      main: colors.white,
     },
-    background: {
-      default: '#4d628b',
-      paper: '#ffffff',
-    },
-    text: {
-      primary: '#4d628b',
-      secondary: '#ffffff',
+    info: {
+      main: colors.pink,
     },
     action: {
       hoverOpacity: 0.2,
@@ -25,12 +27,12 @@ export const theme = createTheme({
     MuiButton: {
       styleOverrides: {
         root: {
-          background: '#ffffff',
+          background: colors.white,
           fontSize: '14px',
-          color: '#4d628b',
+          color: colors.blue,
           fontWeight: 700,
           ':hover': {
-            backgroundColor: '#e1edef',
+            backgroundColor: colors.snow,
           },
           ':disabled': {
             backgroundColor: 'rgba(0, 0, 0, 0.3)',
@@ -41,13 +43,13 @@ export const theme = createTheme({
     MuiInputBase: {
       styleOverrides: {
         root: {
-          background: '#ffffff',
+          background: colors.white,
           fontSize: '14px',
-          color: '#4d628b',
+          color: colors.blue,
           fontWeight: 700,
           textTransform: 'uppercase',
           ':hover': {
-            backgroundColor: '#e1edef',
+            backgroundColor: colors.snow,
           },
         },
       },
@@ -56,7 +58,7 @@ export const theme = createTheme({
       styleOverrides: {
         root: {
           fontSize: '14px',
-          color: '#4d628b',
+          color: colors.blue,
           fontWeight: 700,
           textTransform: 'uppercase',
         },
