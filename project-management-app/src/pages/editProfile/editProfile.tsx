@@ -5,10 +5,12 @@ import ConfirmDialog from '../../components/popup/ConfirmDialog';
 import { useAppDispatch, useAppSelector } from '../../hook';
 import { changeLoaderStatus, changeStatusAuth } from '../../store/authSlice';
 import {
+  changeOpenErrorSnackBar,
   fetchAllUsers,
   fetchDeleteUser,
   fetchGetUser,
   fetchUpdateUser,
+  getErrorMessage,
 } from '../../store/userSlice';
 import { isExpired } from 'react-jwt';
 import { removeLocalStorage } from '../../utils/signOut';
@@ -83,11 +85,13 @@ export const EditProfile = () => {
     if (token) {
       const expired = isExpired(token);
       if (expired) {
+        dispatch(changeOpenErrorSnackBar(true));
         dispatch(changeStatusAuth(false));
         removeLocalStorage();
+        dispatch(getErrorMessage('error403'));
       }
     }
-  });
+  }, []);
 
   return (
     <main className='main'>

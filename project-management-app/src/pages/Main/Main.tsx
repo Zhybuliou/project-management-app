@@ -13,7 +13,7 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { useAppDispatch, useAppSelector } from '../../hook';
 import { fetchAllBoards, fetchDeleteBoard } from '../../store/boardSlice';
 import { useEffect, useState } from 'react';
-import { signOutByToken } from '../../utils/signOut';
+// import { signOutByToken } from '../../utils/signOut';
 import { Link } from 'react-router-dom';
 
 export const Main = () => {
@@ -34,7 +34,7 @@ export const Main = () => {
       dispatch(fetchAllBoards(token));
     }, []);
   }
-  signOutByToken();
+  // signOutByToken();
 
   return (
     <Container className='main' component='main' maxWidth='xl'>
