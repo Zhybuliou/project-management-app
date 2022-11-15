@@ -20,21 +20,31 @@ import CreateBoardDialog from '../../components/popup/CreateBoardDialog';
 import { useEffect, useState } from 'react';
 import { FieldValues, useForm } from 'react-hook-form';
 import { fetchGetBoard } from '../../store/boardSlice';
+import { fetchAllColumns, fetchCreateColumn, fetchDeleteColumn } from '../../store/columnSlice';
+import ConfirmDialog from '../../components/popup/ConfirmDialog';
 
 export const Board = () => {
   const board = useAppSelector((state) => state.board.board);
+  const allColumns = useAppSelector((state) => state.column.allColumns);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const id = location.state.id;
+  const getToken = localStorage.getItem('token')
+  const token = getToken ? JSON.parse(getToken) : '';
+  const [confirmDialog, setConfirmDialog] = useState({
+    isOpen: false,
+    title: '',
+    subTitle: '',
+    onConfirm: () => {
+      ('');
+    },
+  });
 
   useEffect(() => {
-   const id = location.state.id;
-   const getToken = localStorage.getItem('token');
-   if (getToken) {
-     const token = JSON.parse(getToken);
      dispatch(fetchGetBoard({id, token}));
-   }
+     dispatch(fetchAllColumns({id, token}));
   },[])
 
   const {
@@ -48,8 +58,13 @@ export const Board = () => {
     },
   });
 
-  const submit = (data: FieldValues) => {
-    console.log(data);
+  const submit = async (data: FieldValues) => {
+    const body = {
+      title: data.columnTitle,
+      order: 1
+    }
+    await dispatch(fetchCreateColumn({id, body, token}));
+    await dispatch(fetchAllColumns({id, token}));
     setIsOpen(!isOpen);
     setTimeout(() => reset());
   };
@@ -77,19 +92,31 @@ export const Board = () => {
           add column
         </Button>
       </Stack>
-      {/* <Grid container columns={{ xs: 1, sm: 2, md: 4 }}>
-        {allBoards.length
-          ? allBoards.map((el, index) => (
+      <Grid container columns={{ xs: 1, sm: 2, md: 4 }}>
+        {allColumns.length
+          ? allColumns.map((column, index) => (
               <Grid item xs={1} key={index}>
                 <Card>
-                  <CardContent>
-                    <Typography variant='h5'>{el.title}</Typography>
+                  <CardContent >
+                    <Typography variant='h5'>{column.title}</Typography>
                   </CardContent>
                   <CardContent>
                     <Typography variant='body2'>Description</Typography>
                   </CardContent>
                   <CardActions sx={{ ml: 'auto' }}>
-                    <IconButton color='info'>
+                    <IconButton color='info' onClick={ async () => {
+                       setConfirmDialog({
+                        isOpen: true,
+                        title: 'Are you sure what you want delete this column',
+                        subTitle: 'Click button yes',
+                        onConfirm: async () => {
+                          const columnId = column._id;
+                          setConfirmDialog({ ...confirmDialog, isOpen: false }); 
+                          await dispatch(fetchDeleteColumn({id, columnId, token}));
+                          await dispatch(fetchAllColumns({id, token}));
+                        },
+                      });
+                    }}>
                       <DeleteForeverIcon />
                     </IconButton>
                   </CardActions>
@@ -97,7 +124,7 @@ export const Board = () => {
               </Grid>
             ))
           : null}
-      </Grid> */}
+      </Grid>
       <CreateBoardDialog
         title='ADD COLUMN'
         openPopup={isOpen}
@@ -133,6 +160,8 @@ export const Board = () => {
           </Button>
         </Stack>
       </CreateBoardDialog>
+      <ConfirmDialog confirmDialog={confirmDialog} setConfirmDialog={setConfirmDialog} />
     </Container>
   );
 };
+
