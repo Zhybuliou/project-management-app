@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { changeLoaderStatus } from './authSlice';
+import { changeOpenErrorSnackBar, getErrorMessage } from './userSlice';
 
 type BoardData = {
   _id?: string;
@@ -9,13 +10,11 @@ type BoardData = {
 };
 
 type BoardState = {
-  error: null | string;
   allBoards: [] | FetchAllBoards;
   board: BoardData;
 };
 
 const initialState: BoardState = {
-  error: null,
   allBoards: [],
   board: {} as BoardData,
 };
@@ -45,9 +44,12 @@ export const fetchAllBoards = createAsyncThunk<FetchAllBoards, string, { rejectV
     const data = await response.json();
 
     if (response.status !== 200) {
+      dispatch(changeOpenErrorSnackBar(true));
       if (response.status === 401) {
-        return rejectWithValue('Unauthorized');
+        dispatch(getErrorMessage('errorUnAuth'));
+        return rejectWithValue('errorUnAuth');
       }
+      dispatch(getErrorMessage('errorCommon'));
       dispatch(changeLoaderStatus(false));
     }
     dispatch(changeLoaderStatus(false));
@@ -68,9 +70,12 @@ export const fetchGetBoard = createAsyncThunk<BoardData, FetchBoardProps, { reje
     });
     const data = await response.json();
     if (response.status !== 200) {
+      dispatch(changeOpenErrorSnackBar(true));
       if (response.status === 401) {
-        return rejectWithValue('Unauthorized');
+        dispatch(getErrorMessage('errorUnAuth'));
+        return rejectWithValue('errorUnAuth');
       }
+      dispatch(getErrorMessage('errorCommon'));
       dispatch(changeLoaderStatus(false));
     }
     dispatch(changeLoaderStatus(false));
@@ -93,15 +98,20 @@ export const fetchDeleteBoard = createAsyncThunk<
   });
   const data = await response.json();
   if (response.status !== 200) {
+    dispatch(changeOpenErrorSnackBar(true));
     if (response.status === 404) {
-      return rejectWithValue('User was not founded!');
+      dispatch(getErrorMessage('error404'));
+      return rejectWithValue('error404');
     }
     if (response.status === 403) {
-      return rejectWithValue('Invalid token');
+      dispatch(getErrorMessage('error403'));
+      return rejectWithValue('error403');
     }
     if (response.status === 502) {
-      return rejectWithValue('Bad Gateway');
+      dispatch(getErrorMessage('error502'));
+      return rejectWithValue('error502');
     }
+    dispatch(getErrorMessage('errorCommon'));
     dispatch(changeLoaderStatus(false));
   }
   dispatch(changeLoaderStatus(false));
@@ -126,15 +136,20 @@ export const fetchUpdateBoard = createAsyncThunk<
   const data = await response.json();
 
   if (response.status !== 200) {
+    dispatch(changeOpenErrorSnackBar(true));
     if (response.status === 500) {
-      return rejectWithValue('Internal server error');
+      dispatch(getErrorMessage('error500'));
+      return rejectWithValue('error500');
     }
     if (response.status === 404) {
-      return rejectWithValue('User was not founded!');
+      dispatch(getErrorMessage('error404'));
+      return rejectWithValue('error404');
     }
     if (response.status === 400) {
-      return rejectWithValue('Validation failed (uuid  is expected)');
+      dispatch(getErrorMessage('error400'));
+      return rejectWithValue('error400');
     }
+    dispatch(getErrorMessage('errorCommon'));
     dispatch(changeLoaderStatus(false));
   }
   dispatch(changeLoaderStatus(false));
@@ -159,15 +174,20 @@ export const fetchCreateBoard = createAsyncThunk<
   const data = await response.json();
 
   if (response.status !== 200) {
+    dispatch(changeOpenErrorSnackBar(true));
     if (response.status === 500) {
-      return rejectWithValue('Internal server error');
+      dispatch(getErrorMessage('error500'));
+      return rejectWithValue('error500');
     }
     if (response.status === 404) {
-      return rejectWithValue('User was not founded!');
+      dispatch(getErrorMessage('error404'));
+      return rejectWithValue('error404');
     }
     if (response.status === 400) {
-      return rejectWithValue('Validation failed (uuid  is expected)');
+      dispatch(getErrorMessage('error400'));
+      return rejectWithValue('error400');
     }
+    dispatch(getErrorMessage('errorCommon'));
     dispatch(changeLoaderStatus(false));
   }
   dispatch(changeLoaderStatus(false));
@@ -180,61 +200,41 @@ const boardSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchAllBoards.pending, (state) => {
-        state.error = null;
-      })
+      // .addCase(fetchAllBoards.pending, (state) => {
+      // })
       .addCase(fetchAllBoards.fulfilled, (state, action: PayloadAction<FetchAllBoards>) => {
-        state.error = null;
         state.allBoards = action.payload;
       })
-      .addCase(fetchAllBoards.rejected, (state, action) => {
-        state.error = action.payload as string;
-        alert(state.error);
-      })
-      .addCase(fetchGetBoard.pending, (state) => {
-        state.error = null;
-      })
+      // .addCase(fetchAllBoards.rejected, (state, action) => {
+      // })
+      // .addCase(fetchGetBoard.pending, (state) => {
+      // })
       .addCase(fetchGetBoard.fulfilled, (state, action: PayloadAction<BoardData>) => {
-        state.error = null;
         state.board = action.payload;
       })
-      .addCase(fetchGetBoard.rejected, (state, action) => {
-        state.error = action.payload as string;
-        alert(state.error);
-      })
-      .addCase(fetchDeleteBoard.pending, (state) => {
-        state.error = null;
-      })
+      // .addCase(fetchGetBoard.rejected, (state, action) => {
+      // })
+      // .addCase(fetchDeleteBoard.pending, (state) => {
+      // })
       .addCase(fetchDeleteBoard.fulfilled, (state) => {
-        state.error = null;
         state.board = {} as BoardData;
       })
-      .addCase(fetchDeleteBoard.rejected, (state, action) => {
-        state.error = action.payload as string;
-        alert(state.error);
-      })
-      .addCase(fetchUpdateBoard.pending, (state) => {
-        state.error = null;
-      })
+      // .addCase(fetchDeleteBoard.rejected, (state, action) => {
+      // })
+      // .addCase(fetchUpdateBoard.pending, (state) => {
+      // })
       .addCase(fetchUpdateBoard.fulfilled, (state, action: PayloadAction<BoardData>) => {
-        state.error = null;
         state.board = action.payload;
       })
-      .addCase(fetchUpdateBoard.rejected, (state, action) => {
-        state.error = action.payload as string;
-        alert(state.error);
-      })
-      .addCase(fetchCreateBoard.pending, (state) => {
-        state.error = null;
-      })
+      // .addCase(fetchUpdateBoard.rejected, (state, action) => {
+      // })
+      // .addCase(fetchCreateBoard.pending, (state) => {
+      // })
       .addCase(fetchCreateBoard.fulfilled, (state, action: PayloadAction<BoardData>) => {
-        state.error = null;
         state.board = action.payload;
-      })
-      .addCase(fetchCreateBoard.rejected, (state, action) => {
-        state.error = action.payload as string;
-        alert(state.error);
       });
+    // .addCase(fetchCreateBoard.rejected, (state, action) => {
+    // });
   },
 });
 

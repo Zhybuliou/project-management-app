@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { decodeToken } from 'react-jwt';
+import { changeOpenErrorSnackBar, getErrorMessage } from './userSlice';
 
 export type UserData = {
   name?: string;
@@ -21,11 +22,11 @@ type AuthState = {
   name: string;
   login: string;
   id: string;
-  error: null | string;
   token: null | string;
   exp: number | null;
   password: string | undefined;
   isLoaded: boolean;
+  openErrorSnackBar: boolean;
 };
 
 type DecodedToken = {
@@ -50,7 +51,6 @@ const initialState: AuthState = {
       .getItem('login' as string)
       ?.replace(/"/g, '')
       .trim() || '',
-  error: null,
   token:
     localStorage
       .getItem('token' as string)
@@ -64,6 +64,7 @@ const initialState: AuthState = {
   exp: expTokenTime ? +expTokenTime : null,
   password: localStorage.getItem('password' as string) || undefined,
   isLoaded: false,
+  openErrorSnackBar: false,
 };
 
 const BASE_PATH = 'https://kanbanapi.adaptable.app/';
@@ -79,16 +80,19 @@ export const fetchSignUpData = createAsyncThunk<UserData, UserData, { rejectValu
       },
       body: JSON.stringify(body),
     });
-
     const data = await response.json();
     if (response.status !== 200) {
+      dispatch(changeOpenErrorSnackBar(true));
       if (response.status === 409) {
-        return rejectWithValue('User login already exists!');
+        dispatch(getErrorMessage('error409'));
+        return rejectWithValue('error409');
       }
       if (response.status === 400) {
-        return rejectWithValue('Bad Request');
+        dispatch(getErrorMessage('errorCommon'));
+        return rejectWithValue('errorCommon');
       }
-      return rejectWithValue('Some error');
+      dispatch(getErrorMessage('errorCommon'));
+      return rejectWithValue('errorCommon');
     }
 
     dispatch(fetchSignInData({ login: body.login, password: body.password as string }));
@@ -100,7 +104,7 @@ export const fetchSignUpData = createAsyncThunk<UserData, UserData, { rejectValu
 
 export const fetchSignInData = createAsyncThunk<FetchDataSignIn, UserData, { rejectValue: string }>(
   'auth/fetchSignInData',
-  async function (body, { rejectWithValue }) {
+  async function (body, { rejectWithValue, dispatch }) {
     const response = await fetch(`${BASE_PATH}auth/signin`, {
       method: 'POST',
       headers: {
@@ -109,18 +113,24 @@ export const fetchSignInData = createAsyncThunk<FetchDataSignIn, UserData, { rej
       },
       body: JSON.stringify(body),
     });
+
     const data = await response.json();
     if (response.status !== 200) {
+      dispatch(changeOpenErrorSnackBar(true));
       if (response.status === 403) {
-        return rejectWithValue('User login already exists!');
+        dispatch(getErrorMessage('error409'));
+        return rejectWithValue('error409');
       }
       if (response.status === 400) {
-        return rejectWithValue('Bad Request');
+        dispatch(getErrorMessage('errorCommon'));
+        return rejectWithValue('errorCommon');
       }
       if (response.status === 401) {
-        return rejectWithValue('Authorization error');
+        dispatch(getErrorMessage('error401'));
+        return rejectWithValue('error401');
       }
-      return rejectWithValue('Some error');
+      dispatch(getErrorMessage('errorCommon'));
+      return rejectWithValue('errorCommon');
     }
     const decodedToken = decodeToken(data.token) as DecodedToken;
 
@@ -157,27 +167,22 @@ const authSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchSignUpData.pending, (state) => {
-        state.error = null;
         state.isLoaded = true;
       })
       .addCase(fetchSignUpData.fulfilled, (state, action: PayloadAction<UserData>) => {
         state.isLoaded = false;
-        state.error = null;
         state.name = action.payload.login;
       })
-      .addCase(fetchSignUpData.rejected, (state, action) => {
+      .addCase(fetchSignUpData.rejected, (state) => {
         state.isLoaded = false;
-        state.error = action.payload as string;
-        alert(state.error);
+        state.openErrorSnackBar = true;
       })
       .addCase(fetchSignInData.pending, (state) => {
-        state.error = null;
         state.isLoaded = true;
       })
       .addCase(fetchSignInData.fulfilled, (state, action: PayloadAction<FetchDataSignIn>) => {
         state.auth = true;
         state.isLoaded = false;
-        state.error = null;
         state.token = action.payload.token;
         state.id = action.payload.id;
         state.login = action.payload.login;
@@ -189,10 +194,9 @@ const authSlice = createSlice({
         localStorage.setItem('exp', JSON.stringify(state.exp));
         localStorage.setItem('password', state.password as string);
       })
-      .addCase(fetchSignInData.rejected, (state, action) => {
+      .addCase(fetchSignInData.rejected, (state) => {
         state.isLoaded = false;
-        state.error = action.payload as string;
-        alert(state.error);
+        state.openErrorSnackBar = true;
       });
   },
 });
