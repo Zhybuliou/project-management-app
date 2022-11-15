@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import { changeLoaderStatus } from './authSlice';
+import { removeLocalStorage } from '../utils/signOut';
+import { changeLoaderStatus, changeStatusAuth } from './authSlice';
 import { changeOpenErrorSnackBar, getErrorMessage } from './userSlice';
 
 type BoardData = {
@@ -49,6 +50,13 @@ export const fetchAllBoards = createAsyncThunk<FetchAllBoards, string, { rejectV
         dispatch(getErrorMessage('errorUnAuth'));
         return rejectWithValue('errorUnAuth');
       }
+      if (response.status === 403) {
+        dispatch(changeStatusAuth(false));
+        dispatch(changeLoaderStatus(false));
+        removeLocalStorage();
+        dispatch(getErrorMessage('error403'));
+        return rejectWithValue('error403');
+      }
       dispatch(getErrorMessage('errorCommon'));
       dispatch(changeLoaderStatus(false));
     }
@@ -74,6 +82,13 @@ export const fetchGetBoard = createAsyncThunk<BoardData, FetchBoardProps, { reje
       if (response.status === 401) {
         dispatch(getErrorMessage('errorUnAuth'));
         return rejectWithValue('errorUnAuth');
+      }
+      if (response.status === 403) {
+        dispatch(changeStatusAuth(false));
+        dispatch(changeLoaderStatus(false));
+        removeLocalStorage();
+        dispatch(getErrorMessage('error403'));
+        return rejectWithValue('error403');
       }
       dispatch(getErrorMessage('errorCommon'));
       dispatch(changeLoaderStatus(false));
@@ -104,6 +119,9 @@ export const fetchDeleteBoard = createAsyncThunk<
       return rejectWithValue('error404');
     }
     if (response.status === 403) {
+      dispatch(changeStatusAuth(false));
+      dispatch(changeLoaderStatus(false));
+      removeLocalStorage();
       dispatch(getErrorMessage('error403'));
       return rejectWithValue('error403');
     }
@@ -144,6 +162,13 @@ export const fetchUpdateBoard = createAsyncThunk<
     if (response.status === 404) {
       dispatch(getErrorMessage('error404'));
       return rejectWithValue('error404');
+    }
+    if (response.status === 403) {
+      dispatch(changeStatusAuth(false));
+      dispatch(changeLoaderStatus(false));
+      removeLocalStorage();
+      dispatch(getErrorMessage('error403'));
+      return rejectWithValue('error403');
     }
     if (response.status === 400) {
       dispatch(getErrorMessage('error400'));
@@ -186,6 +211,13 @@ export const fetchCreateBoard = createAsyncThunk<
     if (response.status === 400) {
       dispatch(getErrorMessage('error400'));
       return rejectWithValue('error400');
+    }
+    if (response.status === 403) {
+      dispatch(changeStatusAuth(false));
+      dispatch(changeLoaderStatus(false));
+      removeLocalStorage();
+      dispatch(getErrorMessage('error403'));
+      return rejectWithValue('error403');
     }
     dispatch(getErrorMessage('errorCommon'));
     dispatch(changeLoaderStatus(false));

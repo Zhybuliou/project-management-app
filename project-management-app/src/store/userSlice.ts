@@ -42,6 +42,12 @@ export const fetchAllUsers = createAsyncThunk<FetchAllUsers, string, { rejectVal
       if (response.status === 401) {
         return rejectWithValue('errorUnAuth');
       }
+      if (response.status === 403) {
+        dispatch(changeStatusAuth(false));
+        dispatch(changeLoaderStatus(false));
+        removeLocalStorage();
+        return rejectWithValue('error403');
+      }
       dispatch(changeLoaderStatus(false));
       return rejectWithValue('errorCommon');
     }
@@ -66,6 +72,12 @@ export const fetchGetUser = createAsyncThunk<UserData, FetchUserProps, { rejectV
     if (response.status !== 200) {
       if (response.status === 401) {
         return rejectWithValue('errorUnAuth');
+      }
+      if (response.status === 403) {
+        dispatch(changeStatusAuth(false));
+        dispatch(changeLoaderStatus(false));
+        removeLocalStorage();
+        return rejectWithValue('error403');
       }
       dispatch(changeLoaderStatus(false));
       return rejectWithValue('errorCommon');
@@ -93,6 +105,9 @@ export const fetchDeleteUser = createAsyncThunk<UserData, FetchUserProps, { reje
         return rejectWithValue('error404');
       }
       if (response.status === 403) {
+        dispatch(changeStatusAuth(false));
+        dispatch(changeLoaderStatus(false));
+        removeLocalStorage();
         return rejectWithValue('error403');
       }
       if (response.status === 502) {
@@ -126,6 +141,12 @@ export const fetchUpdateUser = createAsyncThunk<UserData, FetchUserProps, { reje
     if (response.status !== 200) {
       if (response.status === 500) {
         return rejectWithValue('error500');
+      }
+      if (response.status === 403) {
+        dispatch(changeStatusAuth(false));
+        dispatch(changeLoaderStatus(false));
+        removeLocalStorage();
+        return rejectWithValue('error403');
       }
       if (response.status === 404) {
         return rejectWithValue('error404');
@@ -168,8 +189,8 @@ const userSlice = createSlice({
         state.allUsers = action.payload;
       })
       .addCase(fetchAllUsers.rejected, (state, action) => {
-        state.error = action.payload as string;
         state.openErrorSnackBar = true;
+        state.error = action.payload as string;
       })
       .addCase(fetchGetUser.pending, (state) => {
         state.error = null;
@@ -179,8 +200,8 @@ const userSlice = createSlice({
         state.user = action.payload;
       })
       .addCase(fetchGetUser.rejected, (state, action) => {
-        state.error = action.payload as string;
         state.openErrorSnackBar = true;
+        state.error = action.payload as string;
       })
       .addCase(fetchDeleteUser.pending, (state) => {
         state.error = null;
@@ -190,8 +211,8 @@ const userSlice = createSlice({
         state.user = {} as UserData;
       })
       .addCase(fetchDeleteUser.rejected, (state, action) => {
-        state.error = action.payload as string;
         state.openErrorSnackBar = true;
+        state.error = action.payload as string;
       })
       .addCase(fetchUpdateUser.pending, (state) => {
         state.error = null;
@@ -201,8 +222,8 @@ const userSlice = createSlice({
         state.user = action.payload;
       })
       .addCase(fetchUpdateUser.rejected, (state, action) => {
-        state.error = action.payload as string;
         state.openErrorSnackBar = true;
+        state.error = action.payload as string;
       });
   },
 });

@@ -118,8 +118,8 @@ export const fetchSignInData = createAsyncThunk<FetchDataSignIn, UserData, { rej
     if (response.status !== 200) {
       dispatch(changeOpenErrorSnackBar(true));
       if (response.status === 403) {
-        dispatch(getErrorMessage('error409'));
-        return rejectWithValue('error409');
+        dispatch(getErrorMessage('error403'));
+        return rejectWithValue('error403');
       }
       if (response.status === 400) {
         dispatch(getErrorMessage('errorCommon'));
