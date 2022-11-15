@@ -23,6 +23,7 @@ const initialState: ColumnState = {
 export type FetchColumnProps = {
   token: string;
   id?: string;
+  columnId?: string;
   body?: {
     title: string;
     order: number;
@@ -81,35 +82,35 @@ export const fetchAllColumns = createAsyncThunk<FetchAllColumns, { id: string, t
 //   },
 // );
 
-// export const fetchDeleteBoard = createAsyncThunk<
-//   BoardData,
-//   FetchBoardProps,
-//   { rejectValue: string }
-// >('boards/fetchDeleteBoard', async function ({ id, token }, { rejectWithValue, dispatch }) {
-//   dispatch(changeLoaderStatus(true));
-//   const response = await fetch(`${BASE_PATH}boards/${id}`, {
-//     method: 'DELETE',
-//     headers: {
-//       accept: 'application/json',
-//       Authorization: 'Bearer ' + `${token}`,
-//     },
-//   });
-//   const data = await response.json();
-//   if (response.status !== 200) {
-//     if (response.status === 404) {
-//       return rejectWithValue('User was not founded!');
-//     }
-//     if (response.status === 403) {
-//       return rejectWithValue('Invalid token');
-//     }
-//     if (response.status === 502) {
-//       return rejectWithValue('Bad Gateway');
-//     }
-//     dispatch(changeLoaderStatus(false));
-//   }
-//   dispatch(changeLoaderStatus(false));
-//   return data;
-// });
+export const fetchDeleteColumn = createAsyncThunk<
+  ColumnData,
+  FetchColumnProps,
+  { rejectValue: string }
+>('columns/fetchDeleteColumn', async function ({ id, columnId, token }, { rejectWithValue, dispatch }) {
+  dispatch(changeLoaderStatus(true));
+  const response = await fetch(`${BASE_PATH}boards/${id}/columns/${columnId}`, {
+    method: 'DELETE',
+    headers: {
+      accept: 'application/json',
+      Authorization: 'Bearer ' + `${token}`,
+    },
+  });
+  const data = await response.json();
+  if (response.status !== 200) {
+    if (response.status === 404) {
+      return rejectWithValue('User was not founded!');
+    }
+    if (response.status === 403) {
+      return rejectWithValue('Invalid token');
+    }
+    if (response.status === 502) {
+      return rejectWithValue('Bad Gateway');
+    }
+    dispatch(changeLoaderStatus(false));
+  }
+  dispatch(changeLoaderStatus(false));
+  return data;
+});
 
 // export const fetchUpdateBoard = createAsyncThunk<
 //   BoardData,
@@ -205,17 +206,17 @@ const columnSlice = createSlice({
     //     state.error = action.payload as string;
     //     alert(state.error);
     //   })
-    //   .addCase(fetchDeleteBoard.pending, (state) => {
-    //     state.error = null;
-    //   })
-    //   .addCase(fetchDeleteBoard.fulfilled, (state) => {
-    //     state.error = null;
-    //     state.board = {} as BoardData;
-    //   })
-    //   .addCase(fetchDeleteBoard.rejected, (state, action) => {
-    //     state.error = action.payload as string;
-    //     alert(state.error);
-    //   })
+      .addCase(fetchDeleteColumn.pending, (state) => {
+        state.error = null;
+      })
+      .addCase(fetchDeleteColumn.fulfilled, (state) => {
+        state.error = null;
+        state.column = {} as ColumnData;
+      })
+      .addCase(fetchDeleteColumn.rejected, (state, action) => {
+        state.error = action.payload as string;
+        alert(state.error);
+      })
     //   .addCase(fetchUpdateBoard.pending, (state) => {
     //     state.error = null;
     //   })

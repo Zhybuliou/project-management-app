@@ -65,11 +65,11 @@ export const Main = () => {
                         onConfirm: async () => {
                           const getToken = localStorage.getItem('token');
                           if (getToken) {
+                            setConfirmDialog({ ...confirmDialog, isOpen: false });
                             const id = el._id;
                             const token = JSON.parse(getToken);
                             await dispatch(fetchDeleteBoard({ id, token }));
                             await dispatch(fetchAllBoards(token));
-                            setConfirmDialog({ ...confirmDialog, isOpen: false });
                           }
                         },
                       });
