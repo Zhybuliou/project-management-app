@@ -20,21 +20,22 @@ import CreateBoardDialog from '../../components/popup/CreateBoardDialog';
 import { useEffect, useState } from 'react';
 import { FieldValues, useForm } from 'react-hook-form';
 import { fetchGetBoard } from '../../store/boardSlice';
+import { fetchAllColumns, fetchCreateColumn } from '../../store/columnSlice';
 
 export const Board = () => {
   const board = useAppSelector((state) => state.board.board);
+  const allColumns = useAppSelector((state) => state.column.allColumns);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const id = location.state.id;
+  const getToken = localStorage.getItem('token')
+  const token = getToken ? JSON.parse(getToken) : ''
 
   useEffect(() => {
-   const id = location.state.id;
-   const getToken = localStorage.getItem('token');
-   if (getToken) {
-     const token = JSON.parse(getToken);
      dispatch(fetchGetBoard({id, token}));
-   }
+     dispatch(fetchAllColumns({id, token}));
   },[])
 
   const {
@@ -48,8 +49,14 @@ export const Board = () => {
     },
   });
 
-  const submit = (data: FieldValues) => {
+  const submit = async (data: FieldValues) => {
     console.log(data);
+    const body = {
+      title: data.columnTitle,
+      order: 1
+    }
+    await dispatch(fetchCreateColumn({id, body, token}));
+    await dispatch(fetchAllColumns({id, token}));
     setIsOpen(!isOpen);
     setTimeout(() => reset());
   };
@@ -77,9 +84,9 @@ export const Board = () => {
           add column
         </Button>
       </Stack>
-      {/* <Grid container columns={{ xs: 1, sm: 2, md: 4 }}>
-        {allBoards.length
-          ? allBoards.map((el, index) => (
+      <Grid container columns={{ xs: 1, sm: 2, md: 4 }}>
+        {allColumns.length
+          ? allColumns.map((el, index) => (
               <Grid item xs={1} key={index}>
                 <Card>
                   <CardContent>
@@ -97,7 +104,7 @@ export const Board = () => {
               </Grid>
             ))
           : null}
-      </Grid> */}
+      </Grid>
       <CreateBoardDialog
         title='ADD COLUMN'
         openPopup={isOpen}
@@ -136,3 +143,4 @@ export const Board = () => {
     </Container>
   );
 };
+
