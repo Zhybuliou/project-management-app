@@ -5,6 +5,7 @@ import { withErrorBoundary } from 'react-error-boundary';
 import { Error } from './components/ErrorBoundary/Error';
 import { Loader } from './components/Loader/Loader';
 import { Footer } from './components/Footer/Footer';
+import { ErrorSnackBar } from './components/snackBar/ErrorSnackBar';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
       <Router />
       <Footer />
       <Loader />
+      <ErrorSnackBar />
     </div>
   );
 }

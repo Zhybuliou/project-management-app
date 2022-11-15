@@ -6,12 +6,14 @@ type UserState = {
   error: null | string;
   allUsers: null | FetchAllUsers;
   user: UserData;
+  openErrorSnackBar: boolean;
 };
 
 const initialState: UserState = {
   error: null,
   allUsers: null,
   user: {} as UserData,
+  openErrorSnackBar: false,
 };
 
 export type FetchUserProps = {
@@ -38,9 +40,10 @@ export const fetchAllUsers = createAsyncThunk<FetchAllUsers, string, { rejectVal
 
     if (response.status !== 200) {
       if (response.status === 401) {
-        return rejectWithValue('Unauthorized');
+        return rejectWithValue('errorUnAuth');
       }
       dispatch(changeLoaderStatus(false));
+      return rejectWithValue('errorCommon');
     }
     dispatch(changeLoaderStatus(false));
     return data;
@@ -62,9 +65,10 @@ export const fetchGetUser = createAsyncThunk<UserData, FetchUserProps, { rejectV
     const data = await response.json();
     if (response.status !== 200) {
       if (response.status === 401) {
-        return rejectWithValue('Unauthorized');
+        return rejectWithValue('errorUnAuth');
       }
       dispatch(changeLoaderStatus(false));
+      return rejectWithValue('errorCommon');
     }
     dispatch(changeLoaderStatus(false));
     return data;
@@ -86,15 +90,16 @@ export const fetchDeleteUser = createAsyncThunk<UserData, FetchUserProps, { reje
     const data = await response.json();
     if (response.status !== 200) {
       if (response.status === 404) {
-        return rejectWithValue('User was not founded!');
+        return rejectWithValue('error404');
       }
       if (response.status === 403) {
-        return rejectWithValue('Invalid token');
+        return rejectWithValue('error403');
       }
       if (response.status === 502) {
-        return rejectWithValue('Bad Gateway');
+        return rejectWithValue('error502');
       }
       dispatch(changeLoaderStatus(false));
+      return rejectWithValue('errorCommon');
     }
 
     dispatch(changeStatusAuth(false));
@@ -118,18 +123,18 @@ export const fetchUpdateUser = createAsyncThunk<UserData, FetchUserProps, { reje
       body: JSON.stringify(body),
     });
     const data = await response.json();
-
     if (response.status !== 200) {
       if (response.status === 500) {
-        return rejectWithValue('Internal server error');
+        return rejectWithValue('error500');
       }
       if (response.status === 404) {
-        return rejectWithValue('User was not founded!');
+        return rejectWithValue('error404');
       }
       if (response.status === 400) {
-        return rejectWithValue('Validation failed (uuid  is expected)');
+        return rejectWithValue('error400');
       }
       dispatch(changeLoaderStatus(false));
+      return rejectWithValue('errorCommon');
     }
     if (body) {
       dispatch(changeNameUser(body.name as string));
@@ -145,7 +150,14 @@ export type FetchAllUsers = UserData[];
 const userSlice = createSlice({
   name: 'user',
   initialState,
-  reducers: {},
+  reducers: {
+    changeOpenErrorSnackBar(state, action: PayloadAction<boolean>) {
+      state.openErrorSnackBar = action.payload;
+    },
+    getErrorMessage(state, action: PayloadAction<string>) {
+      state.error = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchAllUsers.pending, (state) => {
@@ -157,7 +169,7 @@ const userSlice = createSlice({
       })
       .addCase(fetchAllUsers.rejected, (state, action) => {
         state.error = action.payload as string;
-        alert(state.error);
+        state.openErrorSnackBar = true;
       })
       .addCase(fetchGetUser.pending, (state) => {
         state.error = null;
@@ -168,7 +180,7 @@ const userSlice = createSlice({
       })
       .addCase(fetchGetUser.rejected, (state, action) => {
         state.error = action.payload as string;
-        alert(state.error);
+        state.openErrorSnackBar = true;
       })
       .addCase(fetchDeleteUser.pending, (state) => {
         state.error = null;
@@ -179,7 +191,7 @@ const userSlice = createSlice({
       })
       .addCase(fetchDeleteUser.rejected, (state, action) => {
         state.error = action.payload as string;
-        alert(state.error);
+        state.openErrorSnackBar = true;
       })
       .addCase(fetchUpdateUser.pending, (state) => {
         state.error = null;
@@ -190,9 +202,11 @@ const userSlice = createSlice({
       })
       .addCase(fetchUpdateUser.rejected, (state, action) => {
         state.error = action.payload as string;
-        alert(state.error);
+        state.openErrorSnackBar = true;
       });
   },
 });
+
+export const { changeOpenErrorSnackBar, getErrorMessage } = userSlice.actions;
 
 export default userSlice.reducer;
