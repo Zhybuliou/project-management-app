@@ -165,7 +165,6 @@ export const Board = () => {
           </Button>
         </Stack>
       </CreateBoardDialog>
-
       <ConfirmDialog confirmDialog={confirmDialog} setConfirmDialog={setConfirmDialog} />
     </Container>
   );

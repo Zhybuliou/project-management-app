@@ -18,7 +18,8 @@ export default function Tasks(props: Props) {
 
   return (
     <>
-      {allTasks.length ? allTasks.map((task) => task.columnId == columnId && <Task key={task._id} title={task.title} /> 
+      {allTasks.length ? allTasks.map((task) => task.columnId == columnId && 
+      <Task key={task._id} title={task.title} description={task.description}/> 
                 ): 'please create task...'}
                  <Button
                     startIcon={<AddIcon color='primary' />}

@@ -232,41 +232,21 @@ const boardSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      // .addCase(fetchAllBoards.pending, (state) => {
-      // })
       .addCase(fetchAllBoards.fulfilled, (state, action: PayloadAction<FetchAllBoards>) => {
         state.allBoards = action.payload;
       })
-      // .addCase(fetchAllBoards.rejected, (state, action) => {
-      // })
-      // .addCase(fetchGetBoard.pending, (state) => {
-      // })
       .addCase(fetchGetBoard.fulfilled, (state, action: PayloadAction<BoardData>) => {
         state.board = action.payload;
       })
-      // .addCase(fetchGetBoard.rejected, (state, action) => {
-      // })
-      // .addCase(fetchDeleteBoard.pending, (state) => {
-      // })
       .addCase(fetchDeleteBoard.fulfilled, (state) => {
         state.board = {} as BoardData;
       })
-      // .addCase(fetchDeleteBoard.rejected, (state, action) => {
-      // })
-      // .addCase(fetchUpdateBoard.pending, (state) => {
-      // })
       .addCase(fetchUpdateBoard.fulfilled, (state, action: PayloadAction<BoardData>) => {
         state.board = action.payload;
       })
-      // .addCase(fetchUpdateBoard.rejected, (state, action) => {
-      // })
-      // .addCase(fetchCreateBoard.pending, (state) => {
-      // })
       .addCase(fetchCreateBoard.fulfilled, (state, action: PayloadAction<BoardData>) => {
         state.board = action.payload;
       });
-    // .addCase(fetchCreateBoard.rejected, (state, action) => {
-    // });
   },
 });
 
