@@ -3,13 +3,15 @@ import AuthReducer from './authSlice';
 import UserReducer from './userSlice';
 import BoardReducer from './boardSlice';
 import ColumnReducer from './columnSlice';
+import TaskReducer from './taskSlice';
 
 const store = configureStore({
   reducer: {
     auth: AuthReducer,
     user: UserReducer,
     board: BoardReducer,
-    column: ColumnReducer
+    column: ColumnReducer,
+    task: TaskReducer
   },
 });
 

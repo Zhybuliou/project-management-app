@@ -31,7 +31,7 @@ export type FetchAllBoards = BoardData[];
 const BASE_PATH = 'https://kanbanapi.adaptable.app/';
 
 export const fetchAllBoards = createAsyncThunk<FetchAllBoards, string, { rejectValue: string }>(
-  'boards/fetchAllBoards',
+  'board/fetchAllBoards',
   async function (token: string, { rejectWithValue, dispatch }) {
     dispatch(changeLoaderStatus(true));
     const response = await fetch(`${BASE_PATH}boards`, {
@@ -102,7 +102,7 @@ export const fetchDeleteBoard = createAsyncThunk<
   BoardData,
   FetchBoardProps,
   { rejectValue: string }
->('boards/fetchDeleteBoard', async function ({ id, token }, { rejectWithValue, dispatch }) {
+>('board/fetchDeleteBoard', async function ({ id, token }, { rejectWithValue, dispatch }) {
   dispatch(changeLoaderStatus(true));
   const response = await fetch(`${BASE_PATH}boards/${id}`, {
     method: 'DELETE',
@@ -140,7 +140,7 @@ export const fetchUpdateBoard = createAsyncThunk<
   BoardData,
   FetchBoardProps,
   { rejectValue: string }
->('boards/fetchUpdateBoard', async function ({ body, token, id }, { rejectWithValue, dispatch }) {
+>('board/fetchUpdateBoard', async function ({ body, token, id }, { rejectWithValue, dispatch }) {
   dispatch(changeLoaderStatus(true));
   const response = await fetch(`${BASE_PATH}boards/${id}`, {
     method: 'PUT',
@@ -185,7 +185,7 @@ export const fetchCreateBoard = createAsyncThunk<
   BoardData,
   FetchBoardProps,
   { rejectValue: string }
->('boards/fetchCreateBoard', async function ({ body, token }, { rejectWithValue, dispatch }) {
+>('board/fetchCreateBoard', async function ({ body, token }, { rejectWithValue, dispatch }) {
   dispatch(changeLoaderStatus(true));
   const response = await fetch(`${BASE_PATH}boards/`, {
     method: 'POST',
@@ -232,41 +232,21 @@ const boardSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      // .addCase(fetchAllBoards.pending, (state) => {
-      // })
       .addCase(fetchAllBoards.fulfilled, (state, action: PayloadAction<FetchAllBoards>) => {
         state.allBoards = action.payload;
       })
-      // .addCase(fetchAllBoards.rejected, (state, action) => {
-      // })
-      // .addCase(fetchGetBoard.pending, (state) => {
-      // })
       .addCase(fetchGetBoard.fulfilled, (state, action: PayloadAction<BoardData>) => {
         state.board = action.payload;
       })
-      // .addCase(fetchGetBoard.rejected, (state, action) => {
-      // })
-      // .addCase(fetchDeleteBoard.pending, (state) => {
-      // })
       .addCase(fetchDeleteBoard.fulfilled, (state) => {
         state.board = {} as BoardData;
       })
-      // .addCase(fetchDeleteBoard.rejected, (state, action) => {
-      // })
-      // .addCase(fetchUpdateBoard.pending, (state) => {
-      // })
       .addCase(fetchUpdateBoard.fulfilled, (state, action: PayloadAction<BoardData>) => {
         state.board = action.payload;
       })
-      // .addCase(fetchUpdateBoard.rejected, (state, action) => {
-      // })
-      // .addCase(fetchCreateBoard.pending, (state) => {
-      // })
       .addCase(fetchCreateBoard.fulfilled, (state, action: PayloadAction<BoardData>) => {
         state.board = action.payload;
       });
-    // .addCase(fetchCreateBoard.rejected, (state, action) => {
-    // });
   },
 });
 

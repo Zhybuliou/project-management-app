@@ -3,46 +3,90 @@ import { removeLocalStorage } from '../utils/signOut';
 import { changeLoaderStatus, changeStatusAuth } from './authSlice';
 import { changeOpenErrorSnackBar, getErrorMessage } from './userSlice';
 
-type ColumnData = {
+export type TaskData = {
   _id?: string;
   title: string;
   order: number;
   boardId: string;
+  columnId: string;
+  description: string;
+  userId: string;
+  users: string[];
 };
 
-type ColumnState = {
+type TaskState = {
   // error: null | string;
-  allColumns: [] | FetchAllColumns;
-  column: ColumnData;
+  allTasks: [] | FetchAllTasks;
+  task: TaskData;
 };
 
-const initialState: ColumnState = {
+const initialState: TaskState = {
   // error: null,
-  allColumns: [],
-  column: {} as ColumnData,
+  allTasks: [],
+  task: {} as TaskData,
 };
 
-export type FetchColumnProps = {
+export type FetchTaskProps = {
   token: string;
   id?: string;
   columnId?: string;
+  taskId?: string;
   body?: {
     title: string;
     order: number;
+    description: string;
+    userId: string | number;
+    users: string[];
   };
 };
 
-export type FetchAllColumns = ColumnData[];
+export type FetchAllTasks = TaskData[];
 
 const BASE_PATH = 'https://kanbanapi.adaptable.app/';
 
-export const fetchAllColumns = createAsyncThunk<
-  FetchAllColumns,
+export const fetchAllTasks = createAsyncThunk<
+  FetchAllTasks,
+  { id: string; token: string, columnId?: string },
+  { rejectValue: string }
+>('task/fetchAllTasks', async function ({ id, token, columnId }, { rejectWithValue, dispatch }) {
+  dispatch(changeLoaderStatus(true));
+  const response = await fetch(`${BASE_PATH}boards/${id}/columns/${columnId}/tasks`, {
+    method: 'GET',
+    headers: {
+      accept: 'application/json',
+      Authorization: 'Bearer ' + `${token}`,
+    },
+  });
+
+  const data = await response.json();
+
+  if (response.status !== 200) {
+    dispatch(changeOpenErrorSnackBar(true));
+    if (response.status === 401) {
+      dispatch(getErrorMessage('errorUnAuth'));
+      return rejectWithValue('errorUnAuth');
+    }
+    if (response.status === 403) {
+      dispatch(changeStatusAuth(false));
+      dispatch(changeLoaderStatus(false));
+      removeLocalStorage();
+      dispatch(getErrorMessage('error403'));
+      return rejectWithValue('error403');
+    }
+    dispatch(getErrorMessage('errorCommon'));
+    dispatch(changeLoaderStatus(false));
+  }
+  dispatch(changeLoaderStatus(false));
+  return data;
+});
+
+export const fetchBoardIdTasks = createAsyncThunk<
+  FetchAllTasks,
   { id: string; token: string },
   { rejectValue: string }
->('column/fetchAllColumns', async function ({ id, token }, { rejectWithValue, dispatch }) {
+>('task/fetchBoardIdTasks', async function ({ id, token }, { rejectWithValue, dispatch }) {
   dispatch(changeLoaderStatus(true));
-  const response = await fetch(`${BASE_PATH}boards/${id}/columns`, {
+  const response = await fetch(`${BASE_PATH}tasksSet/${id}`, {
     method: 'GET',
     headers: {
       accept: 'application/json',
@@ -95,15 +139,15 @@ export const fetchAllColumns = createAsyncThunk<
 //   },
 // );
 
-export const fetchDeleteColumn = createAsyncThunk<
-  ColumnData,
-  FetchColumnProps,
+export const fetchDeleteTask = createAsyncThunk<
+  TaskData,
+  FetchTaskProps,
   { rejectValue: string }
 >(
-  'column/fetchDeleteColumn',
-  async function ({ id, columnId, token }, { rejectWithValue, dispatch }) {
+  'task/fetchDeleteTask',
+  async function ({ id, columnId, token, taskId }, { rejectWithValue, dispatch }) {
     dispatch(changeLoaderStatus(true));
-    const response = await fetch(`${BASE_PATH}boards/${id}/columns/${columnId}`, {
+    const response = await fetch(`${BASE_PATH}boards/${id}/columns/${columnId}/tasks/${taskId}`, {
       method: 'DELETE',
       headers: {
         accept: 'application/json',
@@ -169,13 +213,13 @@ export const fetchDeleteColumn = createAsyncThunk<
 //   return data;
 // });
 
-export const fetchCreateColumn = createAsyncThunk<
-  ColumnData,
-  FetchColumnProps,
+export const fetchCreateTask = createAsyncThunk<
+  TaskData,
+  FetchTaskProps,
   { rejectValue: string }
->('column/fetchCreateColumn', async function ({ id, body, token }, { rejectWithValue, dispatch }) {
+>('task/fetchCreateTask', async function ({ id, body, token, columnId }, { rejectWithValue, dispatch }) {
   dispatch(changeLoaderStatus(true));
-  const response = await fetch(`${BASE_PATH}boards/${id}/columns`, {
+  const response = await fetch(`${BASE_PATH}boards/${id}/columns/${columnId}/tasks`, {
     method: 'POST',
     headers: {
       accept: 'application/json',
@@ -214,22 +258,26 @@ export const fetchCreateColumn = createAsyncThunk<
   return data;
 });
 
-const columnSlice = createSlice({
-  name: 'column',
+const taskSlice = createSlice({
+  name: 'task',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchAllColumns.pending, (state) => {
+      .addCase(fetchAllTasks.pending, (state) => {
         // state.error = null;
       })
-      .addCase(fetchAllColumns.fulfilled, (state, action: PayloadAction<FetchAllColumns>) => {
+      .addCase(fetchAllTasks.fulfilled, (state, action: PayloadAction<FetchAllTasks>) => {
         // state.error = null;
-        state.allColumns = action.payload;
+        state.allTasks = action.payload;
       })
-      .addCase(fetchAllColumns.rejected, (state, action) => {
+      .addCase(fetchAllTasks.rejected, (state, action) => {
         // state.error = action.payload as string;
         // alert(state.error);
+      })
+      .addCase(fetchBoardIdTasks.fulfilled, (state, action: PayloadAction<FetchAllTasks>) => {
+        // state.error = null;
+        state.allTasks = action.payload;
       })
       //   .addCase(fetchGetBoard.pending, (state) => {
       //     state.error = null;
@@ -242,14 +290,14 @@ const columnSlice = createSlice({
       //     state.error = action.payload as string;
       //     alert(state.error);
       //   })
-      .addCase(fetchDeleteColumn.pending, (state) => {
+      .addCase(fetchDeleteTask.pending, (state) => {
         // state.error = null;
       })
-      .addCase(fetchDeleteColumn.fulfilled, (state) => {
+      .addCase(fetchDeleteTask.fulfilled, (state) => {
         // state.error = null;
-        state.column = {} as ColumnData;
+        state.task = {} as TaskData;
       })
-      .addCase(fetchDeleteColumn.rejected, (state, action) => {
+      .addCase(fetchDeleteTask.rejected, (state, action) => {
         // state.error = action.payload as string;
         // alert(state.error);
       })
@@ -264,18 +312,18 @@ const columnSlice = createSlice({
       //     state.error = action.payload as string;
       //     alert(state.error);
       //   })
-      .addCase(fetchCreateColumn.pending, (state) => {
+      .addCase(fetchCreateTask.pending, (state) => {
         // state.error = null;
       })
-      .addCase(fetchCreateColumn.fulfilled, (state, action: PayloadAction<ColumnData>) => {
+      .addCase(fetchCreateTask.fulfilled, (state, action: PayloadAction<TaskData>) => {
         // state.error = null;
-        state.column = action.payload;
+        state.task = action.payload;
       })
-      .addCase(fetchCreateColumn.rejected, (state, action) => {
+      .addCase(fetchCreateTask.rejected, (state, action) => {
         // state.error = action.payload as string;
         // alert(state.error);
       });
   },
 });
 
-export default columnSlice.reducer;
+export default taskSlice.reducer;
