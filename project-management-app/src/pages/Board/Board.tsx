@@ -22,10 +22,13 @@ import { FieldValues, useForm } from 'react-hook-form';
 import { fetchGetBoard } from '../../store/boardSlice';
 import { fetchAllColumns, fetchCreateColumn, fetchDeleteColumn } from '../../store/columnSlice';
 import ConfirmDialog from '../../components/popup/ConfirmDialog';
+import Tasks from '../../components/Tasks/Tasks';
+import { fetchBoardIdTasks } from '../../store/taskSlice';
 
 export const Board = () => {
   const board = useAppSelector((state) => state.board.board);
   const allColumns = useAppSelector((state) => state.column.allColumns);
+  const allTasks = useAppSelector((state) => state.task.allTasks);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [isOpen, setIsOpen] = useState(false);
@@ -45,6 +48,7 @@ export const Board = () => {
   useEffect(() => {
      dispatch(fetchGetBoard({id, token}));
      dispatch(fetchAllColumns({id, token}));
+     dispatch(fetchBoardIdTasks({id, token}))
   },[])
 
   const {
@@ -94,16 +98,11 @@ export const Board = () => {
       </Stack>
       <Grid container columns={{ xs: 1, sm: 2, md: 4 }}>
         {allColumns.length
-          ? allColumns.map((column, index) => (
-              <Grid item xs={1} key={index}>
-                <Card>
-                  <CardContent >
+          ? allColumns.map((column) => (
+              <Grid item xs={1} key={column._id}>
+                <Card className="column">
+                  <CardContent className='column-title' >
                     <Typography variant='h5'>{column.title}</Typography>
-                  </CardContent>
-                  <CardContent>
-                    <Typography variant='body2'>Description</Typography>
-                  </CardContent>
-                  <CardActions sx={{ ml: 'auto' }}>
                     <IconButton color='info' onClick={ async () => {
                        setConfirmDialog({
                         isOpen: true,
@@ -113,12 +112,18 @@ export const Board = () => {
                           const columnId = column._id;
                           setConfirmDialog({ ...confirmDialog, isOpen: false }); 
                           await dispatch(fetchDeleteColumn({id, columnId, token}));
-                          await dispatch(fetchAllColumns({id, token}));
+                          await  dispatch(fetchBoardIdTasks({id, token}));
                         },
                       });
                     }}>
                       <DeleteForeverIcon />
                     </IconButton>
+                  </CardContent>
+                  <CardContent>
+                    <Tasks id={id}  columnId={column._id || ''} allTasks={allTasks}/>
+                  </CardContent>
+                  <CardActions sx={{ ml: 'auto' }}>
+
                   </CardActions>
                 </Card>
               </Grid>
@@ -160,6 +165,7 @@ export const Board = () => {
           </Button>
         </Stack>
       </CreateBoardDialog>
+
       <ConfirmDialog confirmDialog={confirmDialog} setConfirmDialog={setConfirmDialog} />
     </Container>
   );

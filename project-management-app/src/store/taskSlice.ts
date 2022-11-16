@@ -3,7 +3,7 @@ import { removeLocalStorage } from '../utils/signOut';
 import { changeLoaderStatus, changeStatusAuth } from './authSlice';
 import { changeOpenErrorSnackBar, getErrorMessage } from './userSlice';
 
-type TaskData = {
+export type TaskData = {
   _id?: string;
   title: string;
   order: number;
@@ -35,7 +35,7 @@ export type FetchTaskProps = {
     title: string;
     order: number;
     description: string;
-    userId: number;
+    userId: string | number;
     users: string[];
   };
 };
@@ -46,11 +46,47 @@ const BASE_PATH = 'https://kanbanapi.adaptable.app/';
 
 export const fetchAllTasks = createAsyncThunk<
   FetchAllTasks,
-  { id: string; token: string, columnId: string },
+  { id: string; token: string, columnId?: string },
   { rejectValue: string }
 >('task/fetchAllTasks', async function ({ id, token, columnId }, { rejectWithValue, dispatch }) {
   dispatch(changeLoaderStatus(true));
   const response = await fetch(`${BASE_PATH}boards/${id}/columns/${columnId}/tasks`, {
+    method: 'GET',
+    headers: {
+      accept: 'application/json',
+      Authorization: 'Bearer ' + `${token}`,
+    },
+  });
+
+  const data = await response.json();
+
+  if (response.status !== 200) {
+    dispatch(changeOpenErrorSnackBar(true));
+    if (response.status === 401) {
+      dispatch(getErrorMessage('errorUnAuth'));
+      return rejectWithValue('errorUnAuth');
+    }
+    if (response.status === 403) {
+      dispatch(changeStatusAuth(false));
+      dispatch(changeLoaderStatus(false));
+      removeLocalStorage();
+      dispatch(getErrorMessage('error403'));
+      return rejectWithValue('error403');
+    }
+    dispatch(getErrorMessage('errorCommon'));
+    dispatch(changeLoaderStatus(false));
+  }
+  dispatch(changeLoaderStatus(false));
+  return data;
+});
+
+export const fetchBoardIdTasks = createAsyncThunk<
+  FetchAllTasks,
+  { id: string; token: string },
+  { rejectValue: string }
+>('task/fetchBoardIdTasks', async function ({ id, token }, { rejectWithValue, dispatch }) {
+  dispatch(changeLoaderStatus(true));
+  const response = await fetch(`${BASE_PATH}tasksSet/${id}`, {
     method: 'GET',
     headers: {
       accept: 'application/json',
@@ -238,6 +274,10 @@ const taskSlice = createSlice({
       .addCase(fetchAllTasks.rejected, (state, action) => {
         // state.error = action.payload as string;
         // alert(state.error);
+      })
+      .addCase(fetchBoardIdTasks.fulfilled, (state, action: PayloadAction<FetchAllTasks>) => {
+        // state.error = null;
+        state.allTasks = action.payload;
       })
       //   .addCase(fetchGetBoard.pending, (state) => {
       //     state.error = null;

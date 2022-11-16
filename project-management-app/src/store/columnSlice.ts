@@ -40,7 +40,7 @@ export const fetchAllColumns = createAsyncThunk<
   FetchAllColumns,
   { id: string; token: string },
   { rejectValue: string }
->('columns/fetchAllColumns', async function ({ id, token }, { rejectWithValue, dispatch }) {
+>('column/fetchAllColumns', async function ({ id, token }, { rejectWithValue, dispatch }) {
   dispatch(changeLoaderStatus(true));
   const response = await fetch(`${BASE_PATH}boards/${id}/columns`, {
     method: 'GET',
@@ -100,7 +100,7 @@ export const fetchDeleteColumn = createAsyncThunk<
   FetchColumnProps,
   { rejectValue: string }
 >(
-  'columns/fetchDeleteColumn',
+  'column/fetchDeleteColumn',
   async function ({ id, columnId, token }, { rejectWithValue, dispatch }) {
     dispatch(changeLoaderStatus(true));
     const response = await fetch(`${BASE_PATH}boards/${id}/columns/${columnId}`, {
@@ -110,10 +110,8 @@ export const fetchDeleteColumn = createAsyncThunk<
         Authorization: 'Bearer ' + `${token}`,
       },
     });
-    console.log(response.status, token);
     const data = await response.json();
     if (response.status !== 200) {
-      console.log(response.status);
       dispatch(changeOpenErrorSnackBar(true));
       if (response.status === 404) {
         dispatch(getErrorMessage('error404'));
@@ -175,7 +173,7 @@ export const fetchCreateColumn = createAsyncThunk<
   ColumnData,
   FetchColumnProps,
   { rejectValue: string }
->('columns/fetchCreateColumn', async function ({ id, body, token }, { rejectWithValue, dispatch }) {
+>('column/fetchCreateColumn', async function ({ id, body, token }, { rejectWithValue, dispatch }) {
   dispatch(changeLoaderStatus(true));
   const response = await fetch(`${BASE_PATH}boards/${id}/columns`, {
     method: 'POST',

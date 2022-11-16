@@ -20,12 +20,13 @@ export default function FormCreateBoard(props: Props) {
 
   const onSubmit = async (data: DataForm) =>  {
     const getToken = localStorage.getItem('token');
-    if(getToken){
+    const getName = localStorage.getItem('name');
+    if(getToken && getName){
+      const name = [getName];
       const token = JSON.parse(getToken);
       props.setOpenPopup(false)
-      if(data.title && data.description && data.users){
-        const users = data.users?.split(' ')
-        const body = { title: data.title, owner: data.description, users: users}
+      if(data.title && data.description){
+        const body = { title: data.title, owner: data.description, users: name}
         await dispatch(fetchCreateBoard({body, token}))
       }
       await dispatch(fetchAllBoards(token))
@@ -35,8 +36,7 @@ export default function FormCreateBoard(props: Props) {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="form-create-board">
       <TextField label={'Title'} {...register('title', {required: true, maxLength: 80})} />
-      <TextField label={'Description'} {...register('description', {required: true, maxLength: 100})} />
-      <TextField label={'User'} {...register('users', {required: true, maxLength: 100})} />
+      <TextField label={'Description'} multiline rows={5} {...register('description', {required: true, maxLength: 100})} />
       <Button variant="contained" color="success" type="submit">Create Board</Button>
     </form>
   );
