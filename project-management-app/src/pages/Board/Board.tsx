@@ -112,7 +112,7 @@ export const Board = () => {
                           const columnId = column._id;
                           setConfirmDialog({ ...confirmDialog, isOpen: false }); 
                           await dispatch(fetchDeleteColumn({id, columnId, token}));
-                          await  dispatch(fetchBoardIdTasks({id, token}));
+                          await  dispatch(fetchAllColumns({id, token}));
                         },
                       });
                     }}>
