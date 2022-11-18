@@ -1,18 +1,21 @@
 import { FieldValues, useForm } from 'react-hook-form';
-import TextField from '@mui/material/TextField';
-import './SignIn.scss';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
+import { Box, Container, Typography } from '@mui/material';
 import { useAppDispatch } from '../../hook';
 import { changePassword, fetchSignInData } from '../../store/authSlice';
-import { Container, Typography } from '@mui/material';
+import { useTranslation } from 'react-i18next';
+import {
+  FormField,
+  FormFieldError,
+  WhiteButton,
+} from '../../theme/styledComponents/styledComponents';
 
 export const SignIn = () => {
   const dispatch = useAppDispatch();
+  const { t } = useTranslation();
 
   const {
     register,
-    formState: { errors },
+    formState: { errors, isValid, isSubmitted },
     handleSubmit,
   } = useForm({
     defaultValues: {
@@ -29,62 +32,44 @@ export const SignIn = () => {
   return (
     <Container className='main' maxWidth='xl' component='main'>
       <Typography className='section-title' variant='h2'>
-        sign in
+        {t('signIn')}
       </Typography>
-      <Box
-        sx={{
-          width: 500,
-          backgroundColor: '#4D628B',
-          margin: '0 auto',
-        }}
-      >
-        <form className='form-signIn' onSubmit={handleSubmit(handleRegistration)}>
-          <TextField
-            id='outlined-basic'
-            label='login'
-            variant='outlined'
-            {...register('login', {
-              required: 'Please enter your login',
-              minLength: {
-                value: 5,
-                message: 'Login must contain at least 5 letters',
-              },
-            })}
-            sx={{
-              backgroundColor: '#ffffff',
-              borderRadius: 1,
-            }}
-          />
-          <div style={{ color: ' red' }}>{errors.login ? errors.login.message : ''}</div>
-          <TextField
-            id='outlined-password-input'
-            label='password'
-            type='password'
-            autoComplete='current-password'
-            {...register('password', {
-              required: 'Please enter your password',
-              minLength: {
-                value: 6,
-                message: 'Password must contain at least 5 letters',
-              },
-            })}
-            sx={{
-              backgroundColor: '#ffffff',
-              borderRadius: 1,
-            }}
-          />
-          <div style={{ color: ' red' }}>{errors.password ? errors.password.message : ''}</div>
-          <Button
-            type='submit'
-            variant='outlined'
-            sx={{
-              backgroundColor: '#ffffff',
-              borderRadius: 1,
-            }}
-          >
-            SIGN IN
-          </Button>
-        </form>
+      <Box component='form' className='form' onSubmit={handleSubmit(handleRegistration)}>
+        <FormField
+          label={t('loginLabel')}
+          color='secondary'
+          autoComplete='off'
+          {...register('login', {
+            required: 'loginInputRequired',
+            minLength: {
+              value: 5,
+              message: 'loginInputRequired2',
+            },
+          })}
+        />
+        <FormFieldError>{errors.login ? t(errors.login.message + '') : ''}</FormFieldError>
+        <FormField
+          label={t('passwordLabel')}
+          autoComplete='off'
+          type='password'
+          color='secondary'
+          {...register('password', {
+            required: 'passwordInputRequired',
+            minLength: {
+              value: 6,
+              message: 'passwordInputRequired2',
+            },
+          })}
+        />
+        <FormFieldError>{errors.password ? t(errors.password?.message + '') : ''}</FormFieldError>
+        <WhiteButton
+          variant='contained'
+          disabled={!isValid && isSubmitted}
+          type='submit'
+          sx={{ mt: 1 }}
+        >
+          {t('signIn')}
+        </WhiteButton>
       </Box>
     </Container>
   );

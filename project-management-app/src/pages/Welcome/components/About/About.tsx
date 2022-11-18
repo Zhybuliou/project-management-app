@@ -7,21 +7,27 @@ export const About = () => {
   return (
     <Grid
       container
-      rowGap={3}
+      rowGap={2}
       component='section'
       alignItems='center'
       justifyContent='center'
       maxWidth='xl'
-      minHeight='92vh'
+      minHeight='93vh'
       sx={{ m: '0 auto' }}
     >
       <Grid item xs={12}>
-        <Typography variant='h2' component='h1' className='section-title'>
+        <Typography
+          variant='h2'
+          component='h1'
+          className='section-title'
+          maxWidth={700}
+          sx={{ m: '0 auto' }}
+        >
           {t('aboutTitle1')}
         </Typography>
       </Grid>
       <Grid item lg={6} md={12}>
-        <Typography variant='h4' className='section-subtitle' sx={{ p: '0 5px' }}>
+        <Typography variant='h4' className='section-subtitle' sx={{ p: '0 5px 40px' }}>
           {t('aboutTitle2')}
         </Typography>
       </Grid>

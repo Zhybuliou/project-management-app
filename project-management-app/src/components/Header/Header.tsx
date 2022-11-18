@@ -1,4 +1,4 @@
-import { AppBar, Toolbar, IconButton, Container, useScrollTrigger } from '@mui/material';
+import { AppBar, Toolbar, IconButton, Container, useScrollTrigger, Box } from '@mui/material';
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import headerLogo from './assets/headerLogo.png';
@@ -29,20 +29,22 @@ function ElevationScroll(props: Props) {
 
 export const Header = () => {
   return (
-    <Container maxWidth='xl'>
+    <Box component='header'>
       <ElevationScroll>
-        <AppBar>
-          <Toolbar component='nav' sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
-            <NavLink to='/'>
-              <IconButton size='small'>
-                <img src={headerLogo} style={{ width: '70px' }} alt='Project Logo' />
-              </IconButton>
-            </NavLink>
-            <Menu />
-          </Toolbar>
+        <AppBar component='nav'>
+          <Container maxWidth='xl'>
+            <Toolbar sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
+              <NavLink to='/'>
+                <IconButton size='small' color='secondary'>
+                  <img src={headerLogo} style={{ width: '70px' }} alt='Project Logo' />
+                </IconButton>
+              </NavLink>
+              <Menu />
+            </Toolbar>
+          </Container>
         </AppBar>
       </ElevationScroll>
       <Toolbar />
-    </Container>
+    </Box>
   );
 };
