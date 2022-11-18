@@ -1,12 +1,14 @@
 import './Menu.scss';
-import { Button, Stack, Select, MenuItem } from '@mui/material';
-import LoginIcon from '@mui/icons-material/Login';
-import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
-import LanguageIcon from '@mui/icons-material/Language';
-import EditIcon from '@mui/icons-material/Edit';
-import HomeIcon from '@mui/icons-material/Home';
-import DashboardCustomizeIcon from '@mui/icons-material/DashboardCustomize';
-import LogoutIcon from '@mui/icons-material/Logout';
+import { Stack, Select } from '@mui/material';
+import {
+  AppRegistration,
+  DashboardCustomize,
+  Edit,
+  Home,
+  Language,
+  Login,
+  Logout,
+} from '@mui/icons-material';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../../hook';
 import { changeStatusAuth } from '../../../../store/authSlice';
@@ -15,6 +17,7 @@ import CreateBoardDialog from '../../../popup/CreateBoardDialog';
 import FormCreateBoard from '../../../forms/FormCreateBoard';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { MyMenuItem, WhiteButton } from '../../../../theme/styledComponents/styledComponents';
 
 export const Menu = () => {
   const auth = useAppSelector((state) => state.auth.auth);
@@ -37,48 +40,48 @@ export const Menu = () => {
     <Stack className='nav-menu' direction='row' spacing={1}>
       <Select
         size='small'
-        IconComponent={LanguageIcon}
+        IconComponent={Language}
         value={localStorage.getItem('lng') || 'en'}
         onChange={(event) => handleChangeLng(event.target.value)}
       >
-        <MenuItem value='en'>en</MenuItem>
-        <MenuItem value='ru'>ru</MenuItem>
+        <MyMenuItem value='en'>en</MyMenuItem>
+        <MyMenuItem value='ru'>ru</MyMenuItem>
       </Select>
       {!auth && location !== 'main' ? (
         <>
           <NavLink to='/login'>
-            <Button variant='contained' endIcon={<LoginIcon />} disabled={!(location !== 'login')}>
+            <WhiteButton variant='contained' endIcon={<Login />} disabled={!(location !== 'login')}>
               {t('signIn')}
-            </Button>
+            </WhiteButton>
           </NavLink>
           <NavLink to='/register'>
-            <Button
+            <WhiteButton
               variant='contained'
-              endIcon={<AppRegistrationIcon />}
+              endIcon={<AppRegistration />}
               disabled={!(location !== 'register')}
             >
               {t('signUp')}
-            </Button>
+            </WhiteButton>
           </NavLink>
         </>
       ) : null}
       {auth && !location ? (
         <NavLink to='/main'>
-          <Button variant='contained' endIcon={<HomeIcon />}>
+          <WhiteButton variant='contained' endIcon={<Home />}>
             {t('goToMainPage')}
-          </Button>
+          </WhiteButton>
         </NavLink>
       ) : null}
 
       {auth && (location === 'main' || location === 'profile' || location === 'board') ? (
         <>
-          <Button
+          <WhiteButton
             variant='contained'
-            endIcon={<DashboardCustomizeIcon />}
+            endIcon={<DashboardCustomize />}
             onClick={() => setBoardDialog(true)}
           >
             {t('createNewBoard')}
-          </Button>
+          </WhiteButton>
           <CreateBoardDialog
             title={'Create Board'}
             openPopup={boardDialog}
@@ -87,13 +90,13 @@ export const Menu = () => {
             <FormCreateBoard setOpenPopup={setBoardDialog} />
           </CreateBoardDialog>
           <NavLink to='/profile'>
-            <Button variant='contained' endIcon={<EditIcon />}>
+            <WhiteButton variant='contained' endIcon={<Edit />}>
               {t('editProfile')}
-            </Button>
+            </WhiteButton>
           </NavLink>
-          <Button onClick={logOut} variant='contained' endIcon={<LogoutIcon />}>
+          <WhiteButton onClick={logOut} endIcon={<Logout />}>
             {t('signOut')}
-          </Button>
+          </WhiteButton>
         </>
       ) : null}
     </Stack>

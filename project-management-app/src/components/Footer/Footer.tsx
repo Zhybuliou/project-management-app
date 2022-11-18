@@ -41,7 +41,7 @@ export const Footer = () => {
             key={name}
             href={githubLink}
             target='_blank'
-            sx={{ fontSize: 14 }}
+            sx={{ fontSize: 14, fontFamily: 'Ubuntu' }}
           >
             <GitHubIcon sx={{ mr: 0.5 }} />
             {t(name).toUpperCase()}
