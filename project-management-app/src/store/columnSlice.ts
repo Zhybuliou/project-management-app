@@ -136,38 +136,41 @@ export const fetchDeleteColumn = createAsyncThunk<
   },
 );
 
-// export const fetchUpdateBoard = createAsyncThunk<
-//   BoardData,
-//   FetchBoardProps,
-//   { rejectValue: string }
-// >('boards/fetchUpdateBoard', async function ({ body, token, id }, { rejectWithValue, dispatch }) {
-//   dispatch(changeLoaderStatus(true));
-//   const response = await fetch(`${BASE_PATH}boards/${id}`, {
-//     method: 'PUT',
-//     headers: {
-//       accept: 'application/json',
-//       Authorization: 'Bearer ' + `${token}`,
-//       'Content-Type': 'application/json',
-//     },
-//     body: JSON.stringify(body),
-//   });
-//   const data = await response.json();
+export const fetchUpdateColumn = createAsyncThunk<
+  ColumnData,
+  FetchColumnProps,
+  { rejectValue: string }
+>(
+  'column/fetchUpdateColumn',
+  async function ({ body, token, id, columnId }, { rejectWithValue, dispatch }) {
+    dispatch(changeLoaderStatus(true));
+    const response = await fetch(`${BASE_PATH}boards/${id}/columns/${columnId}`, {
+      method: 'PUT',
+      headers: {
+        accept: 'application/json',
+        Authorization: 'Bearer ' + `${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    });
+    const data = await response.json();
 
-//   if (response.status !== 200) {
-//     if (response.status === 500) {
-//       return rejectWithValue('Internal server error');
-//     }
-//     if (response.status === 404) {
-//       return rejectWithValue('User was not founded!');
-//     }
-//     if (response.status === 400) {
-//       return rejectWithValue('Validation failed (uuid  is expected)');
-//     }
-//     dispatch(changeLoaderStatus(false));
-//   }
-//   dispatch(changeLoaderStatus(false));
-//   return data;
-// });
+    if (response.status !== 200) {
+      if (response.status === 500) {
+        return rejectWithValue('Internal server error');
+      }
+      if (response.status === 404) {
+        return rejectWithValue('User was not founded!');
+      }
+      if (response.status === 400) {
+        return rejectWithValue('Validation failed (uuid  is expected)');
+      }
+      dispatch(changeLoaderStatus(false));
+    }
+    dispatch(changeLoaderStatus(false));
+    return data;
+  },
+);
 
 export const fetchCreateColumn = createAsyncThunk<
   ColumnData,
@@ -220,16 +223,9 @@ const columnSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchAllColumns.pending, (state) => {
-        // state.error = null;
-      })
       .addCase(fetchAllColumns.fulfilled, (state, action: PayloadAction<FetchAllColumns>) => {
         // state.error = null;
         state.allColumns = action.payload;
-      })
-      .addCase(fetchAllColumns.rejected, (state, action) => {
-        // state.error = action.payload as string;
-        // alert(state.error);
       })
       //   .addCase(fetchGetBoard.pending, (state) => {
       //     state.error = null;
@@ -242,38 +238,17 @@ const columnSlice = createSlice({
       //     state.error = action.payload as string;
       //     alert(state.error);
       //   })
-      .addCase(fetchDeleteColumn.pending, (state) => {
-        // state.error = null;
-      })
       .addCase(fetchDeleteColumn.fulfilled, (state) => {
         // state.error = null;
         state.column = {} as ColumnData;
       })
-      .addCase(fetchDeleteColumn.rejected, (state, action) => {
-        // state.error = action.payload as string;
-        // alert(state.error);
-      })
-      //   .addCase(fetchUpdateBoard.pending, (state) => {
-      //     state.error = null;
-      //   })
-      //   .addCase(fetchUpdateBoard.fulfilled, (state, action: PayloadAction<BoardData>) => {
-      //     state.error = null;
-      //     state.board = action.payload;
-      //   })
-      //   .addCase(fetchUpdateBoard.rejected, (state, action) => {
-      //     state.error = action.payload as string;
-      //     alert(state.error);
-      //   })
-      .addCase(fetchCreateColumn.pending, (state) => {
+      .addCase(fetchUpdateColumn.fulfilled, (state, action: PayloadAction<ColumnData>) => {
         // state.error = null;
+        state.column = action.payload;
       })
       .addCase(fetchCreateColumn.fulfilled, (state, action: PayloadAction<ColumnData>) => {
         // state.error = null;
         state.column = action.payload;
-      })
-      .addCase(fetchCreateColumn.rejected, (state, action) => {
-        // state.error = action.payload as string;
-        // alert(state.error);
       });
   },
 });

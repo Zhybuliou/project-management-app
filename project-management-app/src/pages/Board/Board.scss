@@ -4,13 +4,16 @@
     margin: 0;
   }
 }
-.column{
+.column {
   margin-top: 10px;
   margin-right: 10px;
 }
-.column-title{
+.column-title {
   display: flex;
   justify-content: space-between;
   align-content: stretch;
   background-color: #ccc;
+}
+.colum-title-header {
+  cursor: pointer;
 }
