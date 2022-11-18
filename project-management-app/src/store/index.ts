@@ -11,7 +11,7 @@ const store = configureStore({
     user: UserReducer,
     board: BoardReducer,
     column: ColumnReducer,
-    task: TaskReducer
+    task: TaskReducer,
   },
 });
 

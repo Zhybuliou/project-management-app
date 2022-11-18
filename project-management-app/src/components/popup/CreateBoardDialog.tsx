@@ -24,7 +24,7 @@ export default function CreateBoardDialog(props: Props) {
       </IconButton>
       <DialogTitle sx={{ pt: 0 }}>
         <div style={{ display: 'flex' }}>
-          <Typography variant='h4' color="#4D628B" component='div' style={{ flexGrow: 1 }}>
+          <Typography variant='h4' color='#4D628B' component='div' style={{ flexGrow: 1 }}>
             {title}
           </Typography>
         </div>

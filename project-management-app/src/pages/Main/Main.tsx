@@ -31,11 +31,11 @@ export const Main = () => {
     },
   });
   const [updateStateBoard, setUpdateStateBoard] = useState({
-     id: '',
-     title: '',
-     description: '',
-  })
-  const [ dialogUpdate, setDialogUpdate] = useState(false);
+    id: '',
+    title: '',
+    description: '',
+  });
+  const [dialogUpdate, setDialogUpdate] = useState(false);
   const getToken = localStorage.getItem('token');
   if (getToken) {
     const token = JSON.parse(getToken);
@@ -70,9 +70,9 @@ export const Main = () => {
                       await setUpdateStateBoard({
                         id: board._id || '',
                         title: board.title,
-                        description: board.owner
-                      })
-                      await setDialogUpdate(true)
+                        description: board.owner,
+                      });
+                      await setDialogUpdate(true);
                     }}
                   >
                     <EditIcon />
@@ -111,12 +111,12 @@ export const Main = () => {
       </Grid>
       <ConfirmDialog confirmDialog={confirmDialog} setConfirmDialog={setConfirmDialog} />
       <CreateBoardDialog
-            title={'Update Board'}
-            openPopup={dialogUpdate}
-            setOpenPopup={setDialogUpdate}
-          >
-            <FormUpdateBoard form={updateStateBoard} setOpenPopup={setDialogUpdate} />
-          </CreateBoardDialog>
+        title={'Update Board'}
+        openPopup={dialogUpdate}
+        setOpenPopup={setDialogUpdate}
+      >
+        <FormUpdateBoard form={updateStateBoard} setOpenPopup={setDialogUpdate} />
+      </CreateBoardDialog>
     </Container>
   );
 };

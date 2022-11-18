@@ -24,6 +24,7 @@ import { fetchAllColumns, fetchCreateColumn, fetchDeleteColumn } from '../../sto
 import ConfirmDialog from '../../components/popup/ConfirmDialog';
 import Tasks from '../../components/Tasks/Tasks';
 import { fetchBoardIdTasks } from '../../store/taskSlice';
+import FormUpdateColumn from '../../components/forms/FormUpdateColumn';
 
 export const Board = () => {
   const board = useAppSelector((state) => state.board.board);
@@ -32,9 +33,10 @@ export const Board = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [isOpen, setIsOpen] = useState(false);
+  const [titleColumn, setTitleColumn] = useState('');
   const location = useLocation();
   const id = location.state.id;
-  const getToken = localStorage.getItem('token')
+  const getToken = localStorage.getItem('token');
   const token = getToken ? JSON.parse(getToken) : '';
   const [confirmDialog, setConfirmDialog] = useState({
     isOpen: false,
@@ -46,10 +48,10 @@ export const Board = () => {
   });
 
   useEffect(() => {
-     dispatch(fetchGetBoard({id, token}));
-     dispatch(fetchAllColumns({id, token}));
-     dispatch(fetchBoardIdTasks({id, token}))
-  },[])
+    dispatch(fetchGetBoard({ id, token }));
+    dispatch(fetchAllColumns({ id, token }));
+    dispatch(fetchBoardIdTasks({ id, token }));
+  }, []);
 
   const {
     register,
@@ -65,10 +67,10 @@ export const Board = () => {
   const submit = async (data: FieldValues) => {
     const body = {
       title: data.columnTitle,
-      order: 1
-    }
-    await dispatch(fetchCreateColumn({id, body, token}));
-    await dispatch(fetchAllColumns({id, token}));
+      order: 1,
+    };
+    await dispatch(fetchCreateColumn({ id, body, token }));
+    await dispatch(fetchAllColumns({ id, token }));
     setIsOpen(!isOpen);
     setTimeout(() => reset());
   };
@@ -100,31 +102,53 @@ export const Board = () => {
         {allColumns.length
           ? allColumns.map((column) => (
               <Grid item xs={1} key={column._id}>
-                <Card className="column">
-                  <CardContent className='column-title' >
-                    <Typography variant='h5'>{column.title}</Typography>
-                    <IconButton color='info' onClick={ async () => {
-                       setConfirmDialog({
-                        isOpen: true,
-                        title: 'Are you sure what you want delete this column',
-                        subTitle: 'Click button yes',
-                        onConfirm: async () => {
-                          const columnId = column._id;
-                          setConfirmDialog({ ...confirmDialog, isOpen: false }); 
-                          await dispatch(fetchDeleteColumn({id, columnId, token}));
-                          await  dispatch(fetchAllColumns({id, token}));
-                        },
-                      });
-                    }}>
+                <Card className='column'>
+                  <CardContent className='column-title'>
+                    <Typography
+                      className='colum-title-header'
+                      variant='h5'
+                      onClick={() => {
+                        setTitleColumn(column.title);
+                      }}
+                    >
+                      {titleColumn !== column.title ? (
+                        column.title
+                      ) : (
+                        <FormUpdateColumn
+                          form={{
+                            title: column.title,
+                            id: id,
+                            columnId: column._id || '',
+                            order: 0,
+                          }}
+                          setTitleColumn={setTitleColumn}
+                          titleColumn={titleColumn}
+                        />
+                      )}
+                    </Typography>
+                    <IconButton
+                      color='info'
+                      onClick={async () => {
+                        setConfirmDialog({
+                          isOpen: true,
+                          title: 'Are you sure what you want delete this column',
+                          subTitle: 'Click button yes',
+                          onConfirm: async () => {
+                            const columnId = column._id;
+                            setConfirmDialog({ ...confirmDialog, isOpen: false });
+                            await dispatch(fetchDeleteColumn({ id, columnId, token }));
+                            await dispatch(fetchAllColumns({ id, token }));
+                          },
+                        });
+                      }}
+                    >
                       <DeleteForeverIcon />
                     </IconButton>
                   </CardContent>
                   <CardContent>
-                    <Tasks id={id}  columnId={column._id || ''} allTasks={allTasks}/>
+                    <Tasks id={id} columnId={column._id || ''} allTasks={allTasks} />
                   </CardContent>
-                  <CardActions sx={{ ml: 'auto' }}>
-
-                  </CardActions>
+                  <CardActions sx={{ ml: 'auto' }}></CardActions>
                 </Card>
               </Grid>
             ))
@@ -169,4 +193,3 @@ export const Board = () => {
     </Container>
   );
 };
-
