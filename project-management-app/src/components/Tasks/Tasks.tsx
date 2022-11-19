@@ -5,34 +5,40 @@ import FormCreateTask from '../forms/FormCreateTask';
 import CreateBoardDialog from '../popup/CreateBoardDialog';
 import { TaskData } from '../../store/taskSlice';
 import Task from './Task';
+import { Droppable } from 'react-beautiful-dnd';
+import { DragType } from '../../pages/Board/Board';
 
-type Props = {
+type TasksProps = {
   id: string;
   columnId: string;
   allTasks: TaskData[];
 };
 
-export default function Tasks(props: Props) {
+export default function Tasks(props: TasksProps) {
   const [isOpenTask, setIsOpenTask] = useState(false);
   const { id, columnId, allTasks } = props;
 
   return (
     <>
-      {allTasks.length
-        ? allTasks.map(
-            (task) =>
-              task.columnId == columnId && (
-                <Task
-                  key={task._id}
-                  title={task.title}
-                  description={task.description}
-                  id={id}
-                  columnId={columnId}
-                  taskId={task._id || ''}
-                />
-              ),
-          )
-        : 'please create task...'}
+      <Droppable droppableId={columnId} type={DragType.TASK}>
+        {(provided, snapshot) => (
+          <div
+            ref={provided.innerRef}
+            {...provided.droppableProps}
+            className={`${snapshot.isDraggingOver ? 'dragTasksActive' : ''}`}
+          >
+            {allTasks.length
+              ? allTasks.map(
+                  (task, index) =>
+                    task.columnId == columnId && (
+                      <Task key={task._id} task={task} id={id} index={index} />
+                    ),
+                )
+              : 'please create task...'}
+            {provided.placeholder}
+          </div>
+        )}
+      </Droppable>
       <Button
         startIcon={<AddIcon color='primary' />}
         fullWidth={true}

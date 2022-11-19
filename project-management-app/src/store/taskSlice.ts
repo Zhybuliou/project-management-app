@@ -256,12 +256,17 @@ export const fetchCreateTask = createAsyncThunk<TaskData, FetchTaskProps, { reje
 const taskSlice = createSlice({
   name: 'task',
   initialState,
-  reducers: {},
+  reducers: {
+    changeAllTasks(state, action: PayloadAction<TaskData[]>) {
+      state.allTasks = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchAllTasks.fulfilled, (state, action: PayloadAction<FetchAllTasks>) => {
         // state.error = null;
         state.allTasks = action.payload;
+        console.log(state.allTasks);
       })
       .addCase(fetchBoardIdTasks.fulfilled, (state, action: PayloadAction<FetchAllTasks>) => {
         // state.error = null;
@@ -300,4 +305,5 @@ const taskSlice = createSlice({
   },
 });
 
+export const { changeAllTasks } = taskSlice.actions;
 export default taskSlice.reducer;

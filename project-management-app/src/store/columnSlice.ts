@@ -3,7 +3,7 @@ import { removeLocalStorage } from '../utils/signOut';
 import { changeLoaderStatus, changeStatusAuth } from './authSlice';
 import { changeOpenErrorSnackBar, getErrorMessage } from './userSlice';
 
-type ColumnData = {
+export type ColumnData = {
   _id?: string;
   title: string;
   order: number;
@@ -220,7 +220,11 @@ export const fetchCreateColumn = createAsyncThunk<
 const columnSlice = createSlice({
   name: 'column',
   initialState,
-  reducers: {},
+  reducers: {
+    changeAllColumns(state, action: PayloadAction<ColumnData[]>) {
+      state.allColumns = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchAllColumns.fulfilled, (state, action: PayloadAction<FetchAllColumns>) => {
@@ -252,5 +256,5 @@ const columnSlice = createSlice({
       });
   },
 });
-
+export const { changeAllColumns } = columnSlice.actions;
 export default columnSlice.reducer;

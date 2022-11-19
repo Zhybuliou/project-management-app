@@ -14,6 +14,18 @@
   align-content: stretch;
   background-color: #ccc;
 }
-.colum-title-header {
+.dragActive {
+  background-color: #3e527a;
+}
+
+.column.drag {
+  box-shadow: 0 0 20px white;
+}
+
+.dragTasksActive {
+  background-color: pink;
+}
+
+.column-title-header {
   cursor: pointer;
 }
