@@ -41,6 +41,7 @@ export function BordColumn({ column, setConfirmDialog, index }: BordColumnProps)
             <CardContent className='column-title'>
               <Typography
                 variant='h5'
+                className='column-title-header'
                 onClick={() => {
                   setTitleColumn(column.title);
                 }}

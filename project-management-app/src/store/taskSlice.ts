@@ -305,8 +305,5 @@ const taskSlice = createSlice({
   },
 });
 
-<<<<<<< HEAD
 export const { changeAllTasks } = taskSlice.actions;
-=======
->>>>>>> develop
 export default taskSlice.reducer;
