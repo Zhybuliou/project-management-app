@@ -46,7 +46,7 @@ const BASE_PATH = 'https://kanbanapi.adaptable.app/';
 
 export const fetchAllTasks = createAsyncThunk<
   FetchAllTasks,
-  { id: string; token: string, columnId?: string },
+  { id: string; token: string; columnId?: string },
   { rejectValue: string }
 >('task/fetchAllTasks', async function ({ id, token, columnId }, { rejectWithValue, dispatch }) {
   dispatch(changeLoaderStatus(true));
@@ -139,11 +139,7 @@ export const fetchBoardIdTasks = createAsyncThunk<
 //   },
 // );
 
-export const fetchDeleteTask = createAsyncThunk<
-  TaskData,
-  FetchTaskProps,
-  { rejectValue: string }
->(
+export const fetchDeleteTask = createAsyncThunk<TaskData, FetchTaskProps, { rejectValue: string }>(
   'task/fetchDeleteTask',
   async function ({ id, columnId, token, taskId }, { rejectWithValue, dispatch }) {
     dispatch(changeLoaderStatus(true));
@@ -213,55 +209,58 @@ export const fetchDeleteTask = createAsyncThunk<
 //   return data;
 // });
 
-export const fetchCreateTask = createAsyncThunk<
-  TaskData,
-  FetchTaskProps,
-  { rejectValue: string }
->('task/fetchCreateTask', async function ({ id, body, token, columnId }, { rejectWithValue, dispatch }) {
-  dispatch(changeLoaderStatus(true));
-  const response = await fetch(`${BASE_PATH}boards/${id}/columns/${columnId}/tasks`, {
-    method: 'POST',
-    headers: {
-      accept: 'application/json',
-      Authorization: 'Bearer ' + `${token}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(body),
-  });
-  const data = await response.json();
+export const fetchCreateTask = createAsyncThunk<TaskData, FetchTaskProps, { rejectValue: string }>(
+  'task/fetchCreateTask',
+  async function ({ id, body, token, columnId }, { rejectWithValue, dispatch }) {
+    dispatch(changeLoaderStatus(true));
+    const response = await fetch(`${BASE_PATH}boards/${id}/columns/${columnId}/tasks`, {
+      method: 'POST',
+      headers: {
+        accept: 'application/json',
+        Authorization: 'Bearer ' + `${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    });
+    const data = await response.json();
 
-  if (response.status !== 200) {
-    dispatch(changeOpenErrorSnackBar(true));
-    if (response.status === 500) {
-      dispatch(getErrorMessage('error500'));
-      return rejectWithValue('error500');
-    }
-    if (response.status === 404) {
-      dispatch(getErrorMessage('error404'));
-      return rejectWithValue('error404');
-    }
-    if (response.status === 400) {
-      dispatch(getErrorMessage('error400'));
-      return rejectWithValue('error400');
-    }
-    if (response.status === 403) {
-      dispatch(changeStatusAuth(false));
+    if (response.status !== 200) {
+      dispatch(changeOpenErrorSnackBar(true));
+      if (response.status === 500) {
+        dispatch(getErrorMessage('error500'));
+        return rejectWithValue('error500');
+      }
+      if (response.status === 404) {
+        dispatch(getErrorMessage('error404'));
+        return rejectWithValue('error404');
+      }
+      if (response.status === 400) {
+        dispatch(getErrorMessage('error400'));
+        return rejectWithValue('error400');
+      }
+      if (response.status === 403) {
+        dispatch(changeStatusAuth(false));
+        dispatch(changeLoaderStatus(false));
+        removeLocalStorage();
+        dispatch(getErrorMessage('error403'));
+        return rejectWithValue('error403');
+      }
+      dispatch(getErrorMessage('errorCommon'));
       dispatch(changeLoaderStatus(false));
-      removeLocalStorage();
-      dispatch(getErrorMessage('error403'));
-      return rejectWithValue('error403');
     }
-    dispatch(getErrorMessage('errorCommon'));
     dispatch(changeLoaderStatus(false));
-  }
-  dispatch(changeLoaderStatus(false));
-  return data;
-});
+    return data;
+  },
+);
 
 const taskSlice = createSlice({
   name: 'task',
   initialState,
-  reducers: {},
+  reducers: {
+    changeAllTasks(state, action: PayloadAction<TaskData[]>) {
+      state.allTasks = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchAllTasks.pending, (state) => {
@@ -270,6 +269,7 @@ const taskSlice = createSlice({
       .addCase(fetchAllTasks.fulfilled, (state, action: PayloadAction<FetchAllTasks>) => {
         // state.error = null;
         state.allTasks = action.payload;
+        console.log(state.allTasks);
       })
       .addCase(fetchAllTasks.rejected, (state, action) => {
         // state.error = action.payload as string;
@@ -326,4 +326,5 @@ const taskSlice = createSlice({
   },
 });
 
+export const { changeAllTasks } = taskSlice.actions;
 export default taskSlice.reducer;
