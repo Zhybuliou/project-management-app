@@ -39,14 +39,14 @@ export const SignUp = () => {
           color='secondary'
           autoComplete='off'
           {...register('name', {
-            required: 'Please enter your name',
+            required: 'nameInputRequired',
             minLength: {
               value: 2,
-              message: 'nameInputRequired',
+              message: 'nameInputRequired2',
             },
             pattern: {
               value: /^[a-zа-яё]+$/i,
-              message: 'nameInputRequired2',
+              message: 'nameInputRequired3',
             },
           })}
         />

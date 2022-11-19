@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Box, Button, TextField, Typography } from '@mui/material';
+import { Box, Container, Stack, Typography } from '@mui/material';
 import { FieldValues, useForm } from 'react-hook-form';
 import ConfirmDialog from '../../components/popup/ConfirmDialog';
 import { useAppDispatch, useAppSelector } from '../../hook';
 import { changeLoaderStatus, changeStatusAuth } from '../../store/authSlice';
+import { DeleteForever } from '@mui/icons-material';
 import {
   changeOpenErrorSnackBar,
   fetchAllUsers,
@@ -14,9 +15,16 @@ import {
 } from '../../store/userSlice';
 import { isExpired } from 'react-jwt';
 import { removeLocalStorage } from '../../utils/signOut';
+import {
+  FormField,
+  FormFieldError,
+  WhiteButton,
+} from '../../theme/styledComponents/styledComponents';
+import { useTranslation } from 'react-i18next';
 
 export const EditProfile = () => {
   const dispatch = useAppDispatch();
+  const { t } = useTranslation();
   const { token, id, name, login, password } = useAppSelector((state) => state.auth);
   const [confirmDialog, setConfirmDialog] = useState({
     isOpen: false,
@@ -94,93 +102,76 @@ export const EditProfile = () => {
   }, []);
 
   return (
-    <main className='main'>
+    <Container className='main' maxWidth='xl' component='main'>
       <Typography variant='h2' component='h1' className='section-title'>
-        Edit profile
+        {t('editProfile')}
       </Typography>
-      <Box
-        sx={{
-          width: 500,
-          backgroundColor: '#4D628B',
-          margin: '0 auto',
-        }}
-      >
-        <form className='form-signIn' onSubmit={handleSubmit(handleRegistration)}>
-          <TextField
-            defaultValue={name}
-            id='outlined-basic'
-            label='name'
-            variant='outlined'
-            {...register('name', {
-              required: 'Please enter your name',
-              minLength: {
-                value: 2,
-                message: 'Name must contain at least 2 letters',
-              },
-              pattern: {
-                value: /^[a-zа-яё]+$/i,
-                message: 'Name must contain only letters',
-              },
-            })}
-            sx={{
-              backgroundColor: '#ffffff',
-              borderRadius: 1,
-            }}
-          />
-          <div style={{ color: 'red' }}>{errors.name ? errors.name.message : ''}</div>
-          <TextField
-            id='outlined-basic'
-            defaultValue={login}
-            label='login'
-            variant='outlined'
-            {...register('login', {
-              required: 'Please enter your login',
-              minLength: {
-                value: 5,
-                message: 'Login must contain at least 5 letters',
-              },
-            })}
-            sx={{
-              backgroundColor: '#ffffff',
-              borderRadius: 1,
-            }}
-          />
-          <div style={{ color: ' red' }}>{errors.login ? errors.login.message : ''}</div>
-          <TextField
-            defaultValue={password}
-            id='outlined-password-input'
-            label='password'
-            type='password'
-            autoComplete='current-password'
-            {...register('password', {
-              required: 'Please enter your password',
-              minLength: {
-                value: 6,
-                message: 'Password must contain at least 5 letters',
-              },
-            })}
-            sx={{
-              backgroundColor: '#ffffff',
-              borderRadius: 1,
-            }}
-          />
-          <div style={{ color: ' red' }}>{errors.password ? errors.password.message : ''}</div>
-          <Button
-            type='submit'
-            variant='outlined'
-            sx={{
-              backgroundColor: '#ffffff',
-              borderRadius: 1,
-            }}
+      <Box component='form' className='form' onSubmit={handleSubmit(handleRegistration)}>
+        <FormField
+          defaultValue={name}
+          label={t('nameLabel')}
+          color='secondary'
+          autoComplete='off'
+          {...register('name', {
+            required: 'nameInputRequired',
+            minLength: {
+              value: 2,
+              message: 'nameInputRequired2',
+            },
+            pattern: {
+              value: /^[a-zа-яё]+$/i,
+              message: 'nameInputRequired3',
+            },
+          })}
+        />
+        <FormFieldError>{errors.name ? t(errors.name.message + '') : ''}</FormFieldError>
+        <FormField
+          defaultValue={login}
+          label={t('loginLabel')}
+          color='secondary'
+          autoComplete='off'
+          {...register('login', {
+            required: 'loginInputRequired',
+            minLength: {
+              value: 5,
+              message: 'loginInputRequired2',
+            },
+          })}
+        />
+        <FormFieldError>{errors.login ? t(errors.login.message + '') : ''}</FormFieldError>
+        <FormField
+          defaultValue={password}
+          label={t('passwordLabel')}
+          type='password'
+          color='secondary'
+          autoComplete='off'
+          {...register('password', {
+            required: 'passwordInputRequired',
+            minLength: {
+              value: 6,
+              message: 'passwordInputRequired2',
+            },
+          })}
+        />
+        <FormFieldError>{errors.password ? t(errors.password.message + '') : ''}</FormFieldError>
+        <Stack
+          direction={localStorage.getItem('lng') === 'en' ? 'row' : 'column-reverse'}
+          rowGap={1}
+          columnGap={4}
+        >
+          <WhiteButton
+            endIcon={<DeleteForever color='error' />}
+            variant='contained'
+            onClick={openConfirmDialog}
           >
-            Update
-          </Button>
-        </form>
+            {t('deleteProfile')}
+          </WhiteButton>
+          <WhiteButton type='submit' variant='contained'>
+            {t('editProfile')}
+          </WhiteButton>
+        </Stack>
       </Box>
-      <button onClick={getUsers}>Get all users</button>
-      <button onClick={getUser}>Get user by id</button>
-      <button onClick={openConfirmDialog}>Delete user by id</button>
       <ConfirmDialog confirmDialog={confirmDialog} setConfirmDialog={setConfirmDialog} />
-    </main>
+    </Container>
   );
 };
