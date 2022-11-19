@@ -22,7 +22,14 @@ export default function Tasks(props: Props) {
         ? allTasks.map(
             (task) =>
               task.columnId == columnId && (
-                <Task key={task._id} title={task.title} description={task.description} />
+                <Task
+                  key={task._id}
+                  title={task.title}
+                  description={task.description}
+                  id={id}
+                  columnId={columnId}
+                  taskId={task._id || ''}
+                />
               ),
           )
         : 'please create task...'}
