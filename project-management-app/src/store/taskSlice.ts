@@ -263,17 +263,10 @@ const taskSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchAllTasks.pending, (state) => {
-        // state.error = null;
-      })
       .addCase(fetchAllTasks.fulfilled, (state, action: PayloadAction<FetchAllTasks>) => {
         // state.error = null;
         state.allTasks = action.payload;
         console.log(state.allTasks);
-      })
-      .addCase(fetchAllTasks.rejected, (state, action) => {
-        // state.error = action.payload as string;
-        // alert(state.error);
       })
       .addCase(fetchBoardIdTasks.fulfilled, (state, action: PayloadAction<FetchAllTasks>) => {
         // state.error = null;
@@ -290,16 +283,9 @@ const taskSlice = createSlice({
       //     state.error = action.payload as string;
       //     alert(state.error);
       //   })
-      .addCase(fetchDeleteTask.pending, (state) => {
-        // state.error = null;
-      })
       .addCase(fetchDeleteTask.fulfilled, (state) => {
         // state.error = null;
         state.task = {} as TaskData;
-      })
-      .addCase(fetchDeleteTask.rejected, (state, action) => {
-        // state.error = action.payload as string;
-        // alert(state.error);
       })
       //   .addCase(fetchUpdateBoard.pending, (state) => {
       //     state.error = null;
@@ -312,19 +298,15 @@ const taskSlice = createSlice({
       //     state.error = action.payload as string;
       //     alert(state.error);
       //   })
-      .addCase(fetchCreateTask.pending, (state) => {
-        // state.error = null;
-      })
       .addCase(fetchCreateTask.fulfilled, (state, action: PayloadAction<TaskData>) => {
         // state.error = null;
         state.task = action.payload;
-      })
-      .addCase(fetchCreateTask.rejected, (state, action) => {
-        // state.error = action.payload as string;
-        // alert(state.error);
       });
   },
 });
 
+<<<<<<< HEAD
 export const { changeAllTasks } = taskSlice.actions;
+=======
+>>>>>>> develop
 export default taskSlice.reducer;

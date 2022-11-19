@@ -30,7 +30,9 @@ export default function Tasks(props: TasksProps) {
             {allTasks.length
               ? allTasks.map(
                   (task, index) =>
-                    task.columnId == columnId && <Task key={task._id} task={task} index={index} />,
+                    task.columnId == columnId && (
+                      <Task key={task._id} task={task} id={id} index={index} />
+                    ),
                 )
               : 'please create task...'}
             {provided.placeholder}

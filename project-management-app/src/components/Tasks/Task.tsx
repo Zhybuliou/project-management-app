@@ -1,15 +1,26 @@
 import { Card, CardActions, CardContent, IconButton, Typography } from '@mui/material';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import React from 'react';
+import React, { useState } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
-import { TaskData } from '../../store/taskSlice';
+import { TaskData, fetchDeleteTask, fetchBoardIdTasks } from '../../store/taskSlice';
+import { useAppDispatch } from '../../hook';
 
 type TaskProps = {
   task: TaskData;
   index: number;
+  id: string;
 };
 
-export default function Task({ task, index }: TaskProps) {
+export default function Task({ task, index, id }: TaskProps) {
+  const dispatch = useAppDispatch();
+  const [confirmTask, setConfirmTask] = useState({
+    isOpen: false,
+    title: '',
+    subTitle: '',
+    onConfirm: () => {
+      ('');
+    },
+  });
   return (
     <Draggable draggableId={task._id as string} index={index}>
       {(provided, snapshot) => (
@@ -33,7 +44,24 @@ export default function Task({ task, index }: TaskProps) {
             </Typography>
           </CardContent>
           <CardActions>
-            <IconButton color='info'>
+            <IconButton
+              color='info'
+              onClick={async () => {
+                setConfirmTask({
+                  isOpen: true,
+                  title: 'Are you sure what you want delete this task',
+                  subTitle: 'Click button yes',
+                  onConfirm: async () => {
+                    const { columnId } = task;
+                    const taskId = task._id;
+                    const token = JSON.parse(localStorage.getItem('token') || '');
+                    setConfirmTask({ ...confirmTask, isOpen: false });
+                    await dispatch(fetchDeleteTask({ id, columnId, token, taskId }));
+                    await dispatch(fetchBoardIdTasks({ id, token }));
+                  },
+                });
+              }}
+            >
               <DeleteForeverIcon sx={{ fontSize: 18 }} />
             </IconButton>
           </CardActions>

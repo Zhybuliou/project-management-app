@@ -25,6 +25,7 @@ export const Team = () => {
     <Grid
       container
       columnGap={40}
+      rowGap={4}
       component='section'
       alignItems='center'
       justifyContent='center'
@@ -45,6 +46,16 @@ export const Team = () => {
           </Stack>
         </Grid>
       ))}
+      <Grid item xs={12} justifyContent='center'>
+        <Typography
+          variant='h5'
+          className='section-subtitle'
+          sx={{ m: '0 auto', pb: '40px' }}
+          maxWidth='xl'
+        >
+          {t('aboutTeam')}
+        </Typography>
+      </Grid>
     </Grid>
   );
 };

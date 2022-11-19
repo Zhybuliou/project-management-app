@@ -2,7 +2,7 @@ import { Button, TextField } from '@mui/material';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useAppDispatch } from '../../hook';
-import { fetchAllBoards, fetchCreateBoard } from '../../store/boardSlice';
+import { fetchAllBoards, fetchUpdateBoard } from '../../store/boardSlice';
 import './form.scss';
 
 type DataForm = {
@@ -11,10 +11,15 @@ type DataForm = {
   users?: string;
 };
 type Props = {
+  form: {
+    id: string;
+    title: string;
+    description: string;
+  };
   setOpenPopup: (value: boolean) => void;
 };
 
-export default function FormCreateBoard(props: Props) {
+export default function FormUpdateBoard(props: Props) {
   const { register, handleSubmit } = useForm();
   const dispatch = useAppDispatch();
 
@@ -26,8 +31,9 @@ export default function FormCreateBoard(props: Props) {
       const token = JSON.parse(getToken);
       props.setOpenPopup(false);
       if (data.title && data.description) {
+        const id = props.form.id;
         const body = { title: data.title, owner: data.description, users: name };
-        await dispatch(fetchCreateBoard({ body, token }));
+        await dispatch(fetchUpdateBoard({ body, token, id }));
       }
       await dispatch(fetchAllBoards(token));
     }
@@ -35,15 +41,20 @@ export default function FormCreateBoard(props: Props) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className='form-create-board'>
-      <TextField label={'Title'} {...register('title', { required: true, maxLength: 80 })} />
+      <TextField
+        label={'Title'}
+        defaultValue={props.form.title}
+        {...register('title', { required: true, maxLength: 80 })}
+      />
       <TextField
         label={'Description'}
+        defaultValue={props.form.description}
         multiline
         rows={5}
         {...register('description', { required: true, maxLength: 100 })}
       />
       <Button variant='contained' color='success' type='submit'>
-        Create Board
+        Update Board
       </Button>
     </form>
   );
