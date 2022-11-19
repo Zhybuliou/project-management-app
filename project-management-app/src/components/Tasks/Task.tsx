@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
 import { TaskData, fetchDeleteTask, fetchBoardIdTasks } from '../../store/taskSlice';
 import { useAppDispatch } from '../../hook';
+import ConfirmDialog from '../popup/ConfirmDialog';
 
 type TaskProps = {
   task: TaskData;
@@ -65,6 +66,7 @@ export default function Task({ task, index, id }: TaskProps) {
               <DeleteForeverIcon sx={{ fontSize: 18 }} />
             </IconButton>
           </CardActions>
+          <ConfirmDialog confirmDialog={confirmTask} setConfirmDialog={setConfirmTask} />
         </Card>
       )}
     </Draggable>
