@@ -217,6 +217,46 @@ export const fetchCreateColumn = createAsyncThunk<
   return data;
 });
 
+export type BodyUpdate = {
+  _id: string;
+  order: number;
+};
+
+type FetchUpdateOrderProps = {
+  body: BodyUpdate[];
+  token: string;
+};
+
+export const fetchUpdateOrderColumns = createAsyncThunk<
+  ColumnData[],
+  FetchUpdateOrderProps,
+  { rejectValue: string }
+>('board/fetchUpdateOrderColumns', async function ({ body, token }, { rejectWithValue, dispatch }) {
+  dispatch(changeLoaderStatus(true));
+  const response = await fetch(`${BASE_PATH}columnsSet`, {
+    method: 'PATCH',
+    headers: {
+      accept: 'application/json',
+      Authorization: 'Bearer ' + `${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(body),
+  });
+  const data = await response.json();
+  if (response.status !== 200) {
+    if (response.status === 403) {
+      dispatch(changeStatusAuth(false));
+      dispatch(changeLoaderStatus(false));
+      removeLocalStorage();
+      dispatch(getErrorMessage('error403'));
+      return rejectWithValue('error403');
+    }
+    dispatch(changeLoaderStatus(false));
+  }
+  dispatch(changeLoaderStatus(false));
+
+  return data;
+});
 const columnSlice = createSlice({
   name: 'column',
   initialState,
@@ -253,6 +293,10 @@ const columnSlice = createSlice({
       .addCase(fetchCreateColumn.fulfilled, (state, action: PayloadAction<ColumnData>) => {
         // state.error = null;
         state.column = action.payload;
+      })
+      .addCase(fetchUpdateOrderColumns.fulfilled, (state, action: PayloadAction<ColumnData[]>) => {
+        // state.error = null;
+        state.allColumns = [...action.payload];
       });
   },
 });
