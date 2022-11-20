@@ -1,7 +1,8 @@
 import { AppBar, Toolbar, IconButton, Container, useScrollTrigger, Box } from '@mui/material';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import headerLogo from './assets/headerLogo.png';
+import { BurgerMenu } from './components/BurgerMenu/BurgerMenu';
 import { Menu } from './components/Menu/Menu';
 
 interface Props {
@@ -27,7 +28,21 @@ function ElevationScroll(props: Props) {
   });
 }
 
+const getWidth = () => window.innerWidth;
+
 export const Header = () => {
+  const [width, setWidth] = useState(getWidth());
+  useEffect(() => {
+    const resizeListener = () => {
+      setWidth(getWidth());
+    };
+    window.addEventListener('resize', resizeListener);
+
+    return () => {
+      window.removeEventListener('resize', resizeListener);
+    };
+  }, []);
+
   return (
     <Box component='header'>
       <ElevationScroll>
@@ -39,7 +54,7 @@ export const Header = () => {
                   <img src={headerLogo} style={{ width: '70px' }} alt='Project Logo' />
                 </IconButton>
               </NavLink>
-              <Menu />
+              {width > 899 ? <Menu buttonVariant='contained' direction='row' /> : <BurgerMenu />}
             </Toolbar>
           </Container>
         </AppBar>

@@ -18,8 +18,14 @@ import FormCreateBoard from '../../../forms/FormCreateBoard';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MyMenuItem, WhiteButton } from '../../../../theme/styledComponents/styledComponents';
+import { setBurgerVisible } from '../../../../store/headerSlice';
 
-export const Menu = () => {
+type MenuProps = {
+  buttonVariant: 'text' | 'contained';
+  direction: 'row' | 'column';
+};
+
+export const Menu = ({ buttonVariant, direction }: MenuProps) => {
   const auth = useAppSelector((state) => state.auth.auth);
   const location = useLocation().pathname.split('/')[1];
   const dispatch = useAppDispatch();
@@ -37,48 +43,74 @@ export const Menu = () => {
   }
 
   return (
-    <Stack className='nav-menu' direction='row' spacing={1}>
+    <Stack
+      className='nav-menu'
+      direction={direction}
+      flexWrap='wrap'
+      justifyContent='end'
+      gap={0.5}
+      sx={{ p: 1 }}
+    >
       <Select
         size='small'
         IconComponent={Language}
         value={localStorage.getItem('lng') || 'en'}
-        onChange={(event) => handleChangeLng(event.target.value)}
+        onChange={(event) => {
+          dispatch(setBurgerVisible(false));
+          handleChangeLng(event.target.value);
+        }}
       >
         <MyMenuItem value='en'>en</MyMenuItem>
         <MyMenuItem value='ru'>ru</MyMenuItem>
       </Select>
       {!auth && location !== 'main' ? (
         <>
-          <NavLink to='/login'>
-            <WhiteButton variant='contained' endIcon={<Login />} disabled={!(location !== 'login')}>
-              {t('signIn')}
-            </WhiteButton>
-          </NavLink>
-          <NavLink to='/register'>
-            <WhiteButton
-              variant='contained'
-              endIcon={<AppRegistration />}
-              disabled={!(location !== 'register')}
-            >
-              {t('signUp')}
-            </WhiteButton>
-          </NavLink>
+          <WhiteButton
+            onClick={() => dispatch(setBurgerVisible(false))}
+            component={NavLink}
+            to='/login'
+            variant={buttonVariant}
+            endIcon={<Login />}
+            disabled={!(location !== 'login')}
+            sx={{ minWidth: { sm: '100%', md: '64px' } }}
+          >
+            {t('signIn')}
+          </WhiteButton>
+          <WhiteButton
+            onClick={() => dispatch(setBurgerVisible(false))}
+            component={NavLink}
+            to='/register'
+            variant={buttonVariant}
+            endIcon={<AppRegistration />}
+            disabled={!(location !== 'register')}
+            sx={{ minWidth: { sm: '100%', md: '64px' } }}
+          >
+            {t('signUp')}
+          </WhiteButton>
         </>
       ) : null}
-      {auth && !location ? (
-        <NavLink to='/main'>
-          <WhiteButton variant='contained' endIcon={<Home />}>
-            {t('goToMainPage')}
-          </WhiteButton>
-        </NavLink>
+      {auth && (!location || location === 'profile') ? (
+        <WhiteButton
+          onClick={() => dispatch(setBurgerVisible(false))}
+          component={NavLink}
+          to='/main'
+          variant={buttonVariant}
+          endIcon={<Home />}
+          sx={{ minWidth: { sm: '100%', md: '64px' } }}
+        >
+          {t('goToMainPage')}
+        </WhiteButton>
       ) : null}
 
       {auth && (location === 'main' || location === 'profile' || location === 'board') ? (
         <>
           <WhiteButton
-            variant='contained'
+            variant={buttonVariant}
             endIcon={<DashboardCustomize />}
-            onClick={() => setBoardDialog(true)}
+            onClick={() => {
+              setBoardDialog(true);
+            }}
+            sx={{ minWidth: { sm: '100%', md: '64px' } }}
           >
             {t('createNewBoard')}
           </WhiteButton>
@@ -89,15 +121,30 @@ export const Menu = () => {
           >
             <FormCreateBoard setOpenPopup={setBoardDialog} />
           </CreateBoardDialog>
-          <NavLink to='/profile'>
-            <WhiteButton variant='contained' endIcon={<Edit />}>
-              {t('editProfile')}
-            </WhiteButton>
-          </NavLink>
-          <WhiteButton onClick={logOut} endIcon={<Logout />}>
-            {t('signOut')}
+          <WhiteButton
+            onClick={() => dispatch(setBurgerVisible(false))}
+            component={NavLink}
+            to='/profile'
+            variant={buttonVariant}
+            endIcon={<Edit />}
+            sx={{ minWidth: { sm: '100%', md: '64px' } }}
+          >
+            {t('editProfile')}
           </WhiteButton>
         </>
+      ) : null}
+      {auth ? (
+        <WhiteButton
+          variant={buttonVariant}
+          onClick={() => {
+            dispatch(setBurgerVisible(false));
+            logOut();
+          }}
+          endIcon={<Logout />}
+          sx={{ minWidth: { sm: '100%', md: '64px' } }}
+        >
+          {t('signOut')}
+        </WhiteButton>
       ) : null}
     </Stack>
   );
