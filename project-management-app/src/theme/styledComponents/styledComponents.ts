@@ -32,6 +32,7 @@ export const WhiteButton = styled(Button)(({ theme }) => ({
   fontWeight: 700,
   ':hover': {
     backgroundColor: '#e1edef',
+    cursor: 'pointer',
   },
   ':disabled': {
     backgroundColor: 'rgba(0, 0, 0, 0.3)',

@@ -27,14 +27,15 @@ export const Footer = () => {
       maxWidth='xl'
       sx={{
         display: 'flex',
+        flexDirection: { xs: 'column', sm: 'row' },
         justifyContent: 'space-between',
         alignItems: 'center',
       }}
     >
-      <Typography variant='body1' color='white' fontWeight='700'>
+      <Typography variant='body1' color='white' fontWeight='700' sx={{ mt: { xs: 3, sm: 0 } }}>
         2022
       </Typography>
-      <Stack direction='row'>
+      <Stack flexDirection='row' p={'4px 0'}>
         {developers.map(({ name, githubLink }) => (
           <IconButton
             color='secondary'
