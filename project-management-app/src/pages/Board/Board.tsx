@@ -9,11 +9,13 @@ import { useEffect, useState } from 'react';
 import { FieldValues, useForm } from 'react-hook-form';
 import { fetchGetBoard } from '../../store/boardSlice';
 import {
+  BodyUpdate,
   changeAllColumns,
   ColumnData,
   fetchAllColumns,
   fetchCreateColumn,
   fetchDeleteColumn,
+  fetchUpdateOrderColumns,
 } from '../../store/columnSlice';
 import ConfirmDialog from '../../components/popup/ConfirmDialog';
 import { changeAllTasks, fetchBoardIdTasks, TaskData } from '../../store/taskSlice';
@@ -44,12 +46,22 @@ export const Board = () => {
       ('');
     },
   });
+  const [orderedColumn, setOrderedColumn] = useState([] as ColumnData[]);
 
   useEffect(() => {
     dispatch(fetchGetBoard({ id, token }));
     dispatch(fetchAllColumns({ id, token }));
     dispatch(fetchBoardIdTasks({ id, token }));
   }, []);
+
+  useEffect(() => {
+    if (allColumns) {
+      const orderedColumn = [...allColumns].sort(
+        (columnPrev, columnNext) => columnPrev.order - columnNext.order,
+      );
+      setOrderedColumn(orderedColumn);
+    }
+  }, [allColumns]);
 
   const {
     register,
@@ -100,16 +112,22 @@ export const Board = () => {
 
     if (type === DragType.COLUMN) {
       let add;
-      const active = [...allColumns];
+      const active = [...orderedColumn];
       if (source.droppableId === 'ColumnsList') {
-        add = active[source.index] as ColumnData;
+        add = { ...(active[source.index] as ColumnData) };
         active.splice(source.index, 1);
       }
       if ((destination as DraggableLocation).droppableId === 'ColumnsList') {
         active.splice((destination as DraggableLocation).index, 0, add as ColumnData);
       }
-      dispatch(changeAllColumns(active));
-      // здесь должен быть запрос на обновление порядка колонок
+
+      const newColumnsOrder = active.map((column, index) => ({ ...column, order: index }));
+      setOrderedColumn(newColumnsOrder);
+      const body = newColumnsOrder.map((column) => {
+        const newColumn = { _id: column._id, order: column.order };
+        return newColumn;
+      }) as BodyUpdate[];
+      dispatch(fetchUpdateOrderColumns({ body, token }));
     }
 
     if (type === DragType.TASK) {
@@ -187,8 +205,8 @@ export const Board = () => {
               ref={provided.innerRef}
               {...provided.droppableProps}
             >
-              {allColumns.length
-                ? allColumns.map((column: ColumnData, index: number) => (
+              {orderedColumn.length
+                ? orderedColumn.map((column: ColumnData, index: number) => (
                     <BordColumn
                       key={column._id as string}
                       index={index}

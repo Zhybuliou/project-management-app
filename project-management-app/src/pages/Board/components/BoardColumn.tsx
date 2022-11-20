@@ -54,7 +54,7 @@ export function BordColumn({ column, setConfirmDialog, index }: BordColumnProps)
                       title: column.title,
                       id: id,
                       columnId: column._id || '',
-                      order: 0,
+                      order: column.order,
                     }}
                     setTitleColumn={setTitleColumn}
                     titleColumn={titleColumn}
