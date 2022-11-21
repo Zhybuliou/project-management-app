@@ -1,9 +1,11 @@
-import { Button, TextField } from '@mui/material';
+import { Button } from '@mui/material';
+import { Box } from '@mui/system';
 import React from 'react';
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { useAppDispatch } from '../../hook';
 import { fetchAllBoards, fetchUpdateBoard } from '../../store/boardSlice';
-import './form.scss';
+import { FormFieldError, PopupField } from '../../theme/styledComponents/styledComponents';
 
 type DataForm = {
   title?: string;
@@ -20,8 +22,13 @@ type Props = {
 };
 
 export default function FormUpdateBoard(props: Props) {
-  const { register, handleSubmit } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid, isSubmitted },
+  } = useForm();
   const dispatch = useAppDispatch();
+  const { t } = useTranslation();
 
   const onSubmit = async (data: DataForm) => {
     const getToken = localStorage.getItem('token');
@@ -40,22 +47,47 @@ export default function FormUpdateBoard(props: Props) {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className='form-create-board'>
-      <TextField
-        label={'Title'}
+    <Box component='form' onSubmit={handleSubmit(onSubmit)} display='flex' flexDirection='column'>
+      <PopupField
+        type='search'
+        label={t('titleLabel')}
         defaultValue={props.form.title}
-        {...register('title', { required: true, maxLength: 80 })}
+        {...register('title', {
+          required: 'titleRequiredTextError',
+          minLength: {
+            value: 2,
+            message: 'titleMinLengthTextError',
+          },
+          maxLength: {
+            value: 20,
+            message: 'titleMaxLengthTextError',
+          },
+        })}
       />
-      <TextField
-        label={'Description'}
+      <FormFieldError>{errors.title ? t(errors.title.message + '') : ''}</FormFieldError>
+      <PopupField
+        label={t('descriptionLabel')}
         defaultValue={props.form.description}
         multiline
-        rows={5}
-        {...register('description', { required: true, maxLength: 100 })}
+        rows={4}
+        {...register('description', {
+          required: 'descriptionRequiredTextError',
+          minLength: {
+            value: 2,
+            message: 'descriptionMinLengthTextError',
+          },
+          maxLength: {
+            value: 80,
+            message: 'descriptionMaxLengthTextError',
+          },
+        })}
       />
-      <Button variant='contained' color='success' type='submit'>
-        Update Board
+      <FormFieldError>
+        {errors.description ? t(errors.description.message + '') : ''}
+      </FormFieldError>
+      <Button variant='contained' color='success' type='submit' disabled={!isValid && isSubmitted}>
+        {t('updateBoardButton')}
       </Button>
-    </form>
+    </Box>
   );
 }

@@ -18,10 +18,13 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import CreateBoardDialog from '../../components/popup/CreateBoardDialog';
 import FormUpdateBoard from '../../components/forms/FormUpdateBoard';
+import { SubTitle, Title } from '../../theme/styledComponents/styledComponents';
+import { useTranslation } from 'react-i18next';
 
 export const Main = () => {
   const allBoards = useAppSelector((state) => state.board.allBoards);
   const dispatch = useAppDispatch();
+  const { t } = useTranslation();
   const [confirmDialog, setConfirmDialog] = useState({
     isOpen: false,
     title: '',
@@ -47,10 +50,10 @@ export const Main = () => {
 
   return (
     <Container className='main' component='main' maxWidth='xl'>
-      <Typography className='section-title' variant='h2'>
-        Your Boards
-      </Typography>
-      <Grid container columns={{ xs: 1, sm: 2, md: 4 }}>
+      <Title variant='h2' component='h1'>
+        {t('yourBoards')}
+      </Title>
+      <Grid container columns={{ xs: 1, sm: 2, md: 3, lg: 4 }}>
         {allBoards.length ? (
           allBoards.map((board, index) => (
             <Grid item xs={1} key={index}>
@@ -104,14 +107,12 @@ export const Main = () => {
             </Grid>
           ))
         ) : (
-          <Typography variant='h6' color='white'>
-            No available boards
-          </Typography>
+          <SubTitle variant='h6'>{t('noAvailableBoards')}</SubTitle>
         )}
       </Grid>
       <ConfirmDialog confirmDialog={confirmDialog} setConfirmDialog={setConfirmDialog} />
       <CreateBoardDialog
-        title={'Update Board'}
+        title={t('updateBoardTitle')}
         openPopup={dialogUpdate}
         setOpenPopup={setDialogUpdate}
       >

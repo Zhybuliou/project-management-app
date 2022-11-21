@@ -1,6 +1,7 @@
-import { Dialog, DialogContent, DialogTitle, IconButton, Typography } from '@mui/material';
+import { Dialog, DialogContent, DialogTitle, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import React from 'react';
+import { PopupTitle } from '../../theme/styledComponents/styledComponents';
 
 type Props = {
   title: string;
@@ -22,12 +23,8 @@ export default function CreateBoardDialog(props: Props) {
       >
         <CloseIcon color='primary' />
       </IconButton>
-      <DialogTitle sx={{ pt: 0 }}>
-        <div style={{ display: 'flex' }}>
-          <Typography variant='h4' color='#4D628B' component='div' style={{ flexGrow: 1 }}>
-            {title}
-          </Typography>
-        </div>
+      <DialogTitle color='primary' sx={{ pt: 0, textAlign: 'center' }}>
+        <PopupTitle>{title}</PopupTitle>
       </DialogTitle>
       <DialogContent dividers>{children}</DialogContent>
     </Dialog>

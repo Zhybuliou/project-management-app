@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Box, Container, Stack, Typography } from '@mui/material';
+import { Box, Container, Stack } from '@mui/material';
 import { FieldValues, useForm } from 'react-hook-form';
 import ConfirmDialog from '../../components/popup/ConfirmDialog';
 import { useAppDispatch, useAppSelector } from '../../hook';
@@ -18,6 +18,7 @@ import { removeLocalStorage } from '../../utils/signOut';
 import {
   FormField,
   FormFieldError,
+  Title,
   WhiteButton,
 } from '../../theme/styledComponents/styledComponents';
 import { useTranslation } from 'react-i18next';
@@ -103,9 +104,9 @@ export const EditProfile = () => {
 
   return (
     <Container className='main' maxWidth='xl' component='main'>
-      <Typography variant='h2' component='h1' className='section-title'>
+      <Title variant='h2' component='h1'>
         {t('editProfile')}
-      </Typography>
+      </Title>
       <Box component='form' className='form' onSubmit={handleSubmit(handleRegistration)}>
         <FormField
           defaultValue={name}

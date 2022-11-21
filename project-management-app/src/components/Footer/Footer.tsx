@@ -35,14 +35,14 @@ export const Footer = () => {
       <Typography variant='body1' color='white' fontWeight='700' sx={{ mt: { xs: 3, sm: 0 } }}>
         2022
       </Typography>
-      <Stack flexDirection='row' p={'4px 0'}>
+      <Stack flexDirection='row' p={{ xs: '1px 0', md: '4px 0' }}>
         {developers.map(({ name, githubLink }) => (
           <IconButton
             color='secondary'
             key={name}
             href={githubLink}
             target='_blank'
-            sx={{ fontSize: 14, fontFamily: 'Ubuntu' }}
+            sx={{ fontSize: 14, fontFamily: 'Ubuntu', p: { xs: 0.5, md: 1 } }}
           >
             <GitHubIcon sx={{ mr: 0.5 }} />
             {t(name).toUpperCase()}

@@ -4,34 +4,50 @@
   display: flex;
   flex-direction: column;
   margin: 20px;
-  border: 3px solid $pinkColor;
   cursor: pointer;
   transition: 0.3s;
 
   &__title {
     background-color: $pinkColor;
-    color: $whiteColor;
     text-align: center;
-    text-transform: uppercase;
-    font-weight: 700;
 
     h5 {
+      text-overflow: clip;
       font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    h5::first-letter {
+      text-transform: uppercase;
     }
   }
 
   a {
     text-decoration: none;
-    color: $blueColor;
+    color: $whiteColor;
+  }
+
+  .MuiCardContent-root:last-child {
+    padding-bottom: 0px;
   }
 
   &__description {
-    min-height: 50px;
-    padding: 5px 10px;
+    min-height: 93.2px;
+    word-wrap: break-word;
+    padding-bottom: 0px;
 
     p {
+      color: $blueColor;
       font-weight: 700;
       font-size: 18px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -moz-box;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
     }
   }
 }

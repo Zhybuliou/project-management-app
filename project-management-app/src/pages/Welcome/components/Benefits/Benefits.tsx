@@ -1,6 +1,7 @@
-import { Grid, List, ListItem, ListItemIcon, Typography } from '@mui/material';
+import { Grid, List, ListItem, ListItemIcon } from '@mui/material';
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import { useTranslation } from 'react-i18next';
+import { Text, Title } from '../../../../theme/styledComponents/styledComponents';
 
 export const Benefits = () => {
   const { t } = useTranslation();
@@ -23,9 +24,9 @@ export const Benefits = () => {
       sx={{ backgroundColor: 'white', pb: 5 }}
     >
       <Grid item xs={12} justifyContent='center'>
-        <Typography variant='h2' component='h1' className='section-title --blueColor'>
+        <Title variant='h2' component='h2' color='primary'>
           {t('benefitsTitle')}
-        </Typography>
+        </Title>
       </Grid>
       <Grid item md={4} xs={8}>
         <List>
@@ -34,9 +35,7 @@ export const Benefits = () => {
               <ListItemIcon>
                 <TaskAltIcon color='success' />
               </ListItemIcon>
-              <Typography variant='h6' className='section-text'>
-                {t(advantage)}
-              </Typography>
+              <Text variant='h6'>{t(advantage)}</Text>
             </ListItem>
           ))}
         </List>
@@ -48,9 +47,7 @@ export const Benefits = () => {
               <ListItemIcon>
                 <TaskAltIcon color='success' />
               </ListItemIcon>
-              <Typography variant='h6' className='section-text'>
-                {t(advantage)}
-              </Typography>
+              <Text variant='h6'>{t(advantage)}</Text>
             </ListItem>
           ))}
         </List>

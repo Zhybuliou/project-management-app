@@ -1,9 +1,11 @@
 import { Button, TextField } from '@mui/material';
+import { Box } from '@mui/system';
 import React from 'react';
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector } from '../../hook';
 import { fetchBoardIdTasks, fetchCreateTask } from '../../store/taskSlice';
-import './form.scss';
+import { PopupField } from '../../theme/styledComponents/styledComponents';
 
 type DataForm = {
   title?: string;
@@ -20,6 +22,7 @@ export default function FormCreateTask(props: Props) {
   const { register, handleSubmit } = useForm();
   const auth = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
+  const { t } = useTranslation();
 
   const onSubmit = async (data: DataForm) => {
     const getToken = localStorage.getItem('token');
@@ -43,17 +46,23 @@ export default function FormCreateTask(props: Props) {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className='form-create-board'>
-      <TextField label={'Title'} {...register('title', { required: true, maxLength: 80 })} />
-      <TextField
+    <Box
+      component='form'
+      onSubmit={handleSubmit(onSubmit)}
+      display='flex'
+      flexDirection='column'
+      rowGap={2}
+    >
+      <PopupField label={'Title'} {...register('title', { required: true, maxLength: 80 })} />
+      <PopupField
         label={'Description'}
         multiline
-        rows={5}
+        rows={4}
         {...register('description', { required: true, maxLength: 100 })}
       />
       <Button variant='contained' color='success' type='submit'>
-        Create Task
+        {t('createButton')}
       </Button>
-    </form>
+    </Box>
   );
 }

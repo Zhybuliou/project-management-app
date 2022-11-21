@@ -1,11 +1,12 @@
 import { FieldValues, useForm } from 'react-hook-form';
-import { Box, Container, Typography } from '@mui/material';
+import { Box, Container } from '@mui/material';
 import { useAppDispatch } from '../../hook';
 import { changePassword, fetchSignInData } from '../../store/authSlice';
 import { useTranslation } from 'react-i18next';
 import {
   FormField,
   FormFieldError,
+  Title,
   WhiteButton,
 } from '../../theme/styledComponents/styledComponents';
 
@@ -31,9 +32,9 @@ export const SignIn = () => {
 
   return (
     <Container className='main' maxWidth='xl' component='main'>
-      <Typography className='section-title' variant='h2'>
+      <Title variant='h2' component='h1'>
         {t('signIn')}
-      </Typography>
+      </Title>
       <Box component='form' className='form' onSubmit={handleSubmit(handleRegistration)}>
         <FormField
           label={t('loginLabel')}

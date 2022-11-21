@@ -1,5 +1,5 @@
 import './Board.scss';
-import { Button, Container, Stack, TextField, Typography } from '@mui/material';
+import { Button, Container, Stack } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../../hook';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import AddIcon from '@mui/icons-material/Add';
@@ -21,6 +21,13 @@ import ConfirmDialog from '../../components/popup/ConfirmDialog';
 import { changeAllTasks, fetchBoardIdTasks, TaskData } from '../../store/taskSlice';
 import { DragDropContext, DraggableLocation, Droppable, DropResult } from 'react-beautiful-dnd';
 import { BordColumn } from './components/BoardColumn';
+import {
+  FormFieldError,
+  PopupField,
+  Title,
+  WhiteButton,
+} from '../../theme/styledComponents/styledComponents';
+import { useTranslation } from 'react-i18next';
 
 export const DragType = {
   TASK: 'task',
@@ -33,6 +40,7 @@ export const Board = () => {
   const allTasks = useAppSelector((state) => state.task.allTasks);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
   const id = location.state.id;
@@ -174,27 +182,21 @@ export const Board = () => {
 
   return (
     <Container className='main' component='section' maxWidth='xl'>
-      <Typography className='main-title' variant='h2'>
+      <Title variant='h2' component='h1'>
         {board.title}
-      </Typography>
+      </Title>
 
       <Stack spacing={3} alignItems='flex-start'>
-        <Button
+        <WhiteButton
           className='back-btn'
           onClick={() => navigate('/main')}
-          startIcon={<ArrowBackIosIcon color='primary' />}
-          variant='contained'
+          startIcon={<ArrowBackIosIcon />}
         >
-          back
-        </Button>
-        <Button
-          onClick={() => setIsOpen(true)}
-          startIcon={<AddIcon color='primary' />}
-          sx={{ width: 180 }}
-          variant='contained'
-        >
-          add column
-        </Button>
+          {t('backButton')}
+        </WhiteButton>
+        <WhiteButton onClick={() => setIsOpen(true)} startIcon={<AddIcon />} sx={{ minWidth: 160 }}>
+          {t('addColumnButton')}
+        </WhiteButton>
       </Stack>
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId='ColumnsList' direction='horizontal' type={DragType.COLUMN}>
@@ -223,38 +225,42 @@ export const Board = () => {
       </DragDropContext>
       <ConfirmDialog confirmDialog={confirmDialog} setConfirmDialog={setConfirmDialog} />
       <CreateBoardDialog
-        title='ADD COLUMN'
+        title={t('addColumnButton')}
         openPopup={isOpen}
         setOpenPopup={() => {
           setIsOpen(!isOpen);
           setTimeout(() => reset());
         }}
       >
-        <Stack alignItems='center' onSubmit={handleSubmit(submit)} component='form' minWidth={300}>
-          <TextField
+        <Stack alignItems='center' onSubmit={handleSubmit(submit)} component='form'>
+          <PopupField
             type='search'
-            fullWidth={true}
-            label='Column title'
+            label={t('titleLabel')}
             autoComplete='off'
             {...register('columnTitle', {
-              required: 'Please enter column title',
+              required: 'titleRequiredTextError',
               minLength: {
-                value: 5,
-                message: 'Title must contain at least 5 letters',
+                value: 2,
+                message: 'titleMinLengthTextError',
+              },
+              maxLength: {
+                value: 20,
+                message: 'titleMaxLengthTextError',
               },
               onChange: (e) => console.log(e),
             })}
           />
-          <div style={{ color: ' red', height: 10 }}>
-            {errors.columnTitle ? errors.columnTitle.message : ''}
-          </div>
+          <FormFieldError>
+            {errors.columnTitle ? t(errors.columnTitle.message + '') : ''}
+          </FormFieldError>
           <Button
             disabled={!isValid && isSubmitted}
             type='submit'
             variant='contained'
-            sx={{ mt: 2, width: 180 }}
+            color='success'
+            sx={{ width: '100%' }}
           >
-            ADD
+            {t('addButton')}
           </Button>
         </Stack>
       </CreateBoardDialog>

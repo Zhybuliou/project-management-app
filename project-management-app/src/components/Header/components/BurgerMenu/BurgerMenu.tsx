@@ -36,11 +36,11 @@ export const BurgerMenu = () => {
         open={burgerIsVisible}
         onClose={toggleDrawer(false)}
       >
-        <Box sx={{ minWidth: '35vw' }} position='relative'>
+        <Box sx={{ minWidth: 250, position: 'relative' }}>
           <IconButton
             color='primary'
             onClick={toggleDrawer(false)}
-            sx={{ position: 'absolute', top: 5, left: '80%' }}
+            sx={{ position: 'absolute', top: 5, left: 200 }}
           >
             <CloseIcon />
           </IconButton>

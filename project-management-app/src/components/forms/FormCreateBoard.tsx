@@ -1,9 +1,12 @@
-import { Button, TextField } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import React from 'react';
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '../../hook';
 import { fetchAllBoards, fetchCreateBoard } from '../../store/boardSlice';
-import './form.scss';
+import { setBurgerVisible } from '../../store/headerSlice';
+import { FormFieldError, PopupField } from '../../theme/styledComponents/styledComponents';
 
 type DataForm = {
   title?: string;
@@ -15,10 +18,19 @@ type Props = {
 };
 
 export default function FormCreateBoard(props: Props) {
-  const { register, handleSubmit } = useForm();
+  const {
+    register,
+    formState: { errors, isValid, isSubmitted },
+    handleSubmit,
+  } = useForm();
   const dispatch = useAppDispatch();
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+  const location = useLocation().pathname.split('/')[1];
 
   const onSubmit = async (data: DataForm) => {
+    location !== 'main' ? navigate('/main') : null;
+    await dispatch(setBurgerVisible(false));
     const getToken = localStorage.getItem('token');
     const getName = localStorage.getItem('name');
     if (getToken && getName) {
@@ -34,17 +46,45 @@ export default function FormCreateBoard(props: Props) {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className='form-create-board'>
-      <TextField label={'Title'} {...register('title', { required: true, maxLength: 80 })} />
-      <TextField
-        label={'Description'}
-        multiline
-        rows={5}
-        {...register('description', { required: true, maxLength: 100 })}
+    <Box component='form' onSubmit={handleSubmit(onSubmit)} display='flex' flexDirection='column'>
+      <PopupField
+        type='search'
+        label={t('titleLabel')}
+        {...register('title', {
+          required: 'titleRequiredTextError',
+          minLength: {
+            value: 2,
+            message: 'titleMinLengthTextError',
+          },
+          maxLength: {
+            value: 20,
+            message: 'titleMaxLengthTextError',
+          },
+        })}
       />
-      <Button variant='contained' color='success' type='submit'>
-        Create Board
+      <FormFieldError>{errors.title ? t(errors.title.message + '') : ''}</FormFieldError>
+      <PopupField
+        label={t('descriptionLabel')}
+        multiline
+        rows={4}
+        {...register('description', {
+          required: 'descriptionRequiredTextError',
+          minLength: {
+            value: 2,
+            message: 'descriptionMinLengthTextError',
+          },
+          maxLength: {
+            value: 80,
+            message: 'descriptionMaxLengthTextError',
+          },
+        })}
+      />
+      <FormFieldError>
+        {errors.description ? t(errors.description.message + '') : ''}
+      </FormFieldError>
+      <Button variant='contained' color='success' type='submit' disabled={!isValid && isSubmitted}>
+        {t('createButton')}
       </Button>
-    </form>
+    </Box>
   );
 }
