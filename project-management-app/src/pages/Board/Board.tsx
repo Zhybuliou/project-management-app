@@ -18,7 +18,13 @@ import {
   fetchUpdateOrderColumns,
 } from '../../store/columnSlice';
 import ConfirmDialog from '../../components/popup/ConfirmDialog';
-import { changeAllTasks, fetchBoardIdTasks, TaskData } from '../../store/taskSlice';
+import {
+  BodyTasksUpdate,
+  changeAllTasks,
+  fetchBoardIdTasks,
+  fetchUpdateOrderTasks,
+  TaskData,
+} from '../../store/taskSlice';
 import { DragDropContext, DraggableLocation, Droppable, DropResult } from 'react-beautiful-dnd';
 import { BordColumn } from './components/BoardColumn';
 
@@ -46,7 +52,7 @@ export const Board = () => {
       ('');
     },
   });
-  const [orderedColumn, setOrderedColumn] = useState([] as ColumnData[]);
+  const [orderedColumn, setOrderedColumn] = useState([] as ColumnData[] | null);
 
   useEffect(() => {
     dispatch(fetchGetBoard({ id, token }));
@@ -77,11 +83,11 @@ export const Board = () => {
   const submit = async (data: FieldValues) => {
     const body = {
       title: data.columnTitle,
-      order: 1,
+      order: allColumns.length,
     };
+    setIsOpen(!isOpen);
     await dispatch(fetchCreateColumn({ id, body, token }));
     await dispatch(fetchAllColumns({ id, token }));
-    setIsOpen(!isOpen);
     setTimeout(() => reset());
   };
 
@@ -99,7 +105,7 @@ export const Board = () => {
     });
   };
 
-  function onDragEnd(result: DropResult) {
+  async function onDragEnd(result: DropResult) {
     const { source, destination, type } = result;
 
     if (destination === null) {
@@ -112,7 +118,7 @@ export const Board = () => {
 
     if (type === DragType.COLUMN) {
       let add;
-      const active = [...orderedColumn];
+      const active = [...(orderedColumn as ColumnData[])];
       if (source.droppableId === 'ColumnsList') {
         add = { ...(active[source.index] as ColumnData) };
         active.splice(source.index, 1);
@@ -132,7 +138,7 @@ export const Board = () => {
 
     if (type === DragType.TASK) {
       const sourceColumn =
-        allColumns[allColumns.findIndex((column) => column._id === source.droppableId)];
+        allColumns[allColumns.findIndex((task) => task._id === source.droppableId)];
       const destinationColumn =
         allColumns[
           allColumns.findIndex(
@@ -141,33 +147,66 @@ export const Board = () => {
         ];
 
       if (sourceColumn._id === destinationColumn._id) {
-        let add;
+        let add = {} as TaskData;
         const active = [...allTasks];
         if (source.droppableId === sourceColumn._id) {
-          add = active[source.index] as ColumnData;
+          add = { ...active[source.index] };
           active.splice(source.index, 1);
         }
         if ((destination as DraggableLocation).droppableId === destinationColumn._id) {
           active.splice((destination as DraggableLocation).index, 0, add as TaskData);
         }
-        dispatch(changeAllTasks(active));
-        // здесь должен быть запрос на обновление порядка задач
+        const newOrderTasks = active.map((task, index) => ({ ...task, order: index }));
+        await dispatch(changeAllTasks(newOrderTasks));
+        const body = newOrderTasks.map((task) => {
+          const newArrForUpdate = { _id: task._id, order: task.order, columnId: task.columnId };
+          return newArrForUpdate;
+        }) as BodyTasksUpdate[];
+        await dispatch(fetchUpdateOrderTasks({ body, token }));
+        await dispatch(fetchBoardIdTasks({ id, token }));
       } else {
-        const active = [...allTasks].filter((task) => task.columnId === sourceColumn._id);
-        const newActive = [...allTasks].filter((task) => task.columnId === destinationColumn._id);
-        const oldArr = [...allTasks].filter(
-          (task) => task.columnId !== destinationColumn._id && task.columnId !== sourceColumn._id,
-        );
+        const active = [...allTasks];
 
         if (source.droppableId !== destinationColumn._id) {
-          const add = { ...(allTasks[source.index] as TaskData) };
-          add.columnId = destinationColumn._id as string;
-          const findIndex = active.findIndex((task) => task._id === add._id);
-          active.splice(findIndex, 1);
-          newActive.splice((destination as DraggableLocation).index, 0, add as TaskData);
+          let add = {} as TaskData;
+          const destinationTasks = active.filter((task) => task.columnId === destinationColumn._id);
+          if (source.droppableId === sourceColumn._id) {
+            add = { ...(active[source.index] as TaskData) };
+            add.columnId = destinationColumn._id as string;
+            const findNewIndex = destinationTasks.findIndex(
+              (task) =>
+                task._id ===
+                { ...(active[(destination as DraggableLocation).index] as TaskData) }._id,
+            );
+            const destinationTask = destinationTasks.find(
+              (task) =>
+                task._id ===
+                { ...(active[(destination as DraggableLocation).index] as TaskData) }._id,
+            );
+            if (findNewIndex === -1) {
+              add.order = 0;
+            } else {
+              if (destinationTask) {
+                add.order = destinationTask.order - 1;
+              }
+            }
+            active.splice(source.index, 1);
+          }
+          if ((destination as DraggableLocation).droppableId === destinationColumn._id) {
+            active.splice((destination as DraggableLocation).index, 0, add as TaskData);
+          }
         }
-        dispatch(changeAllTasks([...active, ...newActive, ...oldArr]));
-        // здесь должен быть запрос на обновление порядка задач и колонок с задачами
+        const sortedActive = active
+          .sort((a, b) => a.order - b.order)
+          .map((task, index) => ({ ...task, order: index }));
+        await dispatch(changeAllTasks([...sortedActive]));
+        const body = sortedActive.map((task) => {
+          const newTask = { _id: task._id, order: task.order, columnId: task.columnId };
+          return newTask;
+        }) as BodyTasksUpdate[];
+
+        await dispatch(fetchUpdateOrderTasks({ body, token }));
+        await dispatch(fetchBoardIdTasks({ id, token }));
       }
     }
   }
@@ -181,7 +220,10 @@ export const Board = () => {
       <Stack spacing={3} alignItems='flex-start'>
         <Button
           className='back-btn'
-          onClick={() => navigate('/main')}
+          onClick={async () => {
+            navigate('/main');
+            dispatch(changeAllColumns([]));
+          }}
           startIcon={<ArrowBackIosIcon color='primary' />}
           variant='contained'
         >
@@ -205,7 +247,7 @@ export const Board = () => {
               ref={provided.innerRef}
               {...provided.droppableProps}
             >
-              {orderedColumn.length
+              {orderedColumn && orderedColumn.length
                 ? orderedColumn.map((column: ColumnData, index: number) => (
                     <BordColumn
                       key={column._id as string}

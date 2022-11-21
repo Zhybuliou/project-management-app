@@ -77,6 +77,7 @@ export const fetchAllTasks = createAsyncThunk<
     dispatch(changeLoaderStatus(false));
   }
   dispatch(changeLoaderStatus(false));
+  console.log(data);
   return data;
 });
 
@@ -176,6 +177,48 @@ export const fetchDeleteTask = createAsyncThunk<TaskData, FetchTaskProps, { reje
   },
 );
 
+export type BodyTasksUpdate = {
+  _id: string;
+  order: number;
+  columnId: string;
+};
+
+type FetchUpdateOrderTasksProps = {
+  body: BodyTasksUpdate[];
+  token: string;
+};
+
+export const fetchUpdateOrderTasks = createAsyncThunk<
+  TaskData[],
+  FetchUpdateOrderTasksProps,
+  { rejectValue: string }
+>('board/fetchUpdateOrderTasks', async function ({ body, token }, { rejectWithValue, dispatch }) {
+  dispatch(changeLoaderStatus(true));
+  const response = await fetch(`${BASE_PATH}tasksSet`, {
+    method: 'PATCH',
+    headers: {
+      accept: 'application/json',
+      Authorization: 'Bearer ' + `${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(body),
+  });
+  const data = await response.json();
+  if (response.status !== 200) {
+    if (response.status === 403) {
+      dispatch(changeStatusAuth(false));
+      dispatch(changeLoaderStatus(false));
+      removeLocalStorage();
+      dispatch(getErrorMessage('error403'));
+      return rejectWithValue('error403');
+    }
+    dispatch(changeLoaderStatus(false));
+  }
+  dispatch(changeLoaderStatus(false));
+
+  return data;
+});
+
 // export const fetchUpdateBoard = createAsyncThunk<
 //   BoardData,
 //   FetchBoardProps,
@@ -270,7 +313,7 @@ const taskSlice = createSlice({
       })
       .addCase(fetchBoardIdTasks.fulfilled, (state, action: PayloadAction<FetchAllTasks>) => {
         // state.error = null;
-        state.allTasks = action.payload;
+        state.allTasks = action.payload.sort((a, b) => a.order - b.order);
       })
       //   .addCase(fetchGetBoard.pending, (state) => {
       //     state.error = null;
@@ -301,6 +344,10 @@ const taskSlice = createSlice({
       .addCase(fetchCreateTask.fulfilled, (state, action: PayloadAction<TaskData>) => {
         // state.error = null;
         state.task = action.payload;
+      })
+      .addCase(fetchUpdateOrderTasks.fulfilled, (state, action: PayloadAction<TaskData[]>) => {
+        // state.error = null;
+        state.allTasks = action.payload;
       });
   },
 });

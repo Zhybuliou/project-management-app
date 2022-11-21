@@ -22,6 +22,7 @@ export default function Task({ task, index, id }: TaskProps) {
       ('');
     },
   });
+
   return (
     <Draggable draggableId={task._id as string} index={index}>
       {(provided, snapshot) => (
