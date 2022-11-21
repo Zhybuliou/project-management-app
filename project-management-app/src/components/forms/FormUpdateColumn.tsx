@@ -1,9 +1,8 @@
-import { IconButton, TextField } from '@mui/material';
+import { Box, IconButton, TextField } from '@mui/material';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useAppDispatch } from '../../hook';
 import DoneIcon from '@mui/icons-material/Done';
-import './form.scss';
 import { fetchAllColumns, fetchUpdateColumn } from '../../store/columnSlice';
 
 type DataForm = {
@@ -41,7 +40,13 @@ export default function FormUpdateColumn(props: Props) {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className='form-update-board'>
+    <Box
+      component='form'
+      onSubmit={handleSubmit(onSubmit)}
+      display='flex'
+      flexDirection='column'
+      rowGap={2}
+    >
       <TextField
         size='small'
         defaultValue={props.form.title}
@@ -50,6 +55,6 @@ export default function FormUpdateColumn(props: Props) {
       <IconButton color='success' type='submit'>
         <DoneIcon />
       </IconButton>
-    </form>
+    </Box>
   );
 }

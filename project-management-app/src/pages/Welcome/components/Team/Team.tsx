@@ -3,6 +3,7 @@ import evgenIcon from './assets/evgen.png';
 import kateIcon from './assets/kate.png';
 import vitaliusIcon from './assets/vitalius.png';
 import { useTranslation } from 'react-i18next';
+import { SubTitle, Title } from '../../../../theme/styledComponents/styledComponents';
 
 export const Team = () => {
   const { t } = useTranslation();
@@ -29,32 +30,24 @@ export const Team = () => {
       component='section'
       alignItems='center'
       justifyContent='center'
-      sx={{ pb: 5 }}
     >
       <Grid item xs={12} justifyContent='center'>
-        <Typography variant='h2' component='h1' className='section-title'>
+        <Title variant='h2' component='h2'>
           {t('teamTitle')}
-        </Typography>
+        </Title>
       </Grid>
       {team.map(({ name, avatar }) => (
         <Grid key={name} item>
           <Stack justifyContent='center' alignItems='center'>
             <img src={avatar} alt={name} />
-            <Typography textTransform='uppercase' variant='h6' fontFamily='Ubuntu'>
-              {t(name)}
-            </Typography>
+            <Typography variant='h6'>{t(name)}</Typography>
           </Stack>
         </Grid>
       ))}
       <Grid item xs={12} justifyContent='center'>
-        <Typography
-          variant='h5'
-          className='section-subtitle'
-          sx={{ m: '0 auto', pb: '40px' }}
-          maxWidth='xl'
-        >
+        <SubTitle variant='h4' component='h3'>
           {t('aboutTeam')}
-        </Typography>
+        </SubTitle>
       </Grid>
     </Grid>
   );

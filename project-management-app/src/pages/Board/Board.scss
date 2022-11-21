@@ -4,16 +4,19 @@
     margin: 0;
   }
 }
+
 .column {
   margin-top: 10px;
   margin-right: 10px;
 }
+
 .column-title {
   display: flex;
   justify-content: space-between;
   align-content: stretch;
   background-color: #ccc;
 }
+
 .dragActive {
   background-color: #3e527a;
 }

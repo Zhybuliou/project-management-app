@@ -1,35 +1,29 @@
 import welcomeLogo from './assets/WelcomeLogo.png';
-import { Grid, Typography } from '@mui/material';
+import { Grid } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { SubTitle, Title } from '../../../../theme/styledComponents/styledComponents';
 
 export const About = () => {
   const { t } = useTranslation();
   return (
     <Grid
       container
-      rowGap={2}
       component='section'
       alignItems='center'
       justifyContent='center'
       maxWidth='xl'
-      minHeight='93vh'
+      minHeight={{ sx: '', md: 'calc(100vh - 80px)' }}
       sx={{ m: '0 auto' }}
     >
       <Grid item xs={12}>
-        <Typography
-          variant='h2'
-          component='h1'
-          className='section-title'
-          maxWidth={700}
-          sx={{ m: '0 auto' }}
-        >
+        <Title variant='h2' component='h1' maxWidth={700}>
           {t('aboutTitle1')}
-        </Typography>
+        </Title>
       </Grid>
       <Grid item lg={6} md={12}>
-        <Typography variant='h4' className='section-subtitle' sx={{ p: '0 5px 40px' }}>
+        <SubTitle variant='h5' component='h3'>
           {t('aboutTitle2')}
-        </Typography>
+        </SubTitle>
       </Grid>
       <Grid item lg={6} md={12}>
         <img

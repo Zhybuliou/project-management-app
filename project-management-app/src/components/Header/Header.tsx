@@ -44,10 +44,10 @@ export const Header = () => {
   }, []);
 
   return (
-    <Box component='header'>
+    <Box component='header' minHeight={80}>
       <ElevationScroll>
         <AppBar component='nav'>
-          <Container maxWidth='xl'>
+          <Container maxWidth='xl' component='div'>
             <Toolbar sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
               <NavLink to='/'>
                 <IconButton size='small' color='secondary'>
@@ -59,7 +59,7 @@ export const Header = () => {
           </Container>
         </AppBar>
       </ElevationScroll>
-      <Toolbar />
+      <Toolbar sx={{ height: '80px' }} />
     </Box>
   );
 };
