@@ -101,6 +101,7 @@ export const Board = () => {
         setConfirmDialog({ ...confirmDialog, isOpen: false });
         await dispatch(fetchDeleteColumn({ id, columnId, token }));
         await dispatch(fetchAllColumns({ id, token }));
+        await dispatch(fetchBoardIdTasks({ id, token }));
       },
     });
   };
