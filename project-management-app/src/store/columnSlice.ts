@@ -244,6 +244,10 @@ export const fetchUpdateOrderColumns = createAsyncThunk<
   });
   const data = await response.json();
   if (response.status !== 200) {
+    if (response.status === 400) {
+      dispatch(getErrorMessage('error400'));
+      return rejectWithValue('error400');
+    }
     if (response.status === 403) {
       dispatch(changeStatusAuth(false));
       dispatch(changeLoaderStatus(false));
@@ -257,6 +261,7 @@ export const fetchUpdateOrderColumns = createAsyncThunk<
 
   return data;
 });
+
 const columnSlice = createSlice({
   name: 'column',
   initialState,

@@ -21,6 +21,7 @@ type Props = {
 export default function FormCreateTask(props: Props) {
   const { register, handleSubmit } = useForm();
   const auth = useAppSelector((state) => state.auth);
+  const allTasks = useAppSelector((state) => state.task.allTasks);
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
 
@@ -30,15 +31,16 @@ export default function FormCreateTask(props: Props) {
       const token = JSON.parse(getToken);
       props.setOpenPopup(false);
       if (data.title && data.description) {
+        const columnId = props.columnId;
         const body = {
           title: data.title,
-          order: 1,
+          order: allTasks.length,
+          // order: allTasks.length,
           description: data.description,
           userId: auth.id,
           users: [auth.name],
         };
         const id = props.id;
-        const columnId = props.columnId;
         await dispatch(fetchCreateTask({ id, body, token, columnId }));
         await dispatch(fetchBoardIdTasks({ id, token }));
       }
