@@ -39,16 +39,18 @@ export default function Tasks(props: TasksProps) {
           </div>
         )}
       </Droppable>
-      <Button
-        startIcon={<AddIcon color='primary' />}
-        fullWidth={true}
-        variant='contained'
-        onClick={() => {
-          setIsOpenTask(true);
-        }}
-      >
-        add task
-      </Button>
+      <div className='task-create-btn'>
+        <Button
+          startIcon={<AddIcon color='primary' />}
+          fullWidth={true}
+          variant='contained'
+          onClick={() => {
+            setIsOpenTask(true);
+          }}
+        >
+          add task
+        </Button>
+      </div>
       <CreateBoardDialog title={'Create Task'} openPopup={isOpenTask} setOpenPopup={setIsOpenTask}>
         <FormCreateTask setOpenPopup={setIsOpenTask} id={id} columnId={columnId} />
       </CreateBoardDialog>

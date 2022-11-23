@@ -9,6 +9,14 @@
   margin-top: 10px;
   margin-right: 10px;
 }
+.column-task {
+  display: flex;
+  justify-content: space-between;
+  margin: 5px;
+}
+.task-create-btn {
+  padding: 5px;
+}
 
 .column-title {
   display: flex;
