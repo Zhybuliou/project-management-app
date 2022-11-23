@@ -7,6 +7,7 @@ import { Main } from '../../pages/Main/Main';
 import { SignIn } from '../../pages/signIn/SignIn';
 import { SignUp } from '../../pages/signUp/SignUp';
 import { Welcome } from '../../pages/Welcome/Welcome';
+import { Error } from '../../pages/Error/Error';
 
 export const Router = () => {
   const auth = useAppSelector((state) => state.auth.auth);
@@ -40,7 +41,8 @@ export const Router = () => {
           </PrivateAuth>
         }
       ></Route>
-      <Route path='*' element={<h1>Error page</h1>}></Route>
+      <Route path='/404' element={<Error />}></Route>
+      <Route path='*' element={<Navigate to={'/404'} />}></Route>
     </Routes>
   );
 };
