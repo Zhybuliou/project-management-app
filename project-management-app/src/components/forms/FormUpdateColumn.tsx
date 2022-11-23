@@ -44,7 +44,7 @@ export default function FormUpdateColumn(props: Props) {
       component='form'
       onSubmit={handleSubmit(onSubmit)}
       display='flex'
-      flexDirection='column'
+      flexDirection='row'
       rowGap={2}
     >
       <TextField

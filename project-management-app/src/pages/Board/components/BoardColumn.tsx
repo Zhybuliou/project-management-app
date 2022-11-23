@@ -71,7 +71,6 @@ export function BordColumn({ column, setConfirmDialog, index }: BordColumnProps)
               </IconButton>
             </CardContent>
             <Tasks id={id} columnId={column._id || ''} allTasks={allTasks} />
-            <CardActions sx={{ ml: 'auto' }}></CardActions>
           </Card>
         </Box>
       )}
