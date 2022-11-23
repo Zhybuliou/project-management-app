@@ -55,12 +55,12 @@ export default function FormCreateTask(props: Props) {
       flexDirection='column'
       rowGap={2}
     >
-      <PopupField label={'Title'} {...register('title', { required: true, maxLength: 80 })} />
+      <PopupField label={'Title'} {...register('title', { required: true })} />
       <PopupField
         label={'Description'}
         multiline
         rows={4}
-        {...register('description', { required: true, maxLength: 100 })}
+        {...register('description', { required: true })}
       />
       <Button variant='contained' color='success' type='submit'>
         {t('createButton')}

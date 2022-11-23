@@ -5,6 +5,7 @@ import { Draggable } from 'react-beautiful-dnd';
 import { TaskData, fetchDeleteTask, fetchBoardIdTasks } from '../../store/taskSlice';
 import { useAppDispatch } from '../../hook';
 import ConfirmDialog from '../popup/ConfirmDialog';
+import CreateBoardDialog from '../popup/CreateBoardDialog';
 
 type TaskProps = {
   task: TaskData;
@@ -14,6 +15,7 @@ type TaskProps = {
 
 export default function Task({ task, index, id }: TaskProps) {
   const dispatch = useAppDispatch();
+  const [openPopup, isOpenPopup] = useState(false);
   const [confirmTask, setConfirmTask] = useState({
     isOpen: false,
     title: '',
@@ -34,18 +36,12 @@ export default function Task({ task, index, id }: TaskProps) {
           {...provided.dragHandleProps}
           ref={provided.innerRef}
         >
-          <CardContent>
+          <CardContent onClick={() => isOpenPopup(true)} >
             <Typography sx={{ fontSize: 18 }} color='text.secondary' gutterBottom>
               {task.title}
             </Typography>
-            <Typography sx={{ mb: 1.5 }} color='text.secondary'>
-              {task.description}
-            </Typography>
-            <Typography sx={{ mb: 1.5 }} color='text.secondary'>
-              User: admin
-            </Typography>
           </CardContent>
-          <CardActions>
+          <CardActions >
             <IconButton
               color='info'
               onClick={async () => {
@@ -68,6 +64,14 @@ export default function Task({ task, index, id }: TaskProps) {
             </IconButton>
           </CardActions>
           <ConfirmDialog confirmDialog={confirmTask} setConfirmDialog={setConfirmTask} />
+          <CreateBoardDialog openPopup={openPopup} setOpenPopup={isOpenPopup} title={task.title}>
+            <Typography sx={{ mb: 1.5 }} color='text.secondary'>
+              {task.description}
+            </Typography>
+            <Typography sx={{ mb: 1.5 }} color='text.secondary'>
+              User: admin
+            </Typography>
+          </CreateBoardDialog>
         </Card>
       )}
     </Draggable>
