@@ -89,7 +89,7 @@ export const Menu = ({ buttonVariant, direction }: MenuProps) => {
           </WhiteButton>
         </>
       ) : null}
-      {auth && (!location || location === 'profile') ? (
+      {auth && (!location || location === 'profile' || location === '404') ? (
         <WhiteButton
           onClick={() => dispatch(setBurgerVisible(false))}
           component={NavLink}
@@ -102,7 +102,11 @@ export const Menu = ({ buttonVariant, direction }: MenuProps) => {
         </WhiteButton>
       ) : null}
 
-      {auth && (location === 'main' || location === 'profile' || location === 'board') ? (
+      {auth &&
+      (location === 'main' ||
+        location === 'profile' ||
+        location === 'board' ||
+        location === '404') ? (
         <>
           <WhiteButton
             variant={buttonVariant}
@@ -115,7 +119,7 @@ export const Menu = ({ buttonVariant, direction }: MenuProps) => {
             {t('createNewBoard')}
           </WhiteButton>
           <CreateBoardDialog
-            title={'Create Board'}
+            title={t('createTitle')}
             openPopup={boardDialog}
             setOpenPopup={setBoardDialog}
           >

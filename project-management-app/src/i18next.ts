@@ -66,6 +66,7 @@ i18n.use(initReactI18next).init({
         backButton: 'Back',
         addColumnButton: 'Add column',
         addButton: 'Add',
+        error: 'Page not found',
       },
     },
     ru: {
@@ -131,6 +132,7 @@ i18n.use(initReactI18next).init({
         backButton: 'Назад',
         addColumnButton: 'Добавить столбец',
         addButton: 'Добавить',
+        error: 'Страница не найдена',
       },
     },
   },
