@@ -1,12 +1,12 @@
-import { Box, Card, CardActions, CardContent, IconButton, Typography } from '@mui/material';
+import { Box, Card, CardContent, IconButton, Typography } from '@mui/material';
 import { Draggable } from 'react-beautiful-dnd';
 import { useLocation } from 'react-router-dom';
 import Tasks from '../../../components/Tasks/Tasks';
-import { useAppSelector } from '../../../hook';
 import { ColumnData } from '../../../store/columnSlice';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { useState } from 'react';
 import FormUpdateColumn from '../../../components/forms/FormUpdateColumn';
+import { FetchAllTasks } from '../../../store/taskSlice';
 
 type PropsConfirmDialog = {
   isOpen: boolean;
@@ -15,15 +15,22 @@ type PropsConfirmDialog = {
   onConfirm: () => void;
 };
 
-type BordColumnProps = {
+type BoardColumnProps = {
   column: ColumnData;
   setConfirmDialog: (column: ColumnData) => void;
   index: number;
   confirmDialog: PropsConfirmDialog;
+  userValue: string;
+  allTasks: FetchAllTasks;
 };
 
-export function BordColumn({ column, setConfirmDialog, index }: BordColumnProps) {
-  const allTasks = useAppSelector((state) => state.task.allTasks);
+export function BordColumn({
+  column,
+  setConfirmDialog,
+  index,
+  userValue,
+  allTasks,
+}: BoardColumnProps) {
   const location = useLocation();
   const id = location.state.id;
   const [titleColumn, setTitleColumn] = useState('');
@@ -70,7 +77,7 @@ export function BordColumn({ column, setConfirmDialog, index }: BordColumnProps)
                 <DeleteForeverIcon />
               </IconButton>
             </CardContent>
-            <Tasks id={id} columnId={column._id || ''} allTasks={allTasks} />
+            <Tasks id={id} columnId={column._id || ''} allTasks={allTasks} userValue={userValue} />
           </Card>
         </Box>
       )}

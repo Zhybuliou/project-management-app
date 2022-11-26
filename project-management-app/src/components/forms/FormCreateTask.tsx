@@ -1,4 +1,4 @@
-import { Button, TextField } from '@mui/material';
+import { Button } from '@mui/material';
 import { Box } from '@mui/system';
 import React from 'react';
 import { useForm } from 'react-hook-form';
@@ -35,10 +35,9 @@ export default function FormCreateTask(props: Props) {
         const body = {
           title: data.title,
           order: allTasks.length,
-          // order: allTasks.length,
           description: data.description,
           userId: auth.id,
-          users: [auth.name],
+          users: [auth.login],
         };
         const id = props.id;
         await dispatch(fetchCreateTask({ id, body, token, columnId }));
