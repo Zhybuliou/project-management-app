@@ -1,5 +1,5 @@
 import { Button } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import FormCreateTask from '../forms/FormCreateTask';
 import CreateBoardDialog from '../popup/CreateBoardDialog';
@@ -12,11 +12,17 @@ type TasksProps = {
   id: string;
   columnId: string;
   allTasks: TaskData[];
+  userValue: string;
 };
 
 export default function Tasks(props: TasksProps) {
   const [isOpenTask, setIsOpenTask] = useState(false);
-  const { id, columnId, allTasks } = props;
+  const { id, columnId, allTasks, userValue } = props;
+
+  useEffect(() => {
+    const filterAllTasks = allTasks.filter((task) => task.users.includes('newUser'));
+    console.log(filterAllTasks, allTasks);
+  }, [userValue]);
 
   return (
     <>

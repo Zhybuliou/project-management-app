@@ -34,6 +34,7 @@ import {
   WhiteButton,
 } from '../../theme/styledComponents/styledComponents';
 import { useTranslation } from 'react-i18next';
+import { fetchAllUsers } from '../../store/userSlice';
 
 export const DragType = {
   TASK: 'task',
@@ -61,11 +62,14 @@ export const Board = () => {
     },
   });
   const [orderedColumn, setOrderedColumn] = useState([] as ColumnData[] | null);
+  const allUsers = useAppSelector((state) => state.user.allUsers);
+  const [userValue, setUserValue] = useState('');
 
   useEffect(() => {
     dispatch(fetchGetBoard({ id, token }));
     dispatch(fetchAllColumns({ id, token }));
     dispatch(fetchBoardIdTasks({ id, token }));
+    dispatch(fetchAllUsers(token as string));
   }, []);
 
   useEffect(() => {
@@ -114,6 +118,14 @@ export const Board = () => {
     });
   };
 
+  const changeUserValue = (value: string) => {
+    if (value === 'All users' || value === 'Все пользователи') {
+      setUserValue('');
+    } else {
+      setUserValue(value);
+    }
+  };
+
   async function onDragEnd(result: DropResult) {
     const { source, destination, type } = result;
 
@@ -157,7 +169,9 @@ export const Board = () => {
 
       if (sourceColumn._id === destinationColumn._id) {
         let add = {} as TaskData;
-        const active = [...allTasks];
+        const active = userValue
+          ? [...allTasks.filter((task) => task.users.includes(userValue))]
+          : [...allTasks];
         if (source.droppableId === sourceColumn._id) {
           add = { ...active[source.index] };
           active.splice(source.index, 1);
@@ -174,7 +188,9 @@ export const Board = () => {
         await dispatch(fetchUpdateOrderTasks({ body, token }));
         await dispatch(fetchBoardIdTasks({ id, token }));
       } else {
-        const active = [...allTasks];
+        const active = userValue
+          ? [...allTasks.filter((task) => task.users.includes(userValue))]
+          : [...allTasks];
 
         if (source.droppableId !== destinationColumn._id) {
           let add = {} as TaskData;
@@ -240,6 +256,16 @@ export const Board = () => {
         <WhiteButton onClick={() => setIsOpen(true)} startIcon={<AddIcon />} sx={{ minWidth: 160 }}>
           {t('addColumnButton')}
         </WhiteButton>
+        {allUsers && (
+          <select value={userValue} onChange={(event) => changeUserValue(event.target.value)}>
+            <option>{t('allUsers')}</option>
+            {allUsers.map((user) => (
+              <option key={user._id} label={user.login}>
+                {user.login}
+              </option>
+            ))}
+          </select>
+        )}
       </Stack>
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId='ColumnsList' direction='horizontal' type={DragType.COLUMN}>
@@ -258,6 +284,12 @@ export const Board = () => {
                       column={column}
                       setConfirmDialog={() => changeConfirmDialog(column)}
                       confirmDialog={confirmDialog}
+                      userValue={userValue}
+                      allTasks={
+                        userValue
+                          ? allTasks.filter((task) => task.users.includes(userValue))
+                          : allTasks
+                      }
                     />
                   ))
                 : null}
