@@ -55,3 +55,27 @@
 .board:hover {
   transform: translateY(-1px);
 }
+
+.menu a {
+  text-decoration: none;
+  cursor: default;
+}
+
+.menu div {
+  text-transform: uppercase;
+  background-color: $whiteColor;
+  color: $blueColor;
+  font-weight: 700;
+  font-size: 14px;
+  width: max-content;
+}
+
+.menu div svg {
+  fill: #4d628b;
+  width: 20px;
+}
+
+.menu div:hover {
+  background-color: #e1edef;
+  border: none;
+}

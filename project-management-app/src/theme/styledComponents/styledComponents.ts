@@ -80,7 +80,7 @@ export const Title = styled(Typography)(({ theme }) => ({
   letterSpacing: '0.4px',
   textAlign: 'center',
   margin: '0 auto',
-  [theme.breakpoints.up('lg')]: {
+  [theme.breakpoints.up('md')]: {
     fontSize: '3.5rem',
   },
   [theme.breakpoints.down('md')]: {
@@ -114,7 +114,7 @@ export const SubTitle = styled(Typography)(({ theme }) => ({
   textAlign: 'center',
   margin: '0 auto',
   maxWidth: theme.breakpoints.values.xl,
-  [theme.breakpoints.up('lg')]: {
+  [theme.breakpoints.up('md')]: {
     fontSize: '2rem',
     padding: '0 10px 150px 10px',
   },
@@ -131,7 +131,7 @@ export const SubTitle = styled(Typography)(({ theme }) => ({
 export const Text = styled(Typography)(({ theme }) => ({
   color: theme.palette.primary.main,
   fontWeight: 400,
-  [theme.breakpoints.up('lg')]: {
+  [theme.breakpoints.up('md')]: {
     fontSize: '1.25rem',
   },
   [theme.breakpoints.down('md')]: {

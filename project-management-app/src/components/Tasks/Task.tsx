@@ -48,12 +48,20 @@ export default function Task({ task, index, id }: TaskProps) {
           {...provided.dragHandleProps}
           ref={provided.innerRef}
         >
-          <CardContent onClick={() => setOpenPopup(true)}>
-            <Typography sx={{ fontSize: 18 }} color='text.secondary' gutterBottom>
+          <CardContent
+            onClick={() => setOpenPopup(true)}
+            sx={{ p: 0, flexGrow: 1, display: 'flex', alignItems: 'center' }}
+          >
+            <Typography
+              className='task-name'
+              sx={{ fontSize: 18, m: 0 }}
+              color='primary'
+              gutterBottom
+            >
               {task.title}
             </Typography>
           </CardContent>
-          <CardActions>
+          <CardActions sx={{ p: 0.5 }}>
             <IconButton
               color='info'
               onClick={async () => {

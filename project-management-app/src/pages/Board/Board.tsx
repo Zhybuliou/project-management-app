@@ -1,8 +1,8 @@
 import './Board.scss';
-import { Button, Container, Stack } from '@mui/material';
+import { Button, Container, Select, Stack } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../../hook';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import AddIcon from '@mui/icons-material/Add';
+import { Add } from '@mui/icons-material';
 import { useLocation, useNavigate } from 'react-router-dom';
 import CreateBoardDialog from '../../components/popup/CreateBoardDialog';
 import { useEffect, useState } from 'react';
@@ -29,6 +29,7 @@ import { DragDropContext, DraggableLocation, Droppable, DropResult } from 'react
 import { BordColumn } from './components/BoardColumn';
 import {
   FormFieldError,
+  MyMenuItem,
   PopupField,
   Title,
   WhiteButton,
@@ -237,12 +238,20 @@ export const Board = () => {
   }
 
   return (
-    <Container className='main' component='section' maxWidth='xl'>
+    <Container className='main' component='main' maxWidth='xl' sx={{ overflow: 'auto' }}>
       <Title variant='h2' component='h1'>
         {board.title}
       </Title>
 
-      <Stack spacing={3} alignItems='flex-start'>
+      <Stack
+        gap={0.5}
+        sx={{ p: 1 }}
+        alignItems='center'
+        direction='row'
+        justifyContent='flex-start'
+        className='menu'
+        flexWrap='wrap'
+      >
         <WhiteButton
           className='back-btn'
           onClick={async () => {
@@ -253,24 +262,29 @@ export const Board = () => {
         >
           {t('backButton')}
         </WhiteButton>
-        <WhiteButton onClick={() => setIsOpen(true)} startIcon={<AddIcon />} sx={{ minWidth: 160 }}>
+        <WhiteButton onClick={() => setIsOpen(true)} startIcon={<Add />} sx={{ minWidth: 160 }}>
           {t('addColumnButton')}
         </WhiteButton>
         {allUsers && (
-          <select value={userValue} onChange={(event) => changeUserValue(event.target.value)}>
-            <option>{t('allUsers')}</option>
+          <Select
+            value={userValue ? userValue : t('allUsers')}
+            onChange={(event) => changeUserValue(event.target.value + '')}
+            size='small'
+          >
+            <MyMenuItem value={t('allUsers')}>{t('allUsers')}</MyMenuItem>
             {allUsers.map((user) => (
-              <option key={user._id} label={user.login}>
+              <MyMenuItem key={user._id} value={user.login}>
                 {user.login}
-              </option>
+              </MyMenuItem>
             ))}
-          </select>
+          </Select>
         )}
       </Stack>
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId='ColumnsList' direction='horizontal' type={DragType.COLUMN}>
           {(provided, snapshot) => (
             <Stack
+              sx={{ m: '8px 3px' }}
               direction='row'
               className={`${snapshot.isDraggingOver ? 'dragActive' : ''}`}
               ref={provided.innerRef}
