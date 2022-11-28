@@ -6,14 +6,24 @@
 }
 
 .column {
-  margin-top: 10px;
-  margin-right: 10px;
+  margin: 5px;
+  width: 230px;
 }
+
 .column-task {
   display: flex;
   justify-content: space-between;
+  padding: 5px;
   margin: 5px;
 }
+
+.task-name {
+  max-width: 160px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .task-create-btn {
   padding: 5px;
 }
@@ -21,22 +31,47 @@
 .column-title {
   display: flex;
   justify-content: space-between;
-  align-content: stretch;
-  background-color: #ccc;
+  align-items: center;
+  color: $blueColor;
+  background-color: #e6e6e6;
+}
+
+.tasks {
+  max-height: calc(100vh - 470px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 10px;
 }
 
 .dragActive {
   background-color: #3e527a;
 }
 
-.column.drag {
+.column.drag,
+.column-task.drag {
   box-shadow: 0 0 20px white;
 }
 
 .dragTasksActive {
-  background-color: pink;
+  background-color: #e1edef;
 }
 
 .column-title-header {
   cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 600px) {
+  .tasks {
+    max-height: calc(100vh - 550px);
+  }
+}
+
+@media (max-height: 585px) {
+  .tasks {
+    max-height: calc(100vh - 550px);
+    min-height: 65px;
+  }
 }

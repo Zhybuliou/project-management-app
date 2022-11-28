@@ -2,7 +2,7 @@ import { Box, IconButton, TextField } from '@mui/material';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useAppDispatch } from '../../hook';
-import DoneIcon from '@mui/icons-material/Done';
+import { Done, Close } from '@mui/icons-material';
 import { fetchAllColumns, fetchUpdateColumn } from '../../store/columnSlice';
 
 type DataForm = {
@@ -39,10 +39,15 @@ export default function FormUpdateColumn(props: Props) {
     }
   };
 
+  const handleReset = () => {
+    setTitleColumn('');
+  };
+
   return (
     <Box
       component='form'
       onSubmit={handleSubmit(onSubmit)}
+      onReset={handleReset}
       display='flex'
       flexDirection='row'
       rowGap={2}
@@ -53,7 +58,10 @@ export default function FormUpdateColumn(props: Props) {
         {...register('title', { required: true, maxLength: 80 })}
       />
       <IconButton color='success' type='submit'>
-        <DoneIcon />
+        <Done />
+      </IconButton>
+      <IconButton color='error' type='reset'>
+        <Close />
       </IconButton>
     </Box>
   );

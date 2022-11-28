@@ -1,4 +1,4 @@
-import './Menu.scss';
+// import './Menu.scss';
 import { Stack, Select } from '@mui/material';
 import {
   AppRegistration,
@@ -44,7 +44,7 @@ export const Menu = ({ buttonVariant, direction }: MenuProps) => {
 
   return (
     <Stack
-      className='nav-menu'
+      className='menu'
       direction={direction}
       flexWrap='wrap'
       justifyContent='end'

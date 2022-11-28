@@ -3,7 +3,7 @@ import { Draggable } from 'react-beautiful-dnd';
 import { useLocation } from 'react-router-dom';
 import Tasks from '../../../components/Tasks/Tasks';
 import { ColumnData } from '../../../store/columnSlice';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import { DeleteForever } from '@mui/icons-material';
 import { useState } from 'react';
 import FormUpdateColumn from '../../../components/forms/FormUpdateColumn';
 import { FetchAllTasks } from '../../../store/taskSlice';
@@ -68,14 +68,16 @@ export function BordColumn({
                   />
                 )}
               </Typography>
-              <IconButton
-                color='info'
-                onClick={() => {
-                  setConfirmDialog(column);
-                }}
-              >
-                <DeleteForeverIcon />
-              </IconButton>
+              {titleColumn !== column.title ? (
+                <IconButton
+                  color='info'
+                  onClick={() => {
+                    setConfirmDialog(column);
+                  }}
+                >
+                  <DeleteForever />
+                </IconButton>
+              ) : null}
             </CardContent>
             <Tasks id={id} columnId={column._id || ''} allTasks={allTasks} userValue={userValue} />
           </Card>

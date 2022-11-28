@@ -1,5 +1,5 @@
 import { Button } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import FormCreateTask from '../forms/FormCreateTask';
 import CreateBoardDialog from '../popup/CreateBoardDialog';
@@ -17,12 +17,7 @@ type TasksProps = {
 
 export default function Tasks(props: TasksProps) {
   const [isOpenTask, setIsOpenTask] = useState(false);
-  const { id, columnId, allTasks, userValue } = props;
-
-  useEffect(() => {
-    const filterAllTasks = allTasks.filter((task) => task.users.includes('newUser'));
-    console.log(filterAllTasks, allTasks);
-  }, [userValue]);
+  const { id, columnId, allTasks } = props;
 
   return (
     <>
@@ -31,7 +26,7 @@ export default function Tasks(props: TasksProps) {
           <div
             ref={provided.innerRef}
             {...provided.droppableProps}
-            className={`${snapshot.isDraggingOver ? 'dragTasksActive' : ''}`}
+            className={`tasks ${snapshot.isDraggingOver ? 'dragTasksActive' : ''}`}
           >
             {allTasks.length
               ? allTasks.map(
@@ -47,7 +42,7 @@ export default function Tasks(props: TasksProps) {
       </Droppable>
       <div className='task-create-btn'>
         <Button
-          startIcon={<AddIcon color='primary' />}
+          startIcon={<AddIcon color='secondary' />}
           fullWidth={true}
           variant='contained'
           onClick={() => {
