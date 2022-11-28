@@ -34,6 +34,7 @@ export type FetchTaskProps = {
   body?: {
     title: string;
     order: number;
+    columnId?: string;
     description: string;
     userId: string | number;
     users: string[];
@@ -192,7 +193,7 @@ export const fetchUpdateOrderTasks = createAsyncThunk<
   TaskData[],
   FetchUpdateOrderTasksProps,
   { rejectValue: string }
->('board/fetchUpdateOrderTasks', async function ({ body, token }, { rejectWithValue, dispatch }) {
+>('task/fetchUpdateOrderTasks', async function ({ body, token }, { rejectWithValue, dispatch }) {
   dispatch(changeLoaderStatus(true));
   const response = await fetch(`${BASE_PATH}tasksSet`, {
     method: 'PATCH',
@@ -219,44 +220,44 @@ export const fetchUpdateOrderTasks = createAsyncThunk<
   return data;
 });
 
-// export const fetchUpdateBoard = createAsyncThunk<
-//   BoardData,
-//   FetchBoardProps,
-//   { rejectValue: string }
-// >('boards/fetchUpdateBoard', async function ({ body, token, id }, { rejectWithValue, dispatch }) {
-//   dispatch(changeLoaderStatus(true));
-//   const response = await fetch(`${BASE_PATH}boards/${id}`, {
-//     method: 'PUT',
-//     headers: {
-//       accept: 'application/json',
-//       Authorization: 'Bearer ' + `${token}`,
-//       'Content-Type': 'application/json',
-//     },
-//     body: JSON.stringify(body),
-//   });
-//   const data = await response.json();
+export const fetchUpdateTask = createAsyncThunk<
+  TaskData,
+  FetchTaskProps,
+  { rejectValue: string }
+>('task/fetchUpdateTask', async function ({ body, token, id, columnId, taskId }, { rejectWithValue, dispatch }) {
+  dispatch(changeLoaderStatus(true));
+  const response = await fetch(`${BASE_PATH}boards/${id}/columns/${columnId}/tasks/${taskId}`, {
+    method: 'PUT',
+    headers: {
+      accept: 'application/json',
+      Authorization: 'Bearer ' + `${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(body),
+  });
+  const data = await response.json();
 
-//   if (response.status !== 200) {
-//     if (response.status === 500) {
-//       return rejectWithValue('Internal server error');
-//     }
-//     if (response.status === 404) {
-//       return rejectWithValue('User was not founded!');
-//     }
-//     if (response.status === 400) {
-//       return rejectWithValue('Validation failed (uuid  is expected)');
-//     }
-//     dispatch(changeLoaderStatus(false));
-//   }
-//   dispatch(changeLoaderStatus(false));
-//   return data;
-// });
+  if (response.status !== 200) {
+    if (response.status === 500) {
+      return rejectWithValue('Internal server error');
+    }
+    if (response.status === 404) {
+      return rejectWithValue('User was not founded!');
+    }
+    if (response.status === 400) {
+      return rejectWithValue('Validation failed (uuid  is expected)');
+    }
+    dispatch(changeLoaderStatus(false));
+  }
+  dispatch(changeLoaderStatus(false));
+  return data;
+});
 
 export const fetchCreateTask = createAsyncThunk<TaskData, FetchTaskProps, { rejectValue: string }>(
   'task/fetchCreateTask',
   async function ({ id, body, token, columnId }, { rejectWithValue, dispatch }) {
     dispatch(changeLoaderStatus(true));
-    const response = await fetch(`${BASE_PATH}boards/${id}/columns/${columnId}/tasks`, {
+    const response = await fetch(`${BASE_PATH}boards/${id}/columns/${columnId}/tasks/`, {
       method: 'POST',
       headers: {
         accept: 'application/json',
@@ -330,17 +331,11 @@ const taskSlice = createSlice({
         // state.error = null;
         state.task = {} as TaskData;
       })
-      //   .addCase(fetchUpdateBoard.pending, (state) => {
-      //     state.error = null;
-      //   })
-      //   .addCase(fetchUpdateBoard.fulfilled, (state, action: PayloadAction<BoardData>) => {
-      //     state.error = null;
-      //     state.board = action.payload;
-      //   })
-      //   .addCase(fetchUpdateBoard.rejected, (state, action) => {
-      //     state.error = action.payload as string;
-      //     alert(state.error);
-      //   })
+
+        .addCase(fetchUpdateTask.fulfilled, (state, action: PayloadAction<TaskData>) => {
+          state.task = action.payload;
+        })
+
       .addCase(fetchCreateTask.fulfilled, (state, action: PayloadAction<TaskData>) => {
         // state.error = null;
         state.task = action.payload;
