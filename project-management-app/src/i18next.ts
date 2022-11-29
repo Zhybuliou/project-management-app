@@ -67,7 +67,7 @@ i18n.use(initReactI18next).init({
         addColumnButton: 'Add column',
         addButton: 'Add',
         error: 'Page not found',
-        allUsers: 'All users',
+        allUsers: 'All board users',
       },
     },
     ru: {
@@ -134,7 +134,7 @@ i18n.use(initReactI18next).init({
         addColumnButton: 'Добавить столбец',
         addButton: 'Добавить',
         error: 'Страница не найдена',
-        allUsers: 'Все пользователи',
+        allUsers: 'Все пользователи доски',
       },
     },
   },
