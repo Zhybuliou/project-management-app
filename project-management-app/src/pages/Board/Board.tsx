@@ -7,7 +7,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import CreateBoardDialog from '../../components/popup/CreateBoardDialog';
 import { useEffect, useState } from 'react';
 import { FieldValues, useForm } from 'react-hook-form';
-import { fetchGetBoard } from '../../store/boardSlice';
+import { BoardData, changeBoard, fetchGetBoard } from '../../store/boardSlice';
 import {
   BodyUpdate,
   changeAllColumns,
@@ -57,7 +57,7 @@ export const Board = () => {
   const [confirmDialog, setConfirmDialog] = useState({
     isOpen: false,
     title: '',
-    subTitle: '',
+    // subTitle: '',
     onConfirm: () => {
       ('');
     },
@@ -127,8 +127,9 @@ export const Board = () => {
   const changeConfirmDialog = (column: ColumnData) => {
     setConfirmDialog({
       isOpen: true,
-      title: 'Are you sure what you want delete this column',
-      subTitle: 'Click button yes',
+      // title: 'Are you sure what you want delete this column',
+      title: t('messageDeleteColumn'),
+      // subTitle: 'Click button yes',
       onConfirm: async () => {
         const columnId = column._id;
         setConfirmDialog({ ...confirmDialog, isOpen: false });
@@ -277,6 +278,7 @@ export const Board = () => {
           onClick={async () => {
             navigate('/main');
             dispatch(changeAllColumns([]));
+            dispatch(changeBoard({} as BoardData));
           }}
           startIcon={<ArrowBackIosIcon />}
         >
