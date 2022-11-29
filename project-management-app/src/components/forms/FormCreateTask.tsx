@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector } from '../../hook';
 import { fetchBoardIdTasks, fetchCreateTask } from '../../store/taskSlice';
-import { PopupField } from '../../theme/styledComponents/styledComponents';
+import { FormFieldError, PopupField } from '../../theme/styledComponents/styledComponents';
 
 type DataForm = {
   title?: string;
@@ -19,7 +19,11 @@ type Props = {
 };
 
 export default function FormCreateTask(props: Props) {
-  const { register, handleSubmit } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid, isSubmitted },
+  } = useForm();
   const auth = useAppSelector((state) => state.auth);
   const allTasks = useAppSelector((state) => state.task.allTasks);
   const dispatch = useAppDispatch();
@@ -47,22 +51,43 @@ export default function FormCreateTask(props: Props) {
   };
 
   return (
-    <Box
-      component='form'
-      onSubmit={handleSubmit(onSubmit)}
-      display='flex'
-      flexDirection='column'
-      rowGap={2}
-    >
-      <PopupField label={'Title'} {...register('title', { required: true })} />
+    <Box component='form' onSubmit={handleSubmit(onSubmit)} display='flex' flexDirection='column'>
       <PopupField
-        label={'Description'}
+        label={t('titleLabel')}
+        {...register('title', {
+          required: 'titleRequiredTextError',
+          minLength: {
+            value: 2,
+            message: 'titleMinLengthTextError',
+          },
+          maxLength: {
+            value: 20,
+            message: 'titleMaxLengthTextError',
+          },
+        })}
+      />
+      <FormFieldError>{errors.title ? t(errors.title.message + '') : ''}</FormFieldError>
+      <PopupField
+        label={t('descriptionLabel')}
         multiline
         rows={4}
-        {...register('description', { required: true })}
+        {...register('description', {
+          required: 'descriptionRequiredTextError',
+          minLength: {
+            value: 2,
+            message: 'descriptionMinLengthTextError',
+          },
+          maxLength: {
+            value: 80,
+            message: 'descriptionMaxLengthTextError',
+          },
+        })}
       />
-      <Button variant='contained' color='success' type='submit'>
-        {t('createButton')}
+      <FormFieldError>
+        {errors.description ? t(errors.description.message + '') : ''}
+      </FormFieldError>
+      <Button variant='contained' color='success' type='submit' disabled={!isValid && isSubmitted}>
+        {t('addButton')}
       </Button>
     </Box>
   );

@@ -19,4 +19,16 @@ export const theme: ThemeOptions = createTheme({
   typography: {
     fontFamily: 'Ubuntu',
   },
+  components: {
+    MuiTooltip: {
+      styleOverrides: {
+        tooltipArrow: {
+          backgroundColor: '#ffffff',
+          color: '#4D628B',
+          fontSize: '16px',
+          border: '0.5px solid #4D628B',
+        },
+      },
+    },
+  },
 });
