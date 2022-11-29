@@ -9,19 +9,18 @@ import {
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import React from 'react';
 import './confirmDialog.scss';
+import { useTranslation } from 'react-i18next';
 
 type Props = {
   confirmDialog: {
     isOpen: boolean;
     title: string;
-    subTitle: string;
     onConfirm: () => void;
   };
   setConfirmDialog: React.Dispatch<
     React.SetStateAction<{
       isOpen: boolean;
       title: string;
-      subTitle: string;
       onConfirm: () => void;
     }>
   >;
@@ -29,6 +28,7 @@ type Props = {
 
 export default function ConfirmDialog(props: Props) {
   const { confirmDialog, setConfirmDialog } = props;
+  const { t } = useTranslation();
   return (
     <>
       <Dialog open={confirmDialog.isOpen}>
@@ -36,19 +36,20 @@ export default function ConfirmDialog(props: Props) {
           <WarningAmberIcon color='error' className='dialog-title-icon' />
         </DialogTitle>
         <DialogContent>
-          <Typography variant='h6'>{confirmDialog.title}</Typography>
-          <Typography variant='subtitle2'>{confirmDialog.subTitle}</Typography>
+          <Typography variant='h6' color='primary'>
+            {confirmDialog.title}
+          </Typography>
         </DialogContent>
         <DialogActions>
           <Button variant='contained' color='success' onClick={confirmDialog.onConfirm}>
-            Yes
+            {t('yes')}
           </Button>
           <Button
             variant='outlined'
             color='error'
             onClick={() => setConfirmDialog({ ...confirmDialog, isOpen: false })}
           >
-            No
+            {t('no')}
           </Button>
         </DialogActions>
       </Dialog>

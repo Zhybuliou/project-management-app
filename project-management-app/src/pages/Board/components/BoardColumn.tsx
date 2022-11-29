@@ -11,7 +11,6 @@ import { FetchAllTasks } from '../../../store/taskSlice';
 type PropsConfirmDialog = {
   isOpen: boolean;
   title: string;
-  subTitle: string;
   onConfirm: () => void;
 };
 

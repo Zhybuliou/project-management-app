@@ -19,6 +19,7 @@ import CreateBoardDialog from '../../components/popup/CreateBoardDialog';
 import FormUpdateBoard from '../../components/forms/FormUpdateBoard';
 import { SubTitle, Title } from '../../theme/styledComponents/styledComponents';
 import { useTranslation } from 'react-i18next';
+import { fetchGetUser } from '../../store/userSlice';
 
 export const Main = () => {
   const allBoards = useAppSelector((state) => state.board.allBoards);
@@ -28,7 +29,6 @@ export const Main = () => {
   const [confirmDialog, setConfirmDialog] = useState({
     isOpen: false,
     title: '',
-    subTitle: '',
     onConfirm: () => {
       ('');
     },
@@ -40,10 +40,12 @@ export const Main = () => {
   });
   const [dialogUpdate, setDialogUpdate] = useState(false);
   const getToken = localStorage.getItem('token');
+  const id = useAppSelector((state) => state.auth.id);
   if (getToken) {
     const token = JSON.parse(getToken);
     useEffect(() => {
       dispatch(fetchAllBoards(token));
+      dispatch(fetchGetUser({ id, token }));
     }, []);
   }
 
@@ -84,8 +86,7 @@ export const Main = () => {
                       onClick={async () => {
                         setConfirmDialog({
                           isOpen: true,
-                          title: 'Are you sure what you want delete this board',
-                          subTitle: 'Click button yes',
+                          title: t('messageDeleteBoard'),
                           onConfirm: async () => {
                             const getToken = localStorage.getItem('token');
                             if (getToken) {
