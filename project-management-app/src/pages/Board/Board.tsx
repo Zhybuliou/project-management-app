@@ -239,7 +239,12 @@ export const Board = () => {
   }
 
   return (
-    <Container className='main' component='main' maxWidth='xl' sx={{ overflow: 'auto' }}>
+    <Container
+      className='main'
+      component='main'
+      maxWidth='xl'
+      sx={{ display: 'flex', flexDirection: 'column' }}
+    >
       <Title variant='h2' component='h1'>
         {board.title}
       </Title>
@@ -286,7 +291,7 @@ export const Board = () => {
         <Droppable droppableId='ColumnsList' direction='horizontal' type={DragType.COLUMN}>
           {(provided, snapshot) => (
             <Stack
-              sx={{ m: '8px 3px' }}
+              sx={{ m: '8px 3px', overflow: 'auto', flexGrow: 1 }}
               direction='row'
               className={`${snapshot.isDraggingOver ? 'dragActive' : ''}`}
               ref={provided.innerRef}

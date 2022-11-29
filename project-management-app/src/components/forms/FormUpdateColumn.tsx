@@ -55,7 +55,11 @@ export default function FormUpdateColumn(props: Props) {
       <TextField
         size='small'
         defaultValue={props.form.title}
+        color='primary'
         {...register('title', { required: true, maxLength: 80 })}
+        sx={{ paddingRight: 0.5 }}
+        className='edit-title-input'
+        autoFocus
       />
       <IconButton color='success' type='submit'>
         <Done />

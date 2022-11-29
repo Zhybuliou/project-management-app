@@ -7,7 +7,9 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  Tooltip,
   Typography,
+  Zoom,
 } from '@mui/material';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import React, { useState } from 'react';
@@ -58,14 +60,16 @@ export default function Task({ task, index, id }: TaskProps) {
             onClick={() => setOpenPopup(true)}
             sx={{ p: 0, flexGrow: 1, display: 'flex', alignItems: 'center' }}
           >
-            <Typography
-              className='task-name'
-              sx={{ fontSize: 18, m: 0 }}
-              color='primary'
-              gutterBottom
+            <Tooltip
+              title={task.title.length > 15 ? task.title : ''}
+              arrow={true}
+              TransitionComponent={Zoom}
+              placement='top'
             >
-              {task.title}
-            </Typography>
+              <Typography className='task-name' sx={{ fontSize: 18, m: 0 }} color='primary'>
+                {task.title}
+              </Typography>
+            </Tooltip>
           </CardContent>
           <CardActions sx={{ p: 0.5 }}>
             <IconButton

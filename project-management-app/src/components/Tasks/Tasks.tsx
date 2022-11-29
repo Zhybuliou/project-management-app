@@ -54,7 +54,7 @@ export default function Tasks(props: TasksProps) {
           {t('addTask')}
         </Button>
       </div>
-      <CreateBoardDialog title={'Create Task'} openPopup={isOpenTask} setOpenPopup={setIsOpenTask}>
+      <CreateBoardDialog title={t('addTask')} openPopup={isOpenTask} setOpenPopup={setIsOpenTask}>
         <FormCreateTask setOpenPopup={setIsOpenTask} id={id} columnId={columnId} />
       </CreateBoardDialog>
     </>
