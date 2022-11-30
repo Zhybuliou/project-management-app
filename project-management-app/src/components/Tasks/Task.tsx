@@ -138,26 +138,6 @@ export default function Task({ task, index, id }: TaskProps) {
                     ))}
                   </Select>
                 </FormControl>
-                <IconButton
-                  color='info'
-                  onClick={async () => {
-                    setOpenPopup(false);
-                    setConfirmTask({
-                      isOpen: true,
-                      title: t('messageDeleteTask'),
-                      onConfirm: async () => {
-                        const { columnId } = task;
-                        const taskId = task._id;
-                        const token = JSON.parse(localStorage.getItem('token') || '');
-                        setConfirmTask({ ...confirmTask, isOpen: false });
-                        await dispatch(fetchDeleteTask({ id, columnId, token, taskId }));
-                        await dispatch(fetchBoardIdTasks({ id, token }));
-                      },
-                    });
-                  }}
-                >
-                  <DeleteForeverIcon />
-                </IconButton>
               </CardActions>
             </Card>
           </CreateBoardDialog>
