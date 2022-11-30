@@ -127,27 +127,6 @@ export default function Task({ task, index, id }: TaskProps) {
                     {allUsers?.map((user) => <MenuItem key={user._id} value={user.login}>{user.login}</MenuItem>)}
                   </Select>
                 </FormControl>
-                <IconButton
-                  color='info'
-                  onClick={async () => {
-                    setOpenPopup(false);
-                    setConfirmTask({
-                      isOpen: true,
-                      title: 'Are you sure what you want delete this task',
-                      subTitle: 'Click button yes',
-                      onConfirm: async () => {
-                        const { columnId } = task;
-                        const taskId = task._id;
-                        const token = JSON.parse(localStorage.getItem('token') || '');
-                        setConfirmTask({ ...confirmTask, isOpen: false });
-                        await dispatch(fetchDeleteTask({ id, columnId, token, taskId }));
-                        await dispatch(fetchBoardIdTasks({ id, token }));
-                      },
-                    });
-                  }}
-                >
-                  <DeleteForeverIcon />
-                </IconButton>
               </CardActions>
             </Card>
           </CreateBoardDialog>
