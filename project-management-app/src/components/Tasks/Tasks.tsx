@@ -7,6 +7,7 @@ import { TaskData } from '../../store/taskSlice';
 import Task from './Task';
 import { Droppable } from 'react-beautiful-dnd';
 import { DragType } from '../../pages/Board/Board';
+import { useTranslation } from 'react-i18next';
 
 type TasksProps = {
   id: string;
@@ -18,6 +19,7 @@ type TasksProps = {
 export default function Tasks(props: TasksProps) {
   const [isOpenTask, setIsOpenTask] = useState(false);
   const { id, columnId, allTasks } = props;
+  const { t } = useTranslation();
 
   return (
     <>
@@ -47,10 +49,10 @@ export default function Tasks(props: TasksProps) {
             setIsOpenTask(true);
           }}
         >
-          add task
+          {t('addTask')}
         </Button>
       </div>
-      <CreateBoardDialog title={'Create Task'} openPopup={isOpenTask} setOpenPopup={setIsOpenTask}>
+      <CreateBoardDialog title={t('addTask')} openPopup={isOpenTask} setOpenPopup={setIsOpenTask}>
         <FormCreateTask setOpenPopup={setIsOpenTask} id={id} columnId={columnId} />
       </CreateBoardDialog>
     </>

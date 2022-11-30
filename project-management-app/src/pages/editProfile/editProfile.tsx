@@ -7,9 +7,7 @@ import { changeLoaderStatus, changeStatusAuth } from '../../store/authSlice';
 import { DeleteForever } from '@mui/icons-material';
 import {
   changeOpenErrorSnackBar,
-  fetchAllUsers,
   fetchDeleteUser,
-  fetchGetUser,
   fetchUpdateUser,
   getErrorMessage,
 } from '../../store/userSlice';
@@ -30,7 +28,6 @@ export const EditProfile = () => {
   const [confirmDialog, setConfirmDialog] = useState({
     isOpen: false,
     title: '',
-    subTitle: '',
     onConfirm: () => {
       ('');
     },
@@ -42,7 +39,7 @@ export const EditProfile = () => {
     handleSubmit,
   } = useForm({
     defaultValues: {
-      name: name as string,
+      name: name ? (name as string) : localStorage.getItem('name'),
       login: login as string,
       password: password as string,
     },
@@ -61,16 +58,6 @@ export const EditProfile = () => {
     }
   }
 
-  function getUsers() {
-    dispatch(fetchAllUsers(token as string));
-  }
-
-  function getUser() {
-    if (token) {
-      dispatch(fetchGetUser({ id, token }));
-    }
-  }
-
   function deleteUser() {
     dispatch(changeLoaderStatus(true));
     if (token) {
@@ -82,8 +69,7 @@ export const EditProfile = () => {
   function openConfirmDialog() {
     setConfirmDialog({
       isOpen: true,
-      title: 'Are you sure? This action is irreversible! ',
-      subTitle: 'Click button yes',
+      title: t('messageDeleteUser'),
       onConfirm: () => {
         deleteUser();
       },

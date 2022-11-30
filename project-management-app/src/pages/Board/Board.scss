@@ -1,4 +1,5 @@
 @import '../../scss/style.scss';
+
 .back-btn {
   span {
     margin: 0;
@@ -36,6 +37,12 @@
   background-color: #e6e6e6;
 }
 
+.edit-title-input {
+  div {
+    color: $blueColor;
+  }
+}
+
 .tasks {
   max-height: calc(100vh - 470px);
   overflow-y: auto;
@@ -58,18 +65,19 @@
 
 .column-title-header {
   cursor: pointer;
+  flex-grow: 1;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 665px) {
   .tasks {
     max-height: calc(100vh - 550px);
   }
 }
 
-@media (max-height: 585px) {
+@media (max-height: 620px) {
   .tasks {
     max-height: calc(100vh - 550px);
     min-height: 65px;

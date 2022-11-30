@@ -7,7 +7,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import CreateBoardDialog from '../../components/popup/CreateBoardDialog';
 import { useEffect, useState } from 'react';
 import { FieldValues, useForm } from 'react-hook-form';
-import { fetchGetBoard } from '../../store/boardSlice';
+import { BoardData, changeBoard, fetchGetBoard } from '../../store/boardSlice';
 import {
   BodyUpdate,
   changeAllColumns,
@@ -57,7 +57,7 @@ export const Board = () => {
   const [confirmDialog, setConfirmDialog] = useState({
     isOpen: false,
     title: '',
-    subTitle: '',
+    // subTitle: '',
     onConfirm: () => {
       ('');
     },
@@ -65,12 +65,14 @@ export const Board = () => {
   const [orderedColumn, setOrderedColumn] = useState([] as ColumnData[] | null);
   const allUsers = useAppSelector((state) => state.user.allUsers);
   const [userValue, setUserValue] = useState('');
+  const [users, setUsers] = useState<Array<string>>([]);
 
   useEffect(() => {
     dispatch(fetchGetBoard({ id, token }));
     dispatch(fetchAllColumns({ id, token }));
     dispatch(fetchBoardIdTasks({ id, token }));
     dispatch(fetchAllUsers(token as string));
+    console.log(userValue);
   }, []);
 
   useEffect(() => {
@@ -80,7 +82,25 @@ export const Board = () => {
       );
       setOrderedColumn(orderedColumn);
     }
-  }, [allColumns]);
+    if (allUsers) {
+      const boardTasks = allTasks.filter((el) => el.boardId === board._id);
+      const usersArray: Array<string> = [];
+      for (let i = 0; i < boardTasks.length; i++) {
+        const user = boardTasks[i].users[0];
+
+        if (
+          usersArray.filter((item) => item === user).length === 0 &&
+          allUsers.find((item) => item.login === user)
+        ) {
+          usersArray.push(user);
+        }
+      }
+      setUsers(usersArray);
+    }
+    if (allTasks.filter((task) => task.users.includes(userValue)).length === 0) {
+      setUserValue('');
+    }
+  }, [allColumns, allTasks, allUsers]);
 
   const {
     register,
@@ -107,8 +127,9 @@ export const Board = () => {
   const changeConfirmDialog = (column: ColumnData) => {
     setConfirmDialog({
       isOpen: true,
-      title: 'Are you sure what you want delete this column',
-      subTitle: 'Click button yes',
+      // title: 'Are you sure what you want delete this column',
+      title: t('messageDeleteColumn'),
+      // subTitle: 'Click button yes',
       onConfirm: async () => {
         const columnId = column._id;
         setConfirmDialog({ ...confirmDialog, isOpen: false });
@@ -120,7 +141,7 @@ export const Board = () => {
   };
 
   const changeUserValue = (value: string) => {
-    if (value === 'All users' || value === 'Все пользователи') {
+    if (value === 'All board users' || value === 'Все пользователи доски') {
       setUserValue('');
     } else {
       setUserValue(value);
@@ -210,10 +231,10 @@ export const Board = () => {
                 { ...(active[(destination as DraggableLocation).index] as TaskData) }._id,
             );
             if (findNewIndex === -1) {
-              add.order = 0;
+              add.order = destination?.index as number;
             } else {
               if (destinationTask) {
-                add.order = destinationTask.order - 1;
+                add.order = (destination?.index as number) - 1;
               }
             }
             active.splice(source.index, 1);
@@ -238,7 +259,12 @@ export const Board = () => {
   }
 
   return (
-    <Container className='main' component='main' maxWidth='xl' sx={{ overflow: 'auto' }}>
+    <Container
+      className='main'
+      component='main'
+      maxWidth='xl'
+      sx={{ display: 'flex', flexDirection: 'column' }}
+    >
       <Title variant='h2' component='h1'>
         {board.title}
       </Title>
@@ -257,6 +283,7 @@ export const Board = () => {
           onClick={async () => {
             navigate('/main');
             dispatch(changeAllColumns([]));
+            dispatch(changeBoard({} as BoardData));
           }}
           startIcon={<ArrowBackIosIcon />}
         >
@@ -265,16 +292,16 @@ export const Board = () => {
         <WhiteButton onClick={() => setIsOpen(true)} startIcon={<Add />} sx={{ minWidth: 160 }}>
           {t('addColumnButton')}
         </WhiteButton>
-        {allUsers && (
+        {users && (
           <Select
-            value={userValue ? userValue : t('allUsers')}
+            value={users.filter((el) => el === userValue).length ? userValue : t('allUsers')}
             onChange={(event) => changeUserValue(event.target.value + '')}
             size='small'
           >
             <MyMenuItem value={t('allUsers')}>{t('allUsers')}</MyMenuItem>
-            {allUsers.map((user) => (
-              <MyMenuItem key={user._id} value={user.login}>
-                {user.login}
+            {users.map((user) => (
+              <MyMenuItem key={user} value={user}>
+                {user}
               </MyMenuItem>
             ))}
           </Select>
@@ -284,7 +311,7 @@ export const Board = () => {
         <Droppable droppableId='ColumnsList' direction='horizontal' type={DragType.COLUMN}>
           {(provided, snapshot) => (
             <Stack
-              sx={{ m: '8px 3px' }}
+              sx={{ m: '8px 3px', overflow: 'auto', flexGrow: 1 }}
               direction='row'
               className={`${snapshot.isDraggingOver ? 'dragActive' : ''}`}
               ref={provided.innerRef}
@@ -336,7 +363,6 @@ export const Board = () => {
                 value: 20,
                 message: 'titleMaxLengthTextError',
               },
-              onChange: (e) => console.log(e),
             })}
           />
           <FormFieldError>

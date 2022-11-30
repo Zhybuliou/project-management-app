@@ -3,7 +3,7 @@ import { removeLocalStorage } from '../utils/signOut';
 import { changeLoaderStatus, changeStatusAuth } from './authSlice';
 import { changeOpenErrorSnackBar, getErrorMessage } from './userSlice';
 
-type BoardData = {
+export type BoardData = {
   _id?: string;
   title: string;
   owner: string;
@@ -229,7 +229,11 @@ export const fetchCreateBoard = createAsyncThunk<
 const boardSlice = createSlice({
   name: 'board',
   initialState,
-  reducers: {},
+  reducers: {
+    changeBoard(state, action: PayloadAction<BoardData>) {
+      state.board = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchAllBoards.fulfilled, (state, action: PayloadAction<FetchAllBoards>) => {
@@ -250,4 +254,5 @@ const boardSlice = createSlice({
   },
 });
 
+export const { changeBoard } = boardSlice.actions;
 export default boardSlice.reducer;

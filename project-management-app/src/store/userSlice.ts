@@ -83,6 +83,7 @@ export const fetchGetUser = createAsyncThunk<UserData, FetchUserProps, { rejectV
       return rejectWithValue('errorCommon');
     }
     dispatch(changeLoaderStatus(false));
+    localStorage.setItem('name', data.name);
     return data;
   },
 );

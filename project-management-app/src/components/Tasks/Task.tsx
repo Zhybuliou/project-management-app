@@ -7,15 +7,23 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  Tooltip,
   Typography,
+  Zoom,
 } from '@mui/material';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import React, { useState } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
-import { TaskData, fetchDeleteTask, fetchBoardIdTasks, fetchUpdateTask } from '../../store/taskSlice';
+import {
+  TaskData,
+  fetchDeleteTask,
+  fetchBoardIdTasks,
+  fetchUpdateTask,
+} from '../../store/taskSlice';
 import { useAppDispatch, useAppSelector } from '../../hook';
 import ConfirmDialog from '../popup/ConfirmDialog';
 import CreateBoardDialog from '../popup/CreateBoardDialog';
+import { useTranslation } from 'react-i18next';
 
 type TaskProps = {
   task: TaskData;
@@ -31,11 +39,11 @@ export default function Task({ task, index, id }: TaskProps) {
   const [confirmTask, setConfirmTask] = useState({
     isOpen: false,
     title: '',
-    subTitle: '',
     onConfirm: () => {
       ('');
     },
   });
+  const { t } = useTranslation();
 
   return (
     <Draggable draggableId={task._id as string} index={index}>
@@ -52,14 +60,16 @@ export default function Task({ task, index, id }: TaskProps) {
             onClick={() => setOpenPopup(true)}
             sx={{ p: 0, flexGrow: 1, display: 'flex', alignItems: 'center' }}
           >
-            <Typography
-              className='task-name'
-              sx={{ fontSize: 18, m: 0 }}
-              color='primary'
-              gutterBottom
+            <Tooltip
+              title={task.title.length > 15 ? task.title : ''}
+              arrow={true}
+              TransitionComponent={Zoom}
+              placement='top'
             >
-              {task.title}
-            </Typography>
+              <Typography className='task-name' sx={{ fontSize: 18, m: 0 }} color='primary'>
+                {task.title}
+              </Typography>
+            </Tooltip>
           </CardContent>
           <CardActions sx={{ p: 0.5 }}>
             <IconButton
@@ -67,8 +77,7 @@ export default function Task({ task, index, id }: TaskProps) {
               onClick={async () => {
                 setConfirmTask({
                   isOpen: true,
-                  title: 'Are you sure what you want delete this task',
-                  subTitle: 'Click button yes',
+                  title: t('messageDeleteTask'),
                   onConfirm: async () => {
                     const { columnId } = task;
                     const taskId = task._id;
@@ -88,23 +97,23 @@ export default function Task({ task, index, id }: TaskProps) {
             <Card>
               <CardContent>
                 <Typography sx={{ mb: 1.5 }} color='text.secondary'>
-                  Description:
+                  {t('description')}
                 </Typography>
                 <Typography sx={{ mb: 1.5 }} color='text.secondary'>
                   {task.description}
                 </Typography>
                 <Typography sx={{ mb: 1.5 }} color='text.secondary'>
-                  Assigned to: {task.users}
+                  {t('assign')} {task.users}
                 </Typography>
               </CardContent>
               <CardActions style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                <FormControl sx={{minWidth: '200px'}} fullWidth>
-                  <InputLabel id='user-select-label'>Change User</InputLabel>
+                <FormControl sx={{ minWidth: '200px' }} fullWidth>
+                  <InputLabel id='user-select-label'>{t('changeUser')}</InputLabel>
                   <Select
                     labelId='user-select-label'
                     id='user-select'
                     value={userValue}
-                    label='Change User'
+                    label={t('changeUser')}
                     onChange={async (e) => {
                       const { columnId } = task;
                       const taskId = task._id;
@@ -115,16 +124,18 @@ export default function Task({ task, index, id }: TaskProps) {
                         columnId: columnId,
                         description: task.description,
                         userId: task.userId,
-                        users: [
-                          e.target.value
-                        ]
-                      }
-                      setUserValue(e.target.value)
+                        users: [e.target.value],
+                      };
+                      setUserValue(e.target.value);
                       await dispatch(fetchUpdateTask({ body, id, columnId, token, taskId }));
                       await dispatch(fetchBoardIdTasks({ id, token }));
                     }}
                   >
-                    {allUsers?.map((user) => <MenuItem key={user._id} value={user.login}>{user.login}</MenuItem>)}
+                    {allUsers?.map((user) => (
+                      <MenuItem key={user._id} value={user.login}>
+                        {user.login}
+                      </MenuItem>
+                    ))}
                   </Select>
                 </FormControl>
               </CardActions>
