@@ -19,7 +19,7 @@ type BoardColumnProps = {
   setConfirmDialog: (column: ColumnData) => void;
   index: number;
   confirmDialog: PropsConfirmDialog;
-  userValue: string;
+  userValue: string[] | null;
   allTasks: FetchAllTasks;
 };
 

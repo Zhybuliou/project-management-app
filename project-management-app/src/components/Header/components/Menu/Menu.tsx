@@ -18,8 +18,6 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MyMenuItem, WhiteButton } from '../../../../theme/styledComponents/styledComponents';
 import { setBurgerVisible } from '../../../../store/headerSlice';
-import { BoardData, changeBoard } from '../../../../store/boardSlice';
-import { changeAllColumns } from '../../../../store/columnSlice';
 
 type MenuProps = {
   buttonVariant: 'text' | 'contained';
@@ -94,8 +92,6 @@ export const Menu = ({ buttonVariant, direction }: MenuProps) => {
         <WhiteButton
           onClick={() => {
             dispatch(setBurgerVisible(false));
-            dispatch(changeBoard({} as BoardData));
-            dispatch(changeAllColumns([]));
           }}
           component={NavLink}
           to='/main'
@@ -148,8 +144,6 @@ export const Menu = ({ buttonVariant, direction }: MenuProps) => {
           onClick={() => {
             dispatch(setBurgerVisible(false));
             logOut();
-            dispatch(changeBoard({} as BoardData));
-            dispatch(changeAllColumns([]));
           }}
           endIcon={<Logout />}
           sx={{ minWidth: { sm: '100%', md: '64px' } }}
