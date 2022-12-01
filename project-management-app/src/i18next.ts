@@ -77,7 +77,7 @@ i18n.use(initReactI18next).init({
         addTask: 'add task',
         description: 'Description:',
         assign: 'Assigned to:',
-        changeUser: 'Change User',
+        chooseUser: ' Choose users',
       },
     },
     ru: {
@@ -154,7 +154,7 @@ i18n.use(initReactI18next).init({
         addTask: 'добавить задание',
         description: 'Описание:',
         assign: 'Назначено:',
-        changeUser: 'Изменить пользователя',
+        chooseUser: 'Выбрать пользователя',
       },
     },
   },

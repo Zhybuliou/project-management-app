@@ -1,11 +1,21 @@
 import './Board.scss';
-import { Button, Container, Select, Stack } from '@mui/material';
+import {
+  Button,
+  Checkbox,
+  Container,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Menu,
+  MenuItem,
+  Stack,
+} from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../../hook';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { Add } from '@mui/icons-material';
 import { useLocation, useNavigate } from 'react-router-dom';
 import CreateBoardDialog from '../../components/popup/CreateBoardDialog';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FieldValues, useForm } from 'react-hook-form';
 import { BoardData, changeBoard, fetchGetBoard } from '../../store/boardSlice';
 import {
@@ -29,7 +39,6 @@ import { DragDropContext, DraggableLocation, Droppable, DropResult } from 'react
 import { BordColumn } from './components/BoardColumn';
 import {
   FormFieldError,
-  MyMenuItem,
   PopupField,
   Title,
   WhiteButton,
@@ -57,22 +66,24 @@ export const Board = () => {
   const [confirmDialog, setConfirmDialog] = useState({
     isOpen: false,
     title: '',
-    // subTitle: '',
     onConfirm: () => {
       ('');
     },
   });
   const [orderedColumn, setOrderedColumn] = useState([] as ColumnData[] | null);
   const allUsers = useAppSelector((state) => state.user.allUsers);
-  const [userValue, setUserValue] = useState('');
+  const [userValue, setUserValue] = useState<Array<string> | null>(null);
   const [users, setUsers] = useState<Array<string>>([]);
+  const [checked, setChecked] = useState(['All users']);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   useEffect(() => {
+    dispatch(changeAllColumns([]));
+    dispatch(changeBoard({} as BoardData));
     dispatch(fetchGetBoard({ id, token }));
     dispatch(fetchAllColumns({ id, token }));
     dispatch(fetchBoardIdTasks({ id, token }));
     dispatch(fetchAllUsers(token as string));
-    console.log(userValue);
   }, []);
 
   useEffect(() => {
@@ -96,11 +107,19 @@ export const Board = () => {
         }
       }
       setUsers(usersArray);
+      const allTasksFilteredByUser = allTasks.filter((task) => usersArray.includes(task.users[0]));
+      if (
+        allTasksFilteredByUser.filter((task) => userValue?.includes(task.users[0])).length === 0
+      ) {
+        setUserValue(null);
+        setChecked(['All users']);
+      }
+      if (allTasks.filter((task) => usersArray.includes(task.users[0])).length === 0) {
+        setUserValue(null);
+        setChecked(['All users']);
+      }
     }
-    if (allTasks.filter((task) => task.users.includes(userValue)).length === 0) {
-      setUserValue('');
-    }
-  }, [allColumns, allTasks, allUsers]);
+  }, [allColumns, allTasks, allUsers, board]);
 
   const {
     register,
@@ -127,9 +146,7 @@ export const Board = () => {
   const changeConfirmDialog = (column: ColumnData) => {
     setConfirmDialog({
       isOpen: true,
-      // title: 'Are you sure what you want delete this column',
       title: t('messageDeleteColumn'),
-      // subTitle: 'Click button yes',
       onConfirm: async () => {
         const columnId = column._id;
         setConfirmDialog({ ...confirmDialog, isOpen: false });
@@ -141,11 +158,53 @@ export const Board = () => {
   };
 
   const changeUserValue = (value: string) => {
-    if (value === 'All board users' || value === 'Все пользователи доски') {
-      setUserValue('');
+    if (value === 'All users') {
+      setUserValue(null);
+      setChecked(['All users']);
     } else {
-      setUserValue(value);
+      if (userValue === null) {
+        setUserValue([value]);
+      } else {
+        setUserValue([...userValue, value]);
+      }
     }
+  };
+
+  const handleToggle = (value: string) => () => {
+    const currentIndex = checked.indexOf(value);
+    const newChecked = [...checked];
+
+    if (currentIndex === -1) {
+      if (value === 'All users') {
+        newChecked.length = 0;
+        newChecked.push('All users');
+        changeUserValue('All users');
+      } else {
+        if (checked[0] === 'All users') {
+          newChecked.splice(0, 1);
+        }
+        newChecked.push(value);
+        changeUserValue(value);
+      }
+    } else if (currentIndex !== -1) {
+      newChecked.splice(currentIndex, 1);
+      if (newChecked.length === 0) {
+        newChecked.push('All users');
+        changeUserValue('All users');
+      } else {
+        changeUserValue(value);
+        setUserValue(newChecked);
+      }
+    }
+    setChecked(newChecked);
+  };
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
   };
 
   async function onDragEnd(result: DropResult) {
@@ -192,7 +251,7 @@ export const Board = () => {
       if (sourceColumn._id === destinationColumn._id) {
         let add = {} as TaskData;
         const active = userValue
-          ? [...allTasks.filter((task) => task.users.includes(userValue))]
+          ? [...allTasks.filter((task) => userValue.includes(task.users[0]))]
           : [...allTasks];
         if (source.droppableId === sourceColumn._id) {
           add = { ...active[source.index] };
@@ -211,7 +270,7 @@ export const Board = () => {
         await dispatch(fetchBoardIdTasks({ id, token }));
       } else {
         const active = userValue
-          ? [...allTasks.filter((task) => task.users.includes(userValue))]
+          ? [...allTasks.filter((task) => userValue.includes(task.users[0]))]
           : [...allTasks];
 
         if (source.droppableId !== destinationColumn._id) {
@@ -282,8 +341,6 @@ export const Board = () => {
           className='back-btn'
           onClick={async () => {
             navigate('/main');
-            dispatch(changeAllColumns([]));
-            dispatch(changeBoard({} as BoardData));
           }}
           startIcon={<ArrowBackIosIcon />}
         >
@@ -293,18 +350,38 @@ export const Board = () => {
           {t('addColumnButton')}
         </WhiteButton>
         {users && (
-          <Select
-            value={users.filter((el) => el === userValue).length ? userValue : t('allUsers')}
-            onChange={(event) => changeUserValue(event.target.value + '')}
-            size='small'
-          >
-            <MyMenuItem value={t('allUsers')}>{t('allUsers')}</MyMenuItem>
-            {users.map((user) => (
-              <MyMenuItem key={user} value={user}>
-                {user}
-              </MyMenuItem>
-            ))}
-          </Select>
+          <>
+            <WhiteButton aria-controls='simple-menu' aria-haspopup='true' onClick={handleClick}>
+              {t('chooseUser')}
+            </WhiteButton>
+            <Menu
+              id='simple-menu'
+              anchorEl={anchorEl}
+              keepMounted
+              open={Boolean(anchorEl)}
+              onClose={handleClose}
+            >
+              {['All users', ...users].map((value: string) => {
+                const labelId = `${value}`;
+                return (
+                  <MenuItem key={value}>
+                    <ListItemButton role={undefined} onClick={handleToggle(value)} dense>
+                      <ListItemIcon>
+                        <Checkbox
+                          edge='start'
+                          checked={checked.indexOf(value) !== -1}
+                          tabIndex={-1}
+                          disableRipple
+                          inputProps={{ 'aria-labelledby': labelId }}
+                        />
+                      </ListItemIcon>
+                      <ListItemText id={labelId} primary={`${value}`} />
+                    </ListItemButton>
+                  </MenuItem>
+                );
+              })}
+            </Menu>
+          </>
         )}
       </Stack>
       <DragDropContext onDragEnd={onDragEnd}>
@@ -328,7 +405,7 @@ export const Board = () => {
                       userValue={userValue}
                       allTasks={
                         userValue
-                          ? allTasks.filter((task) => task.users.includes(userValue))
+                          ? allTasks.filter((task) => checked.includes(task.users[0]))
                           : allTasks
                       }
                     />
