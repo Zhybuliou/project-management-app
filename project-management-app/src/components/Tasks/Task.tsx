@@ -4,15 +4,16 @@ import {
   CardContent,
   FormControl,
   IconButton,
-  InputLabel,
   MenuItem,
+  Paper,
   Select,
+  Stack,
   Tooltip,
   Typography,
   Zoom,
 } from '@mui/material';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
 import {
   TaskData,
@@ -24,11 +25,21 @@ import { useAppDispatch, useAppSelector } from '../../hook';
 import ConfirmDialog from '../popup/ConfirmDialog';
 import CreateBoardDialog from '../popup/CreateBoardDialog';
 import { useTranslation } from 'react-i18next';
+import { Text } from '../../theme/styledComponents/styledComponents';
 
 type TaskProps = {
   task: TaskData;
   index: number;
   id: string;
+};
+
+type TBody = {
+  title: string;
+  order: number;
+  columnId: string;
+  description: string;
+  userId: string;
+  users: [string];
 };
 
 export default function Task({ task, index, id }: TaskProps) {
@@ -94,52 +105,52 @@ export default function Task({ task, index, id }: TaskProps) {
           </CardActions>
           <ConfirmDialog confirmDialog={confirmTask} setConfirmDialog={setConfirmTask} />
           <CreateBoardDialog openPopup={openPopup} setOpenPopup={setOpenPopup} title={task.title}>
-            <Card>
-              <CardContent>
-                <Typography sx={{ mb: 1.5 }} color='text.secondary'>
-                  {t('description')}
-                </Typography>
-                <Typography sx={{ mb: 1.5 }} color='text.secondary'>
-                  {task.description}
-                </Typography>
-                <Typography sx={{ mb: 1.5 }} color='text.secondary'>
-                  {t('assign')} {task.users}
-                </Typography>
-              </CardContent>
-              <CardActions style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                <FormControl sx={{ minWidth: '200px' }} fullWidth>
-                  <InputLabel id='user-select-label'>{t('changeUser')}</InputLabel>
-                  <Select
-                    labelId='user-select-label'
-                    id='user-select'
-                    value={userValue}
-                    label={t('changeUser')}
-                    onChange={async (e) => {
-                      const { columnId } = task;
-                      const taskId = task._id;
-                      const token = JSON.parse(localStorage.getItem('token') || '');
-                      const body = {
-                        title: task.title,
-                        order: task.order,
-                        columnId: columnId,
-                        description: task.description,
-                        userId: task.userId,
-                        users: [e.target.value],
-                      };
-                      setUserValue(e.target.value);
-                      await dispatch(fetchUpdateTask({ body, id, columnId, token, taskId }));
-                      await dispatch(fetchBoardIdTasks({ id, token }));
-                    }}
-                  >
-                    {allUsers?.map((user) => (
-                      <MenuItem key={user._id} value={user.login}>
-                        {user.login}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </CardActions>
-            </Card>
+            <Stack minWidth={300} sx={{ mb: 0.5 }}>
+              <Text>{t('description')}</Text>
+              <Paper elevation={2} sx={{ minHeight: 100, p: 1 }}>
+                <Typography color='primary'>{task.description}</Typography>
+              </Paper>
+            </Stack>
+            <Text>{t('assign')}</Text>
+            <FormControl sx={{ minWidth: '200px' }} fullWidth>
+              <Select
+                className='popup-select'
+                displayEmpty
+                inputProps={{ 'aria-label': 'Without label' }}
+                value={userValue}
+                sx={{
+                  '&:hover': { '&& fieldset': { border: '2px solid #4D628B' } },
+                  color: '#4D628B',
+                }}
+                onChange={async (e) => {
+                  const { columnId } = task;
+                  const taskId = task._id;
+                  const token = JSON.parse(localStorage.getItem('token') || '');
+                  const body: TBody = {
+                    title: task.title,
+                    order: task.order,
+                    columnId: columnId,
+                    description: task.description,
+                    userId: task.userId,
+                    users: [e.target.value],
+                  };
+                  setUserValue(e.target.value);
+                  await dispatch(fetchUpdateTask({ body, id, columnId, token, taskId }));
+                  await dispatch(fetchBoardIdTasks({ id, token }));
+                }}
+              >
+                <MenuItem value={userValue} disabled>
+                  {task.users}
+                </MenuItem>
+                {allUsers
+                  ?.filter((user) => user.login !== task.users[0])
+                  .map((user) => (
+                    <MenuItem sx={{ color: '#4D628B' }} key={user._id} value={user.login}>
+                      {user.login}
+                    </MenuItem>
+                  ))}
+              </Select>
+            </FormControl>
           </CreateBoardDialog>
         </Card>
       )}
