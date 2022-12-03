@@ -3,7 +3,6 @@ import {
   Button,
   Checkbox,
   Container,
-  ListItemButton,
   ListItemIcon,
   ListItemText,
   Menu,
@@ -364,19 +363,17 @@ export const Board = () => {
               {['All users', ...users].map((value: string) => {
                 const labelId = `${value}`;
                 return (
-                  <MenuItem key={value}>
-                    <ListItemButton role={undefined} onClick={handleToggle(value)} dense>
-                      <ListItemIcon>
-                        <Checkbox
-                          edge='start'
-                          checked={checked.indexOf(value) !== -1}
-                          tabIndex={-1}
-                          disableRipple
-                          inputProps={{ 'aria-labelledby': labelId }}
-                        />
-                      </ListItemIcon>
-                      <ListItemText id={labelId} primary={`${value}`} />
-                    </ListItemButton>
+                  <MenuItem key={value} onClick={handleToggle(value)}>
+                    <ListItemIcon>
+                      <Checkbox
+                        edge='start'
+                        checked={checked.indexOf(value) !== -1}
+                        tabIndex={-1}
+                        disableRipple
+                        inputProps={{ 'aria-labelledby': labelId }}
+                      />
+                    </ListItemIcon>
+                    <ListItemText id={labelId} primary={`${value}`} />
                   </MenuItem>
                 );
               })}
