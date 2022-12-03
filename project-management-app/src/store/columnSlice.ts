@@ -11,13 +11,11 @@ export type ColumnData = {
 };
 
 type ColumnState = {
-  // error: null | string;
   allColumns: [] | FetchAllColumns;
   column: ColumnData;
 };
 
 const initialState: ColumnState = {
-  // error: null,
   allColumns: [],
   column: {} as ColumnData,
 };
@@ -71,29 +69,6 @@ export const fetchAllColumns = createAsyncThunk<
   dispatch(changeLoaderStatus(false));
   return data;
 });
-
-// export const fetchGetBoard = createAsyncThunk<BoardData, FetchBoardProps, { rejectValue: string }>(
-//   'board/fetchGetBoard',
-//   async function ({ id, token }, { rejectWithValue, dispatch }) {
-//     dispatch(changeLoaderStatus(true));
-//     const response = await fetch(`${BASE_PATH}boards/${id}`, {
-//       method: 'GET',
-//       headers: {
-//         accept: 'application/json',
-//         Authorization: 'Bearer ' + `${token}`,
-//       },
-//     });
-//     const data = await response.json();
-//     if (response.status !== 200) {
-//       if (response.status === 401) {
-//         return rejectWithValue('Unauthorized');
-//       }
-//       dispatch(changeLoaderStatus(false));
-//     }
-//     dispatch(changeLoaderStatus(false));
-//     return data;
-//   },
-// );
 
 export const fetchDeleteColumn = createAsyncThunk<
   ColumnData,
@@ -273,34 +248,18 @@ const columnSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchAllColumns.fulfilled, (state, action: PayloadAction<FetchAllColumns>) => {
-        // state.error = null;
         state.allColumns = action.payload;
       })
-      //   .addCase(fetchGetBoard.pending, (state) => {
-      //     state.error = null;
-      //   })
-      //   .addCase(fetchGetBoard.fulfilled, (state, action: PayloadAction<BoardData>) => {
-      //     state.error = null;
-      //     state.board = action.payload;
-      //   })
-      //   .addCase(fetchGetBoard.rejected, (state, action) => {
-      //     state.error = action.payload as string;
-      //     alert(state.error);
-      //   })
       .addCase(fetchDeleteColumn.fulfilled, (state) => {
-        // state.error = null;
         state.column = {} as ColumnData;
       })
       .addCase(fetchUpdateColumn.fulfilled, (state, action: PayloadAction<ColumnData>) => {
-        // state.error = null;
         state.column = action.payload;
       })
       .addCase(fetchCreateColumn.fulfilled, (state, action: PayloadAction<ColumnData>) => {
-        // state.error = null;
         state.column = action.payload;
       })
       .addCase(fetchUpdateOrderColumns.fulfilled, (state, action: PayloadAction<ColumnData[]>) => {
-        // state.error = null;
         state.allColumns = [...action.payload];
       });
   },
