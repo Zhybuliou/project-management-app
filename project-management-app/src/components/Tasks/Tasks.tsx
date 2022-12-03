@@ -30,13 +30,13 @@ export default function Tasks(props: TasksProps) {
             {...provided.droppableProps}
             className={`tasks ${snapshot.isDraggingOver ? 'dragTasksActive' : ''}`}
           >
-            {allTasks.length &&
+            {allTasks.length ?
               allTasks.map(
                 (task, index) =>
                   task.columnId == columnId && (
                     <Task key={task._id} task={task} id={id} index={index} />
                   ),
-              )}
+              ) : ''}
             {provided.placeholder}
           </div>
         )}
