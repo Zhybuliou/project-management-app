@@ -1,4 +1,5 @@
 import {
+  Button,
   Card,
   CardActions,
   CardContent,
@@ -12,6 +13,7 @@ import {
   Typography,
   Zoom,
 } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { useState } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
@@ -26,6 +28,7 @@ import ConfirmDialog from '../popup/ConfirmDialog';
 import CreateBoardDialog from '../popup/CreateBoardDialog';
 import { useTranslation } from 'react-i18next';
 import { Text } from '../../theme/styledComponents/styledComponents';
+import FormUpdateTask from '../forms/FormUpdateTask';
 
 type TaskProps = {
   task: TaskData;
@@ -47,6 +50,7 @@ export default function Task({ task, index, id }: TaskProps) {
   const dispatch = useAppDispatch();
   const [openPopup, setOpenPopup] = useState(false);
   const [userValue, setUserValue] = useState('');
+  const [isOpenTask, setIsOpenTask] = useState(false);
   const [confirmTask, setConfirmTask] = useState({
     isOpen: false,
     title: '',
@@ -151,6 +155,20 @@ export default function Task({ task, index, id }: TaskProps) {
                   ))}
               </Select>
             </FormControl>
+            <Button
+              startIcon={<EditIcon color='secondary' />}
+              fullWidth={true}
+              variant='contained'
+              onClick={() => {
+                setIsOpenTask(true);
+              }}
+              style={{ marginTop: '20px' }}
+            >
+              {t('EditTask')}
+            </Button>
+            <CreateBoardDialog title={t('updateTask')} openPopup={isOpenTask} setOpenPopup={setIsOpenTask}>
+              <FormUpdateTask setOpenPopup={setIsOpenTask} id={id} columnId={task.columnId} task={task} />
+            </CreateBoardDialog>
           </CreateBoardDialog>
         </Card>
       )}
