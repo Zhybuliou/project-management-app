@@ -15,13 +15,11 @@ export type TaskData = {
 };
 
 type TaskState = {
-  // error: null | string;
   allTasks: [] | FetchAllTasks;
   task: TaskData;
 };
 
 const initialState: TaskState = {
-  // error: null,
   allTasks: [],
   task: {} as TaskData,
 };
@@ -78,7 +76,6 @@ export const fetchAllTasks = createAsyncThunk<
     dispatch(changeLoaderStatus(false));
   }
   dispatch(changeLoaderStatus(false));
-  console.log(data);
   return data;
 });
 
@@ -117,29 +114,6 @@ export const fetchBoardIdTasks = createAsyncThunk<
   dispatch(changeLoaderStatus(false));
   return data;
 });
-
-// export const fetchGetBoard = createAsyncThunk<BoardData, FetchBoardProps, { rejectValue: string }>(
-//   'board/fetchGetBoard',
-//   async function ({ id, token }, { rejectWithValue, dispatch }) {
-//     dispatch(changeLoaderStatus(true));
-//     const response = await fetch(`${BASE_PATH}boards/${id}`, {
-//       method: 'GET',
-//       headers: {
-//         accept: 'application/json',
-//         Authorization: 'Bearer ' + `${token}`,
-//       },
-//     });
-//     const data = await response.json();
-//     if (response.status !== 200) {
-//       if (response.status === 401) {
-//         return rejectWithValue('Unauthorized');
-//       }
-//       dispatch(changeLoaderStatus(false));
-//     }
-//     dispatch(changeLoaderStatus(false));
-//     return data;
-//   },
-// );
 
 export const fetchDeleteTask = createAsyncThunk<TaskData, FetchTaskProps, { rejectValue: string }>(
   'task/fetchDeleteTask',
@@ -307,27 +281,12 @@ const taskSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchAllTasks.fulfilled, (state, action: PayloadAction<FetchAllTasks>) => {
-        // state.error = null;
         state.allTasks = action.payload;
-        console.log(state.allTasks);
       })
       .addCase(fetchBoardIdTasks.fulfilled, (state, action: PayloadAction<FetchAllTasks>) => {
-        // state.error = null;
         state.allTasks = action.payload.sort((a, b) => a.order - b.order);
       })
-      //   .addCase(fetchGetBoard.pending, (state) => {
-      //     state.error = null;
-      //   })
-      //   .addCase(fetchGetBoard.fulfilled, (state, action: PayloadAction<BoardData>) => {
-      //     state.error = null;
-      //     state.board = action.payload;
-      //   })
-      //   .addCase(fetchGetBoard.rejected, (state, action) => {
-      //     state.error = action.payload as string;
-      //     alert(state.error);
-      //   })
       .addCase(fetchDeleteTask.fulfilled, (state) => {
-        // state.error = null;
         state.task = {} as TaskData;
       })
 
@@ -336,11 +295,9 @@ const taskSlice = createSlice({
       })
 
       .addCase(fetchCreateTask.fulfilled, (state, action: PayloadAction<TaskData>) => {
-        // state.error = null;
         state.task = action.payload;
       })
       .addCase(fetchUpdateOrderTasks.fulfilled, (state, action: PayloadAction<TaskData[]>) => {
-        // state.error = null;
         state.allTasks = action.payload;
       });
   },
