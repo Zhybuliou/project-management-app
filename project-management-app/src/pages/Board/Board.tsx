@@ -359,6 +359,7 @@ export const Board = () => {
               keepMounted
               open={Boolean(anchorEl)}
               onClose={handleClose}
+              // sx={{ width: '100%' }}
             >
               {['All users', ...users].map((value: string) => {
                 const labelId = `${value}`;
@@ -373,7 +374,7 @@ export const Board = () => {
                         inputProps={{ 'aria-labelledby': labelId }}
                       />
                     </ListItemIcon>
-                    <ListItemText id={labelId} primary={`${value}`} />
+                    <ListItemText sx={{ color: '#4D628B' }} id={labelId} primary={`${value}`} />
                   </MenuItem>
                 );
               })}
