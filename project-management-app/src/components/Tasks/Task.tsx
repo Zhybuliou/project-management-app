@@ -109,9 +109,9 @@ export default function Task({ task, index, id }: TaskProps) {
           </CardActions>
           <ConfirmDialog confirmDialog={confirmTask} setConfirmDialog={setConfirmTask} />
           <CreateBoardDialog openPopup={openPopup} setOpenPopup={setOpenPopup} title={task.title}>
-            <Stack minWidth={300} sx={{ mb: 0.5 }}>
+            <Stack sx={{ mb: 0.5 }}>
               <Text>{t('description')}</Text>
-              <Paper elevation={2} sx={{ minHeight: 100, p: 1 }}>
+              <Paper elevation={2} sx={{ minHeight: 80, p: 1 }}>
                 <Typography color='primary'>{task.description}</Typography>
               </Paper>
             </Stack>
@@ -166,8 +166,17 @@ export default function Task({ task, index, id }: TaskProps) {
             >
               {t('EditTask')}
             </Button>
-            <CreateBoardDialog title={t('updateTask')} openPopup={isOpenTask} setOpenPopup={setIsOpenTask}>
-              <FormUpdateTask setOpenPopup={setIsOpenTask} id={id} columnId={task.columnId} task={task} />
+            <CreateBoardDialog
+              title={t('updateTask')}
+              openPopup={isOpenTask}
+              setOpenPopup={setIsOpenTask}
+            >
+              <FormUpdateTask
+                setOpenPopup={setIsOpenTask}
+                id={id}
+                columnId={task.columnId}
+                task={task}
+              />
             </CreateBoardDialog>
           </CreateBoardDialog>
         </Card>

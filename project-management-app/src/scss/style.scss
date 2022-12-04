@@ -50,3 +50,9 @@ body {
   justify-content: center;
   color: $whiteColor;
 }
+
+@media (max-width: 600px) {
+  ::-webkit-scrollbar {
+    width: 4px;
+  }
+}
