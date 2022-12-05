@@ -1,0 +1,85 @@
+@import '../../scss/style.scss';
+
+.back-btn {
+  span {
+    margin: 0;
+  }
+}
+
+.column {
+  margin: 5px;
+  width: 230px;
+}
+
+.column-task {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px;
+  margin: 5px;
+}
+
+.task-name {
+  max-width: 160px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.task-create-btn {
+  padding: 5px;
+}
+
+.column-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: $blueColor;
+  background-color: #e6e6e6;
+}
+
+.edit-title-input {
+  div {
+    color: $blueColor;
+  }
+}
+
+.tasks {
+  max-height: calc(100vh - 470px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 10px;
+}
+
+.dragActive {
+  background-color: #3e527a;
+}
+
+.column.drag,
+.column-task.drag {
+  box-shadow: 0 0 20px white;
+}
+
+.dragTasksActive {
+  background-color: #e1edef;
+}
+
+.column-title-header {
+  cursor: pointer;
+  flex-grow: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 665px) {
+  .tasks {
+    max-height: calc(100vh - 550px);
+  }
+}
+
+@media (max-height: 620px) {
+  .tasks {
+    max-height: calc(100vh - 550px);
+    min-height: 65px;
+  }
+}

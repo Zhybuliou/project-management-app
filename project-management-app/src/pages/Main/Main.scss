@@ -1,0 +1,81 @@
+@import '../../scss/style.scss';
+
+.board {
+  display: flex;
+  flex-direction: column;
+  margin: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+
+  &__title {
+    background-color: $pinkColor;
+    text-align: center;
+
+    h5 {
+      text-overflow: clip;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    h5::first-letter {
+      text-transform: uppercase;
+    }
+  }
+
+  a {
+    text-decoration: none;
+    color: $whiteColor;
+  }
+
+  .MuiCardContent-root:last-child {
+    padding-bottom: 0px;
+  }
+
+  &__description {
+    min-height: 93.2px;
+    word-wrap: break-word;
+    padding-bottom: 0px;
+
+    p {
+      color: $blueColor;
+      font-weight: 700;
+      font-size: 18px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -moz-box;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+    }
+  }
+}
+
+.board:hover {
+  transform: translateY(-1px);
+}
+
+.menu a {
+  text-decoration: none;
+  cursor: default;
+}
+
+.menu div {
+  text-transform: uppercase;
+  background-color: $whiteColor;
+  color: $blueColor;
+  font-weight: 700;
+  font-size: 14px;
+  width: max-content;
+}
+
+.menu div svg {
+  fill: #4d628b;
+  width: 20px;
+}
+
+.menu div:hover {
+  background-color: #e1edef;
+  border: none;
+}
