@@ -90,7 +90,11 @@ export const Main = () => {
                           onConfirm: async () => {
                             const getToken = localStorage.getItem('token');
                             if (getToken) {
-                              setConfirmDialog({ ...confirmDialog, isOpen: false });
+                              setConfirmDialog({
+                                ...confirmDialog,
+                                title: t('messageDeleteBoard'),
+                                isOpen: false,
+                              });
                               const id = board._id;
                               const token = JSON.parse(getToken);
                               await dispatch(fetchDeleteBoard({ id, token }));

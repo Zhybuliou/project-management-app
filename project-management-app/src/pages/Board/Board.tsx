@@ -148,7 +148,7 @@ export const Board = () => {
       title: t('messageDeleteColumn'),
       onConfirm: async () => {
         const columnId = column._id;
-        setConfirmDialog({ ...confirmDialog, isOpen: false });
+        setConfirmDialog({ ...confirmDialog, title: t('messageDeleteColumn'), isOpen: false });
         await dispatch(fetchDeleteColumn({ id, columnId, token }));
         await dispatch(fetchAllColumns({ id, token }));
         await dispatch(fetchBoardIdTasks({ id, token }));
