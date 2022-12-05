@@ -63,6 +63,7 @@ export const EditProfile = () => {
     if (token) {
       dispatch(fetchDeleteUser({ id, token }));
       setConfirmDialog({ ...confirmDialog, isOpen: false });
+      localStorage.removeItem('name');
     }
   }
 

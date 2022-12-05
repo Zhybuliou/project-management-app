@@ -171,7 +171,7 @@ const authSlice = createSlice({
       })
       .addCase(fetchSignUpData.fulfilled, (state, action: PayloadAction<UserData>) => {
         state.isLoaded = false;
-        state.name = action.payload.login;
+        state.name = action.payload.name as string;
       })
       .addCase(fetchSignUpData.rejected, (state) => {
         state.isLoaded = false;
